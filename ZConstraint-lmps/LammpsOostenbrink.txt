@@ -1,0 +1,342 @@
+  
+#Mass  g/mol 
+  
+mass      1  15.9994
+mass      2  15.9994
+mass      3  15.9994
+mass      4  15.9994
+mass      5  15.9994
+mass      6  14.0067
+mass      7  14.0067
+mass      8  14.0067
+mass      9  14.0067
+mass      10  14.0067
+mass      11  14.0067
+mass      12  12.011
+mass      13  12.011
+mass      14  13.019
+mass      15  14.027
+mass      16  15.035
+mass      17  16.043
+mass      18  14.027
+mass      19  13.019
+mass      20  1.008
+mass      21  1.008
+mass      22  999
+mass      23  32.06
+mass      24  63.546
+mass      25  63.546
+mass      26  55.847
+mass      27  65.37
+mass      28  24.305
+mass      29  40.08
+mass      30  30.9738
+mass      31  39.948
+mass      32  18.9984
+mass      33  35.453
+mass      34  79.904
+mass      35  15.035
+mass      36  15.9994
+mass      37  22.9898
+mass      38  35.453
+mass      39  12.011
+mass      40  35.453
+mass      41  1.008
+mass      42  32.06
+mass      43  15.035
+mass      44  15.9994
+mass      45  12.011
+mass      46  35.453
+mass      47  18.9984
+mass      48  12.011
+mass      49  14.027
+mass      50  15.9994
+mass      51  12.011
+mass      52  15.9994
+mass      53  14.0067
+mass      54  28.08
+mass      55  999
+mass      56  999
+mass      57  15.994
+mass      58  1.008
+  
+#Pair 
+  
+pair_coeff      1  1  0.30699  2.7601
+pair_coeff      2  2  0.41401  2.6259
+pair_coeff      3  3  0.25371  2.8492
+pair_coeff      4  4  0.25371  2.8492
+pair_coeff      5  5  0.15604  3.1656
+pair_coeff      6  6  0.15355  3.1365
+pair_coeff      7  7  0.15355  3.1365
+pair_coeff      8  8  0.15355  3.1365
+pair_coeff      9  9  0.15355  3.1365
+pair_coeff      10  10  0.15355  3.1365
+pair_coeff      11  11  0.15355  3.1365
+pair_coeff      12  12  0.066577  3.5812
+pair_coeff      13  13  0.0016789  6.6395
+pair_coeff      14  14  0.022773  5.0192
+pair_coeff      15  15  0.09853  4.0704
+pair_coeff      16  16  0.20812  3.7479
+pair_coeff      17  17  0.30682  3.7028
+pair_coeff      18  18  0.11503  3.9547
+pair_coeff      19  19  0.14617  3.6818
+pair_coeff      20  20  0.028411  2.3734
+pair_coeff      21  21  0  0
+pair_coeff      22  22  0  0
+pair_coeff      23  23  0.039532  2.309
+pair_coeff      24  24  0  0
+pair_coeff      25  25  0  1
+pair_coeff      26  26  0  0
+pair_coeff      27  27  0  0
+pair_coeff      28  28  0  0
+pair_coeff      29  29  0  0
+pair_coeff      30  30  0.58722  3.3856
+pair_coeff      31  31  0  0
+pair_coeff      32  32  0  0
+pair_coeff      33  33  0  0
+pair_coeff      34  34  0  0
+pair_coeff      35  35  0  0
+pair_coeff      36  36  0  0
+pair_coeff      37  37  0  0
+pair_coeff      38  38  0  0
+pair_coeff      39  39  0  0
+pair_coeff      40  40  0  0
+pair_coeff      41  41  0  0
+pair_coeff      42  42  0  0
+pair_coeff      43  43  0  0
+pair_coeff      44  44  0  0
+pair_coeff      45  45  0  0
+pair_coeff      46  46  0  0
+pair_coeff      47  47  0  0
+pair_coeff      48  48  0  0
+pair_coeff      49  49  0  0
+pair_coeff      50  50  0  0
+pair_coeff      51  51  0  0
+pair_coeff      52  52  0  0
+pair_coeff      53  53  0  0
+pair_coeff      54  54  0  0
+pair_coeff      55  55  0  0
+pair_coeff      56  56  0  0
+pair_coeff      57  57  0.15543  3.1655
+pair_coeff      58  58  0  0
+  
+pair_coeff      1  3  0.27908  2.9146
+pair_coeff      1  5  0.21887  3.0167
+pair_coeff      1  6  0.21711  3.1272
+pair_coeff      1  7  0.21711  3.2046
+pair_coeff      1  8  0.21711  3.3746
+pair_coeff      1  9  0.21711  3.0992
+pair_coeff      1  10  0.21711  3.1799
+pair_coeff      1  11  0.21711  3.1381
+pair_coeff      1  30  0.42458  3.1198
+pair_coeff      2  3  0.3241  3.1616
+pair_coeff      2  5  0.25417  3.2724
+pair_coeff      2  6  0.25213  3.3922
+pair_coeff      2  7  0.25213  3.4762
+pair_coeff      2  8  0.25213  3.9858
+pair_coeff      2  9  0.25213  3.3619
+pair_coeff      2  10  0.25213  3.7559
+pair_coeff      2  11  0.25213  3.7065
+pair_coeff      2  30  0.49307  3.6848
+pair_coeff      3  4  0.25371  2.9548
+pair_coeff      3  5  0.19897  3.0584
+pair_coeff      3  6  0.19738  3.1704
+pair_coeff      3  7  0.19738  3.2489
+pair_coeff      3  8  0.19738  3.4212
+pair_coeff      3  9  0.19738  3.1421
+pair_coeff      3  10  0.19738  3.2239
+pair_coeff      3  11  0.19738  3.1815
+pair_coeff      3  30  0.38598  3.1629
+pair_coeff      4  5  0.19897  3.0584
+pair_coeff      4  6  0.19738  3.1704
+pair_coeff      4  7  0.19738  3.2489
+pair_coeff      4  8  0.19738  3.4212
+pair_coeff      4  9  0.19738  3.1421
+pair_coeff      4  10  0.19738  3.2239
+pair_coeff      4  11  0.19738  3.1815
+pair_coeff      4  30  0.38598  3.1629
+pair_coeff      5  6  0.15479  3.2816
+pair_coeff      5  7  0.15479  3.3628
+pair_coeff      5  8  0.15479  3.5412
+pair_coeff      5  9  0.15479  3.2522
+pair_coeff      5  10  0.15479  3.3369
+pair_coeff      5  11  0.15479  3.293
+pair_coeff      5  30  0.3027  3.2738
+pair_coeff      6  7  0.15355  3.4859
+pair_coeff      6  9  0.15355  3.3713
+pair_coeff      7  8  0.15355  3.7617
+pair_coeff      7  9  0.15355  3.4547
+pair_coeff      7  10  0.15355  3.5447
+pair_coeff      7  11  0.15355  3.4981
+pair_coeff      8  9  0.15355  3.638
+pair_coeff      9  10  0.15355  3.4281
+pair_coeff      9  11  0.15355  3.383
+pair_coeff      9  30  0.30028  3.3633
+  
+#Bonds  kcal/(mol \AA^2)   \AA 
+  
+bond_coeff      1  375.23  1
+bond_coeff      2  446.93  1
+bond_coeff      3  349.2658  1.09
+bond_coeff      4  1109.2659  1.12
+bond_coeff      5  600.2279  1.23
+bond_coeff      6  500.4062  1.25
+bond_coeff      7  499.7203  1.32
+bond_coeff      8  374.9944  1.33
+bond_coeff      9  448.1331  1.33
+bond_coeff      10  498.8652  1.33
+bond_coeff      11  450.6058  1.34
+bond_coeff      12  502.1036  1.34
+bond_coeff      13  450.8955  1.36
+bond_coeff      14  500.6668  1.38
+bond_coeff      15  399.8945  1.39
+bond_coeff      16  498.7137  1.39
+bond_coeff      17  400.0478  1.4
+bond_coeff      18  399.782  1.43
+bond_coeff      19  450.1213  1.43
+bond_coeff      20  300.2144  1.435
+bond_coeff      21  449.8324  1.47
+bond_coeff      22  299.9687  1.48
+bond_coeff      23  399.9583  1.48
+bond_coeff      24  450.2148  1.48
+bond_coeff      25  450.0967  1.5
+bond_coeff      26  299.8368  1.52
+bond_coeff      27  400.0247  1.53
+bond_coeff      28  299.8438  1.61
+bond_coeff      29  299.7196  1.63
+bond_coeff      30  205.9713  1.78
+bond_coeff      31  449.8051  1.78
+bond_coeff      32  449.8176  1.83
+bond_coeff      33  300.0375  1.87
+bond_coeff      34  59.9664  1.98
+bond_coeff      35  60.0368  2
+bond_coeff      36  500.2951  2.04
+bond_coeff      37  63.0342  2.21
+bond_coeff      38  554.48  1
+bond_coeff      39  349.9199  1.1
+bond_coeff      40  599.7796  1.758
+bond_coeff      41  449.818  1.53
+bond_coeff      42  444.3305  1.938
+bond_coeff      43  599.6644  1.76
+bond_coeff      44  501.0144  1.265
+bond_coeff      45  448.6448  1.35
+bond_coeff      46  555.1152  1.633
+bond_coeff      47  350.2407  2.3384
+bond_coeff      48  600.1466  2.9028
+bond_coeff      49  445.8731  2.7939
+bond_coeff      50  443.8047  2.9119
+bond_coeff      51  409.3185  2.077
+bond_coeff      52  600.1588  2.8741
+bond_coeff      53  527.1  1
+bond_coeff      54  629.3176  0.94
+  
+#Angles  kcal/mol   degrees 
+  
+angle_coeff   1 cosine/squared  45.41  90
+angle_coeff   2 cosine/squared  50.19  90
+angle_coeff   3 cosine/squared  48.3975  96
+angle_coeff   4 cosine/squared  56.7625  100
+angle_coeff   5 cosine/squared  50.19  103
+angle_coeff   6 cosine/squared  58.555  104
+angle_coeff   7 cosine/squared  55.5675  108
+angle_coeff   8 cosine/squared  34.0575  109.5
+angle_coeff   9 cosine/squared  38.24  109.5
+angle_coeff   10 cosine/squared  45.41  109.5
+angle_coeff   11 cosine/squared  50.7875  109.5
+angle_coeff   12 cosine/squared  53.775  109.5
+angle_coeff   13 cosine/squared  62.14  109.5
+angle_coeff   14 cosine/squared  53.775  109.6
+angle_coeff   15 cosine/squared  63.335  111
+angle_coeff   16 cosine/squared  65.1275  113
+angle_coeff   17 cosine/squared  5.975  115
+angle_coeff   18 cosine/squared  54.97  115
+angle_coeff   19 cosine/squared  72.895  115
+angle_coeff   20 cosine/squared  55.5675  116
+angle_coeff   21 cosine/squared  74.09  116
+angle_coeff   22 cosine/squared  75.8825  117
+angle_coeff   23 cosine/squared  46.605  120
+angle_coeff   24 cosine/squared  53.1775  120
+angle_coeff   25 cosine/squared  60.3475  120
+angle_coeff   26 cosine/squared  63.335  120
+angle_coeff   27 cosine/squared  66.92  120
+angle_coeff   28 cosine/squared  80.065  120
+angle_coeff   29 cosine/squared  93.21  120
+angle_coeff   30 cosine/squared  81.8575  121
+angle_coeff   31 cosine/squared  83.65  122
+angle_coeff   32 cosine/squared  49.5925  123
+angle_coeff   33 cosine/squared  87.235  124
+angle_coeff   34 cosine/squared  44.8125  125
+angle_coeff   35 cosine/squared  89.625  125
+angle_coeff   36 cosine/squared  68.7125  126
+angle_coeff   37 cosine/squared  76.48  126
+angle_coeff   38 cosine/squared  92.015  126
+angle_coeff   39 cosine/squared  90.82  132
+angle_coeff   40 cosine/squared  264.6925  155
+angle_coeff   41 cosine/squared  10916.325  180
+angle_coeff   42 cosine/squared  51.863  109.5
+angle_coeff   43 cosine/squared  57.838  107.57
+angle_coeff   44 cosine/squared  75.524  111.3
+angle_coeff   45 cosine/squared  56.0455  97.4
+angle_coeff   46 cosine/squared  60.1085  106.75
+angle_coeff   47 cosine/squared  52.9385  108.53
+angle_coeff   48 cosine/squared  73.851  109.5
+angle_coeff   49 cosine/squared  60.5865  107.6
+angle_coeff   50 cosine/squared  53.536  109.5
+angle_coeff   51 cosine/squared  62.618  110.3
+angle_coeff   52 cosine/squared  63.574  111.4
+angle_coeff   53 cosine/squared  76.002  117.2
+angle_coeff   54 cosine/squared  82.455  121.4
+angle_coeff   55  harmonic  37.95  109.5
+  
+#Dihedral   kcal/mol   +-1   integer 
+  
+dihedral_coeff      1 harmonic  0.63813  -1  1
+dihedral_coeff      2 harmonic  0.81499  -1  1
+dihedral_coeff      3 harmonic  1.1878  -1  1
+dihedral_coeff      4 harmonic  1.4005  -1  1
+dihedral_coeff      5 harmonic  2.2346  -1  1
+dihedral_coeff      6 harmonic  2.2585  -1  1
+dihedral_coeff      7 harmonic  0.66681  1  1
+dihedral_coeff      8 harmonic  1.2786  1  1
+dihedral_coeff      9 harmonic  0.36567  -1  2
+dihedral_coeff      10 harmonic  1.4005  -1  2
+dihedral_coeff      11 harmonic  1.6993  -1  2
+dihedral_coeff      12 harmonic  3.9913  -1  2
+dihedral_coeff      13 harmonic  5.736  -1  2
+dihedral_coeff      14 harmonic  8.0065  -1  2
+dihedral_coeff      15 harmonic  9.9902  -1  2
+dihedral_coeff      16 harmonic  0  1  2
+dihedral_coeff      17 harmonic  0.099902  1  2
+dihedral_coeff      18 harmonic  0.49951  1  2
+dihedral_coeff      19 harmonic  0.75046  1  2
+dihedral_coeff      20 harmonic  1.2165  1  2
+dihedral_coeff      21 harmonic  3.9913  1  2
+dihedral_coeff      22 harmonic  0.25095  1  3
+dihedral_coeff      23 harmonic  0.30114  1  3
+dihedral_coeff      24 harmonic  0.3107  1  3
+dihedral_coeff      25 harmonic  0.60467  1  3
+dihedral_coeff      26 harmonic  0.70027  1  3
+dihedral_coeff      27 harmonic  0.76241  1  3
+dihedral_coeff      28 harmonic  0.87235  1  3
+dihedral_coeff      29 harmonic  0.90103  1  3
+dihedral_coeff      30 harmonic  0.9321  1  3
+dihedral_coeff      31 harmonic  0.99902  1  3
+dihedral_coeff      32 harmonic  1.1209  1  3
+dihedral_coeff      33 harmonic  1.3002  1  3
+dihedral_coeff      34 harmonic  1.4149  1  3
+dihedral_coeff      35 harmonic  1.8379  1  3
+dihedral_coeff      36 harmonic  2.0602  1  3
+dihedral_coeff      37 harmonic  2.2705  1  3
+dihedral_coeff      38 harmonic  0  1  4
+dihedral_coeff      39 harmonic  0.239  -1  6
+dihedral_coeff      40 harmonic  0.239  1  6
+dihedral_coeff      41 harmonic  0.90103  1  6
+dihedral_coeff    42  charmm  1.1256  3  0  0.000000
+dihedral_coeff    43  harmonic  0.24  -1  3
+  
+#Impropers   kcal/(mol radian^2)   degrees
+  
+improper_coeff      1  20.0071  0
+improper_coeff      2  40.0141  35.2644
+improper_coeff      3  80.0282  0

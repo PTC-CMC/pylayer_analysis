@@ -1,0 +1,101 @@
+                   :-) GROMACS - gmx grompp, VERSION 5.1 (-:
+
+                            GROMACS is written by:
+     Emile Apol      Rossen Apostolov  Herman J.C. Berendsen    Par Bjelkmar   
+ Aldert van Buuren   Rudi van Drunen     Anton Feenstra   Sebastian Fritsch 
+  Gerrit Groenhof   Christoph Junghans   Anca Hamuraru    Vincent Hindriksen
+ Dimitrios Karkoulis    Peter Kasson        Jiri Kraus      Carsten Kutzner  
+    Per Larsson      Justin A. Lemkul   Magnus Lundborg   Pieter Meulenhoff 
+   Erik Marklund      Teemu Murtola       Szilard Pall       Sander Pronk   
+   Roland Schulz     Alexey Shvetsov     Michael Shirts     Alfons Sijbers  
+   Peter Tieleman    Teemu Virolainen  Christian Wennberg    Maarten Wolf   
+                           and the project leaders:
+        Mark Abraham, Berk Hess, Erik Lindahl, and David van der Spoel
+
+Copyright (c) 1991-2000, University of Groningen, The Netherlands.
+Copyright (c) 2001-2015, The GROMACS development team at
+Uppsala University, Stockholm University and
+the Royal Institute of Technology, Sweden.
+check out http://www.gromacs.org for more information.
+
+GROMACS is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License
+as published by the Free Software Foundation; either version 2.1
+of the License, or (at your option) any later version.
+
+GROMACS:      gmx grompp, VERSION 5.1
+Executable:   /raid6/software/gromacs_5.1.0//bin/gmx
+Data prefix:  /raid6/software/gromacs_5.1.0/
+Command line:
+  gmx grompp -f Stage2_Strong0.mdp -n FullIndex.ndx -c RedonepureDSPC.gro -p RedonepureDSPC.top -o Stage2_Strong0.tpr -maxwarn 2
+
+Replacing old mdp entry 'nstxtcout' by 'nstxout-compressed'
+
+Back Off! I just backed up mdout.mdp to ./#mdout.mdp.4#
+
+NOTE 1 [file Stage2_Strong0.mdp]:
+  nstcomm < nstcalcenergy defeats the purpose of nstcalcenergy, setting
+  nstcomm to nstcalcenergy
+
+
+NOTE 2 [file Stage2_Strong0.mdp]:
+  leapfrog does not yet support Nose-Hoover chains, nhchainlength reset to 1
+
+Setting the LD random seed to 3900216171
+Generated 165 of the 1596 non-bonded parameter combinations
+Generating 1-4 interactions: fudge = 1
+Generated 111 of the 1596 1-4 parameter combinations
+Excluding 2 bonded neighbours molecule type 'DSPC'
+Excluding 2 bonded neighbours molecule type 'SOL'
+Removing all charge groups because cutoff-scheme=Verlet
+Pull group 1 'Tracer1018' has 3 atoms
+Pull group 2 'Tracer802' has 3 atoms
+Pull group 3 'Tracer603' has 3 atoms
+Pull group 4 'Tracer362' has 3 atoms
+Pull group 5 'Tracer1672' has 3 atoms
+Pull group 6 'Tracer427' has 3 atoms
+Pull group 7 'Tracer2538' has 3 atoms
+Pull group 8 'Tracer1131' has 3 atoms
+Number of degrees of freedom in T-Coupling group non-Water is 13950.57
+Number of degrees of freedom in T-Coupling group Water is 15358.43
+
+WARNING 1 [file Stage2_Strong0.mdp]:
+  You are using an absolute reference for pulling, but the rest of the
+  system does not have an absolute reference. This will lead to artifacts.
+
+Pull group  natoms  pbc atom  distance at start  reference at t=0
+       0         0         0
+       1         3      9581       0.498 nm          0.498 nm
+       0         0         0
+       2         3      8933       0.372 nm          0.372 nm
+       0         0         0
+       3         3      8336       0.165 nm          0.165 nm
+       0         0         0
+       4         3      7613       0.544 nm          0.544 nm
+       0         0         0
+       5         3     11543       0.626 nm          0.626 nm
+       0         0         0
+       6         3      7808       0.475 nm          0.475 nm
+       0         0         0
+       7         3     14141       0.457 nm          0.457 nm
+       0         0         0
+       8         3      9920       0.747 nm          0.747 nm
+Estimate for the relative computational load of the PME mesh part: 0.10
+
+There were 2 notes
+
+There was 1 warning
+
+Back Off! I just backed up Stage2_Strong0.tpr to ./#Stage2_Strong0.tpr.3#
+
+gcq#388: "Let us not get carried away with our ideas and take our models too seriously" (Nancy Swanson)
+
+turning all bonds into constraints...
+turning all bonds into constraints...
+Determining Verlet buffer for a tolerance of 0.005 kJ/mol/ps at 305 K
+Calculated rlist for 1x1 atom pair-list as 1.415 nm, buffer size 0.015 nm
+Set rlist, assuming 4x4 atom pair-list, to 1.400 nm, buffer size 0.000 nm
+Note that mdrun will redetermine rlist based on the actual pair-list setup
+Calculating fourier grid dimensions for X Y Z
+Using a fourier grid of 40x36x48, spacing 0.153 0.144 0.155
+This run will generate roughly 369 Mb of data

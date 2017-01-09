@@ -1,0 +1,110 @@
+clear
+variable Nprint equal 1000 
+variable Nrun equal 380000 
+variable temperature equal 305.0
+
+units real
+atom_style full
+
+pair_style lj/cut/coul/long 14.0 14.0 
+bond_style harmonic
+angle_style hybrid harmonic cosine/squared
+dihedral_style hybrid harmonic charmm
+improper_style harmonic
+special_bonds lj/coul 0.0 0.0 1.0 
+kspace_style pppm 1.0e-4
+neighbor 2.0 bin 
+
+read_restart ${restartfile}
+
+include ../LammpsOostenbrink.txt
+
+group water type 57 58
+#group tracers molecule ${ID1} ${ID2} ${ID3} ${ID4} ${ID5} ${ID6} ${ID7} ${ID8}
+group tracers molecule ${ID1} ${ID2} ${ID3} ${ID4} ${ID5} ${ID6} ${ID7}
+group allbuttracers subtract water tracers
+group bilayer subtract all water
+
+group t1 molecule ${ID1}
+group t2 molecule ${ID2}
+group t3 molecule ${ID3}
+group t4 molecule ${ID4}
+group t5 molecule ${ID5}
+group t6 molecule ${ID6}
+group t7 molecule ${ID7}
+#group t8 molecule ${ID8}
+
+reset_timestep 0
+variable ke equal ke
+variable enthalpy equal enthalpy
+variable pe equal pe
+variable step equal step
+variable temp equal temp
+variable press equal press
+variable vol equal vol
+
+variable lx equal lx
+variable ly equal ly
+variable lz equal lz
+
+timestep 1.0
+
+fix 11 all shake 0.0001 10 10000 b 53 a 55
+fix 3 all print ${Nprint} "${step} ${pe} ${press} ${temp} ${lx} ${ly} ${lz}" file system.log screen no
+fix 4 water npt temp ${temperature} ${temperature} 100.0 aniso 1.0 1.0 1000.0
+fix 12 bilayer nvt temp ${temperature} ${temperature} 100.0 
+fix 5 bilayer momentum 1 linear 1 1 1
+thermo ${Nprint}
+
+compute tracerfz1 t1 reduce sum fz
+variable redforce1 equal c_tracerfz1
+compute tracerfz2 t2 reduce sum fz
+variable redforce2 equal c_tracerfz2
+compute tracerfz3 t3 reduce sum fz
+variable redforce3 equal c_tracerfz3
+compute tracerfz4 t4 reduce sum fz
+variable redforce4 equal c_tracerfz4
+compute tracerfz5 t5 reduce sum fz
+variable redforce5 equal c_tracerfz5
+compute tracerfz6 t6 reduce sum fz
+variable redforce6 equal c_tracerfz6
+compute tracerfz7 t7 reduce sum fz
+variable redforce7 equal c_tracerfz7
+#compute tracerfz8 t8 reduce sum fz
+#variable redforce8 equal c_tracerfz8
+
+dump d2 all custom 40000 trajectory.lammps id type xu yu zu
+dump_modify d2 format "%d %d %.3f %.3f %.3f" append yes 
+
+dump d1 tracers custom 1000 tracerpos.xyz id mass x y z vx vy vz fx fy fz
+dump_modify d1 append yes
+
+fix pt1 all print 3 "${step} ${redforce1}" append ${force1} screen no 
+fix pt2 all print 3 "${step} ${redforce2}" append ${force2} screen no 
+fix pt3 all print 3 "${step} ${redforce3}" append ${force3} screen no 
+fix pt4 all print 3 "${step} ${redforce4}" append ${force4} screen no 
+fix pt5 all print 3 "${step} ${redforce5}" append ${force5} screen no 
+fix pt6 all print 3 "${step} ${redforce6}" append ${force6} screen no 
+fix pt7 all print 3 "${step} ${redforce7}" append ${force7} screen no 
+#fix pt8 all print 3 "${step} ${redforce8}" append ${force8} screen no 
+fix 61 t1 recenter NULL NULL ${zt1} shift t1
+fix 71 t1 momentum 1 linear 0 0 1
+fix 62 t2 recenter NULL NULL ${zt2} shift t2
+fix 72 t2 momentum 1 linear 0 0 1
+fix 63 t3 recenter NULL NULL ${zt3} shift t3
+fix 73 t3 momentum 1 linear 0 0 1
+fix 64 t4 recenter NULL NULL ${zt4} shift t4
+fix 74 t4 momentum 1 linear 0 0 1
+fix 65 t5 recenter NULL NULL ${zt5} shift t5
+fix 75 t5 momentum 1 linear 0 0 1
+fix 66 t6 recenter NULL NULL ${zt6} shift t6
+fix 76 t6 momentum 1 linear 0 0 1
+fix 67 t7 recenter NULL NULL ${zt7} shift t7
+fix 77 t7 momentum 1 linear 0 0 1
+#fix 68 t8 recenter NULL NULL ${zt8} shift t8
+#fix 78 t8 momentum 1 linear 0 0 1
+
+run ${Nrun}
+
+write_restart ${restartfile}
+

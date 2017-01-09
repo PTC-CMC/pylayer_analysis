@@ -1,0 +1,1 @@
+gmx grompp -f Stage1_Weak2.mdp -c RedonepureDSPC.gro -p RedonepureDSPC.top -n FullIndex.ndx -o Stage1_Weak2.tpr -maxwarn 2 > grompp_Stage1_Weak2.log 2>&1

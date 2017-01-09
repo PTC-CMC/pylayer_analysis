@@ -1,0 +1,265 @@
+LAMMPS (5 Oct 2015)
+LAMMPS (5 Oct 2015)
+LAMMPS (5 Oct 2015)
+LAMMPS (5 Oct 2015)
+LAMMPS (5 Oct 2015)
+Reading restart file ...
+  restart file = 5 Oct 2015, LAMMPS = 5 Oct 2015
+  orthogonal box = (-26.123 -28.082 -38.2074) to (26.123 28.082 38.2074)
+  2 by 2 by 4 MPI processor grid
+Reading restart file ...
+Reading restart file ...
+  restart file = 5 Oct 2015, LAMMPS = 5 Oct 2015
+  orthogonal box = (-25.9144 -28.1826 -38.3773) to (25.9144 28.1826 38.3773)
+  restart file = 5 Oct 2015, LAMMPS = 5 Oct 2015
+  2 by 2 by 4 MPI processor grid
+  orthogonal box = (-26.1765 -27.9306 -38.3914) to (26.1765 27.9306 38.3914)
+  2 by 2 by 4 MPI processor grid
+  14048 atoms
+  11360 bonds
+  9680 angles
+  5536 dihedrals
+  336 impropers
+Finding 1-2 1-3 1-4 neighbors ...
+ Special bond factors lj:   0          0          1         
+ Special bond factors coul: 0          0          1         
+  4 = max # of 1-2 neighbors
+  4 = max # of 1-3 neighbors
+Reading restart file ...
+  6 = max # of special neighbors
+  restart file = 5 Oct 2015, LAMMPS = 5 Oct 2015
+7680 atoms in group water
+ERROR on proc 0: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 3: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 7: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 1: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 11: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 8: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 13: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 2: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 12: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 6: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 9: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 4: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 5: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 14: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 15: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 10: Substitution for illegal variable (../input.cpp:530)
+  14048 atoms
+  11360 bonds
+  9680 angles
+  5536 dihedrals
+  336 impropers
+  orthogonal box = (-25.9088 -28.1212 -38.3578) to (25.9088 28.1212 38.3578)
+Rank 0 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0
+Rank 8 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 8
+Rank 10 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 10
+Rank 7 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 7
+Rank 1 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 1
+Rank 5 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 5
+Rank 12 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 12
+Rank 13 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 13
+Rank 11 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 11
+Rank 6 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 6
+Rank 3 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 3
+Rank 14 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 14
+Rank 9 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 9
+Rank 15 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 15
+  14048 atoms
+  11360 bonds
+  9680 angles
+  5536 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+ Special bond factors lj:   0          0          1         
+ Special bond factors coul: 0          0          1         
+  2 by 2 by 4 MPI processor grid
+  336 impropers
+Finding 1-2 1-3 1-4 neighbors ...
+ Special bond factors lj:   0          0          1         
+ Special bond factors coul: 0          0          1         
+  4 = max # of 1-2 neighbors
+Rank 4 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 4
+Rank 2 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 2
+_pmiu_daemon(SIGCHLD): [NID 02258] [c4-1c0s6n2] [Thu Oct 27 16:17:28 2016] PE RANK 1 exit signal Aborted
+  4 = max # of 1-2 neighbors
+[NID 02258] 2016-10-27 16:17:28 Apid 12503293: initiated application termination
+  4 = max # of 1-3 neighbors
+  4 = max # of 1-3 neighbors
+  6 = max # of special neighbors
+  6 = max # of special neighbors
+Reading restart file ...
+7680 atoms in group water
+ERROR on proc 0: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 1: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 5: Substitution for illegal variable (../input.cpp:530)
+7680 atoms in group water
+ERROR on proc 0: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 5: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 3: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 7: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 6: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 4: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 2: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 9: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 12: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 11: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 1: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 13: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 10: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 14: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 8: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 15: Substitution for illegal variable (../input.cpp:530)
+Rank 0 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0
+Rank 1 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 1
+Rank 9 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 9
+Rank 7 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 7
+Rank 5 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 5
+Rank 4 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 4
+Rank 6 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 6
+Rank 11 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 11
+Rank 3 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 3
+Rank 10 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 10
+Rank 8 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 8
+Rank 13 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 13
+Rank 12 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 12
+Rank 15 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 15
+ERROR on proc 4: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 8: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 10: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 9: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 13: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 11: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 12: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 6: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 7: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 2: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 3: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 15: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 14: Substitution for illegal variable (../input.cpp:530)
+Rank 0 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0
+Rank 4 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 4
+Rank 3 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 3
+Rank 5 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 5
+  restart file = 5 Oct 2015, LAMMPS = 5 Oct 2015
+Rank 14 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 14
+Rank 2 [Thu Oct 27 16:17:28 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 2
+_pmiu_daemon(SIGCHLD): [NID 02259] [c4-1c0s6n3] [Thu Oct 27 16:17:28 2016] PE RANK 9 exit signal Aborted
+Rank 2 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 2
+Rank 1 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 1
+Rank 6 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 6
+Rank 7 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 7
+Rank 11 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 11
+Rank 10 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 10
+Rank 14 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 14
+Rank 13 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 13
+Rank 12 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 12
+Rank 8 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 8
+Rank 9 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 9
+Rank 15 [Thu Oct 27 16:17:28 2016] [c2-1c0s7n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 15
+  orthogonal box = (-26.1479 -28.028 -38.2714) to (26.1479 28.028 38.2714)
+_pmiu_daemon(SIGCHLD): [NID 00814] [c2-1c0s7n2] [Thu Oct 27 16:17:28 2016] PE RANK 4 exit signal Aborted
+  14048 atoms
+  11360 bonds
+  9680 angles
+  5536 dihedrals
+  336 impropers
+  2 by 2 by 4 MPI processor grid
+Finding 1-2 1-3 1-4 neighbors ...
+ Special bond factors lj:   0          0          1         
+ Special bond factors coul: 0          0          1         
+  4 = max # of 1-2 neighbors
+  4 = max # of 1-3 neighbors
+  6 = max # of special neighbors
+7680 atoms in group water
+ERROR on proc 0: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 5: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 7: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 6: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 2: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 1: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 14: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 10: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 8: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 4: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 9: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 13: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 3: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 12: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 11: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 15: Substitution for illegal variable (../input.cpp:530)
+Rank 0 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0
+Rank 6 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 6
+Rank 1 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 1
+Rank 4 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 4
+Rank 5 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 5
+Rank 2 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 2
+Rank 7 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 7
+Rank 10 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 10
+Rank 11 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 11
+Rank 14 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 14
+Rank 3 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 3
+Rank 9 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 9
+Rank 8 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 8
+Rank 13 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 13
+Rank 12 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 12
+Rank 15 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 15
+_pmiu_daemon(SIGCHLD): [NID 02349] [c6-1c0s6n3] [Thu Oct 27 16:17:28 2016] PE RANK 1 exit signal Aborted
+[NID 02349] 2016-10-27 16:17:28 Apid 12503290: initiated application termination
+  14048 atoms
+  11360 bonds
+  9680 angles
+  5536 dihedrals
+  336 impropers
+Finding 1-2 1-3 1-4 neighbors ...
+ Special bond factors lj:   0          0          1         
+ Special bond factors coul: 0          0          1         
+  4 = max # of 1-2 neighbors
+  4 = max # of 1-3 neighbors
+  6 = max # of special neighbors
+7680 atoms in group water
+ERROR on proc 0: Substitution for illegal variable (../input.cpp:530)
+Rank 5 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 5
+Rank 11 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 11
+Rank 3 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 3
+Rank 0 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0
+Rank 1 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 1
+Rank 13 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 13
+Rank 14 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 14
+Rank 15 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 15
+Rank 6 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 6
+Rank 2 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 2
+ERROR on proc 1: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 5: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 11: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 13: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 14: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 15: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 6: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 3: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 2: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 9: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 4: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 12: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 10: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 8: Substitution for illegal variable (../input.cpp:530)
+ERROR on proc 7: Substitution for illegal variable (../input.cpp:530)
+[NID 02259] 2016-10-27 16:17:28 Apid 12503292: initiated application termination
+Rank 4 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 4
+Rank 10 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 10
+Rank 8 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 8
+Rank 12 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 12
+Rank 9 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 9
+Rank 7 [Thu Oct 27 16:17:28 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 7
+_pmiu_daemon(SIGCHLD): [NID 02348] [c6-1c0s6n2] [Thu Oct 27 16:17:28 2016] PE RANK 5 exit signal Aborted
+[NID 02348] 2016-10-27 16:17:28 Apid 12503291: initiated application termination
+[NID 00814] 2016-10-27 16:17:28 Apid 12503294: initiated application termination
+Application 12503294 exit codes: 134
+Application 12503294 resources: utime ~1s, stime ~2s, Rss ~17312, inblocks ~8324, outblocks ~25296
+Application 12503293 exit codes: 134
+Application 12503293 resources: utime ~1s, stime ~2s, Rss ~14120, inblocks ~8332, outblocks ~25296
+Application 12503292 exit codes: 134
+Application 12503292 resources: utime ~1s, stime ~2s, Rss ~14248, inblocks ~8329, outblocks ~25296
+Application 12503290 exit codes: 134
+Application 12503290 resources: utime ~1s, stime ~2s, Rss ~14208, inblocks ~8323, outblocks ~25296
+Application 12503291 exit codes: 134
+Application 12503291 resources: utime ~1s, stime ~2s, Rss ~14116, inblocks ~8333, outblocks ~25297

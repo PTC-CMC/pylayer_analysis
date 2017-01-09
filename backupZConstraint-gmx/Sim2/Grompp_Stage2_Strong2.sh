@@ -1,0 +1,1 @@
+gmx grompp -f Stage2_Strong2.mdp -n FullIndex.ndx -c Stage1_Weak2.tpr -t Stage1_Weak2.cpt -o Stage2_Strong2.tpr -maxwarn 2 > grompp_Stage2_Strong2.log 2>&1

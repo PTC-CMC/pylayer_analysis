@@ -1,0 +1,32 @@
+LAMMPS (5 Oct 2015)
+LAMMPS (5 Oct 2015)
+LAMMPS (5 Oct 2015)
+LAMMPS (5 Oct 2015)
+Reading restart file ...
+Rank 0 [Thu Oct 27 15:24:45 2016] [c6-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0
+_pmiu_daemon(SIGCHLD): [NID 02349] [c6-1c0s6n3] [Thu Oct 27 15:24:45 2016] PE RANK 0 exit signal Aborted
+ERROR on proc 0: Cannot open restart file restartfile (../read_restart.cpp:140)
+Reading restart file ...
+Rank 0 [Thu Oct 27 15:24:45 2016] [c4-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0
+_pmiu_daemon(SIGCHLD): [NID 02258] [c4-1c0s6n2] [Thu Oct 27 15:24:45 2016] PE RANK 0 exit signal Aborted
+ERROR on proc 0: Cannot open restart file restartfile (../read_restart.cpp:140)
+[NID 02349] 2016-10-27 15:24:45 Apid 12502960: initiated application termination
+Reading restart file ...
+ERROR on proc 0: Cannot open restart file restartfile (../read_restart.cpp:140)
+Reading restart file ...
+Rank 0 [Thu Oct 27 15:24:45 2016] [c6-1c0s6n2] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0
+Rank 0 [Thu Oct 27 15:24:45 2016] [c4-1c0s6n3] application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0
+_pmiu_daemon(SIGCHLD): [NID 02259] [c4-1c0s6n3] [Thu Oct 27 15:24:45 2016] PE RANK 0 exit signal Aborted
+ERROR on proc 0: Cannot open restart file restartfile (../read_restart.cpp:140)
+_pmiu_daemon(SIGCHLD): [NID 02348] [c6-1c0s6n2] [Thu Oct 27 15:24:45 2016] PE RANK 0 exit signal Aborted
+[NID 02348] 2016-10-27 15:24:45 Apid 12502961: initiated application termination
+[NID 02258] 2016-10-27 15:24:45 Apid 12502963: initiated application termination
+[NID 02259] 2016-10-27 15:24:45 Apid 12502962: initiated application termination
+Application 12502961 exit codes: 134
+Application 12502961 resources: utime ~1s, stime ~2s, Rss ~13296, inblocks ~8340, outblocks ~25300
+Application 12502960 exit codes: 134
+Application 12502960 resources: utime ~1s, stime ~2s, Rss ~13300, inblocks ~8330, outblocks ~25299
+Application 12502963 exit codes: 134
+Application 12502963 resources: utime ~1s, stime ~2s, Rss ~13296, inblocks ~8339, outblocks ~25299
+Application 12502962 exit codes: 134
+Application 12502962 resources: utime ~1s, stime ~2s, Rss ~13300, inblocks ~8338, outblocks ~25299

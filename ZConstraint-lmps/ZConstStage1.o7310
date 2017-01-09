@@ -1,0 +1,15 @@
+node5 node5 node5 node5 node5 node5 node5 node5 node5 node5 node5 node5 node5 node5 node5 node5
+--------------------------------------------------------------------------
+mpirun was unable to find the specified executable file, and therefore
+did not launch the job.  This error was first reported for process
+rank 0; it may have occurred for other processes as well.
+
+NOTE: A common cause for this error is misspelling a mpirun command
+      line parameter option (remember that mpirun interprets the first
+      unrecognized command line token as the executable).
+
+Node:       node5
+Executable: lmp_gpu
+--------------------------------------------------------------------------
+16 total processes failed to start
+-var zt1 -39.00 -var zt2 -29.00 -var zt3 -19.00 -var zt4 -9.00 -var zt5 1.00 -var zt6 11.00 -var zt7 21.00 -var zt8 31.00 -var ID1 2074 -var ID2 1655 -var ID3 1718 -var ID4 2253 -var ID5 1973 -var ID6 1834 -var ID7 2327 -var ID8 2016 

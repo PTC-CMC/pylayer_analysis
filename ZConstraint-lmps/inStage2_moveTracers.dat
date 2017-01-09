@@ -1,0 +1,110 @@
+clear
+variable Nprint equal 100 
+variable Nrun equal 200000 
+variable NEqui equal 500
+variable temperature equal 305.0
+
+variable Nevery equal 10
+variable Nvelout equal ${Nrun}/10000
+variable Nrepeat equal ${Nvelout}/${Nevery}-1
+
+units real
+atom_style full
+
+pair_style lj/cut/coul/long 14.0 14.0 
+bond_style harmonic
+angle_style hybrid harmonic cosine/squared
+dihedral_style hybrid harmonic charmm
+improper_style harmonic
+special_bonds lj/coul 0.0 0.0 1.0
+kspace_style pppm 1.0e-4
+neighbor 3.4 bin
+
+#read_data bilayer.lammpsdata
+#read_restart restart.100000  
+#read_data data.txt
+read_restart ${restartfile}
+
+include LammpsOostenbrink.txt
+pair_modify mix geometric
+
+group water type 57 58
+#group tracers molecule ${ID1} ${ID2} ${ID3} ${ID4} ${ID5} ${ID6} ${ID7} ${ID8}
+group tracers molecule ${ID1} ${ID2} ${ID3} ${ID4} ${ID5} ${ID6} ${ID7} 
+group allbuttracers subtract water tracers
+group bilayer subtract all water
+
+group t1 molecule ${ID1}
+group t2 molecule ${ID2}
+group t3 molecule ${ID3}
+group t4 molecule ${ID4}
+group t5 molecule ${ID5}
+group t6 molecule ${ID6}
+group t7 molecule ${ID7}
+#group t8 molecule ${ID8}
+
+reset_timestep 0
+variable ke equal ke
+variable enthalpy equal enthalpy
+variable pe equal pe
+variable step equal step
+variable temp equal temp
+variable press equal press
+variable vol equal vol
+
+variable lx equal lx
+variable ly equal ly
+variable lz equal lz
+
+variable temperature equal 305.0
+
+timestep 0.25
+
+fix 11 all shake 0.0001 10 10000 b 53 a 55
+#fix 10 allbuttracers npt temp ${temperature} ${temperature} 25.0 z 1.0 1.0 250.0
+#fix 12 bilayer nvt temp ${temperature} ${temperature} 25.0 
+fix 10 allbuttracers nve
+fix mp1 bilayer momentum 1 linear 0 0 1
+fix 3 all print ${Nprint} "${step} ${pe} ${press} ${temp} ${lx} ${ly} ${lz}" file system.log screen no
+thermo ${Nprint}
+
+run 4000
+
+timestep 1.0
+
+unfix 10
+fix 1 water npt temp ${temperature} ${temperature} 100.0 z 1.0 1.0 1000.0
+fix 12 bilayer nvt temp ${temperature} ${temperature} 100.0 
+
+#dump d1 tracers custom 1000 tracerpos.xyz id mass x y z vx vy vz fx fy fz
+#dump_modify d1 append yes
+
+#dump d2 all custom 1000 trajectory.lammps id type xu yu zu
+#dump_modify d2 append yes
+
+fix shiftt1 t1 move linear 0.0 0.0 0.0002 units box
+fix shiftt2 t2 move linear 0.0 0.0 0.0002 units box
+fix shiftt3 t3 move linear 0.0 0.0 0.0002 units box
+fix shiftt4 t4 move linear 0.0 0.0 0.0002 units box
+fix shiftt5 t5 move linear 0.0 0.0 0.0002 units box
+fix shiftt6 t6 move linear 0.0 0.0 0.0002 units box
+fix shiftt7 t7 move linear 0.0 0.0 0.0002 units box
+#fix shiftt8 t8 move linear 0.0 0.0 0.0002 units box
+
+write_data data_sim0.txt pair ii
+
+run 10000
+write_restart restart_1
+write_data data_sim1.txt pair ii
+
+run 10000
+write_restart restart_2
+write_data data_sim2.txt pair ii
+
+run 10000
+write_restart restart_3
+write_data data_sim3.txt pair ii
+
+run 10000
+write_restart restart_4
+write_data data_sim4.txt pair ii

@@ -1,0 +1,2700 @@
+LAMMPS (5 Oct 2015)
+LAMMPS (5 Oct 2015)
+LAMMPS (5 Oct 2015)
+LAMMPS (5 Oct 2015)
+LAMMPS (5 Oct 2015)
+Reading data file ...
+  orthogonal box = (-25.8501 -28.3005 -38.3301) to (25.8501 28.3005 38.3301)
+  2 by 2 by 4 MPI processor grid
+  reading atoms ...
+Reading data file ...
+Reading data file ...
+Reading data file ...
+  orthogonal box = (-25.8501 -28.3005 -38.5584) to (25.8501 28.3005 38.5584)
+  orthogonal box = (-25.8501 -28.3005 -38.3628) to (25.8501 28.3005 38.3628)
+  2 by 2 by 4 MPI processor grid
+  2 by 2 by 4 MPI processor grid
+  reading atoms ...
+Reading data file ...
+  orthogonal box = (-25.8501 -28.3005 -38.453) to (25.8501 28.3005 38.453)
+  reading atoms ...
+  2 by 2 by 4 MPI processor grid
+  reading atoms ...
+  orthogonal box = (-25.8501 -28.3005 -38.2418) to (25.8501 28.3005 38.2418)
+  2 by 2 by 4 MPI processor grid
+  14048 atoms
+  reading atoms ...
+  reading velocities ...
+  14048 velocities
+  scanning bonds ...
+  3 = max bonds/atom
+  14048 atoms
+  14048 atoms
+  reading velocities ...
+  scanning angles ...
+  14048 atoms
+  reading velocities ...
+  6 = max angles/atom
+  scanning dihedrals ...
+  reading velocities ...
+  14048 velocities
+  scanning bonds ...
+  14048 velocities
+  scanning bonds ...
+  14048 atoms
+  2 = max dihedrals/atom
+  scanning impropers ...
+  reading velocities ...
+  14048 velocities
+  scanning bonds ...
+  3 = max bonds/atom
+  scanning angles ...
+  3 = max bonds/atom
+  scanning angles ...
+  2 = max impropers/atom
+  reading bonds ...
+  14048 velocities
+  scanning bonds ...
+  3 = max bonds/atom
+  scanning angles ...
+  6 = max angles/atom
+  scanning dihedrals ...
+  6 = max angles/atom
+  scanning dihedrals ...
+  11360 bonds
+  reading angles ...
+  3 = max bonds/atom
+  scanning angles ...
+  6 = max angles/atom
+  scanning dihedrals ...
+  2 = max dihedrals/atom
+  scanning impropers ...
+  2 = max dihedrals/atom
+  scanning impropers ...
+  9680 angles
+  reading dihedrals ...
+  2 = max dihedrals/atom
+  scanning impropers ...
+  2 = max impropers/atom
+  6 = max angles/atom
+  scanning dihedrals ...
+  2 = max impropers/atom
+  2 = max impropers/atom
+  reading bonds ...
+  reading bonds ...
+  5536 dihedrals
+  reading impropers ...
+  2 = max dihedrals/atom
+  scanning impropers ...
+  336 impropers
+  reading bonds ...
+Finding 1-2 1-3 1-4 neighbors ...
+ Special bond factors lj:   0          0          1         
+ Special bond factors coul: 0          0          1         
+  11360 bonds
+  reading angles ...
+  11360 bonds
+  reading angles ...
+  2 = max impropers/atom
+  reading bonds ...
+  11360 bonds
+  9680 angles
+  reading dihedrals ...
+  9680 angles
+  reading dihedrals ...
+  reading angles ...
+  11360 bonds
+  reading angles ...
+  5536 dihedrals
+  reading impropers ...
+  5536 dihedrals
+  reading impropers ...
+  4 = max # of 1-2 neighbors
+  4 = max # of 1-3 neighbors
+  6 = max # of special neighbors
+7680 atoms in group water
+21 atoms in group tracers
+7659 atoms in group allbuttracers
+6368 atoms in group bilayer
+3 atoms in group t1
+3 atoms in group t2
+3 atoms in group t3
+3 atoms in group t4
+3 atoms in group t5
+3 atoms in group t6
+3 atoms in group t7
+Finding SHAKE clusters ...
+  336 impropers
+Finding 1-2 1-3 1-4 neighbors ...
+ Special bond factors lj:   0          0          1         
+ Special bond factors coul: 0          0          1         
+  9680 angles
+  336 impropers
+  0 = # of size 2 clusters
+  0 = # of size 3 clusters
+  0 = # of size 4 clusters
+  2560 = # of frozen angles
+  reading dihedrals ...
+Finding 1-2 1-3 1-4 neighbors ...
+ Special bond factors lj:   0          0          1         
+ Special bond factors coul: 0          0          1         
+  4 = max # of 1-2 neighbors
+  9680 angles
+  reading dihedrals ...
+PPPM initialization ...
+  4 = max # of 1-3 neighbors
+  5536 dihedrals
+  reading impropers ...
+  5536 dihedrals
+  reading impropers ...
+  336 impropers
+  6 = max # of special neighbors
+7680 atoms in group water
+  336 impropers
+Finding 1-2 1-3 1-4 neighbors ...
+ Special bond factors lj:   0          0          1         
+ Special bond factors coul: 0          0          1         
+  G vector (1/distance) = 0.18032
+  grid = 18 18 24
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0281198
+  estimated relative force accuracy = 8.46821e-05
+  using double precision FFTs
+  3d grid and FFT values/proc = 2156 648
+21 atoms in group tracers
+7659 atoms in group allbuttracers
+6368 atoms in group bilayer
+3 atoms in group t1
+3 atoms in group t2
+3 atoms in group t3
+3 atoms in group t4
+3 atoms in group t5
+3 atoms in group t6
+3 atoms in group t7
+Finding SHAKE clusters ...
+Finding 1-2 1-3 1-4 neighbors ...
+ Special bond factors lj:   0          0          1         
+ Special bond factors coul: 0          0          1         
+  4 = max # of 1-2 neighbors
+  4 = max # of 1-3 neighbors
+  6 = max # of special neighbors
+7680 atoms in group water
+21 atoms in group tracers
+7659 atoms in group allbuttracers
+6368 atoms in group bilayer
+3 atoms in group t1
+3 atoms in group t2
+3 atoms in group t3
+3 atoms in group t4
+3 atoms in group t5
+3 atoms in group t6
+3 atoms in group t7
+Finding SHAKE clusters ...
+  0 = # of size 2 clusters
+  0 = # of size 3 clusters
+  0 = # of size 4 clusters
+  2560 = # of frozen angles
+
+--------------------------------------------------------------------------
+- Using acceleration for pppm:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.5/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...PPPM initialization ...
+  4 = max # of 1-2 neighbors
+  4 = max # of 1-3 neighbors
+  6 = max # of special neighbors
+7680 atoms in group water
+21 atoms in group tracers
+7659 atoms in group allbuttracers
+6368 atoms in group bilayer
+3 atoms in group t1
+3 atoms in group t2
+3 atoms in group t3
+3 atoms in group t4
+3 atoms in group t5
+3 atoms in group t6
+3 atoms in group t7
+Finding SHAKE clusters ...
+  G vector (1/distance) = 0.180304
+  grid = 18 18 24
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0281384
+  estimated relative force accuracy = 8.47379e-05
+  using double precision FFTs
+  3d grid and FFT values/proc = 2156 648
+  4 = max # of 1-2 neighbors
+  0 = # of size 2 clusters
+  0 = # of size 3 clusters
+  0 = # of size 4 clusters
+  2560 = # of frozen angles
+  4 = max # of 1-3 neighbors
+PPPM initialization ...
+  6 = max # of special neighbors
+  G vector (1/distance) = 0.180211
+  grid = 18 18 24
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0282527
+  estimated relative force accuracy = 8.50822e-05
+  using double precision FFTs
+  3d grid and FFT values/proc = 2156 648
+7680 atoms in group water
+21 atoms in group tracers
+7659 atoms in group allbuttracers
+6368 atoms in group bilayer
+3 atoms in group t1
+3 atoms in group t2
+3 atoms in group t3
+3 atoms in group t4
+3 atoms in group t5
+3 atoms in group t6
+3 atoms in group t7
+Finding SHAKE clusters ...
+  0 = # of size 2 clusters
+  0 = # of size 3 clusters
+  0 = # of size 4 clusters
+  2560 = # of frozen angles
+PPPM initialization ...
+Done.
+Initializing Device 0 on core 2...  G vector (1/distance) = 0.180262
+  grid = 18 18 24
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0281904
+  estimated relative force accuracy = 8.48944e-05
+  using double precision FFTs
+  3d grid and FFT values/proc = 2156 648
+  0 = # of size 2 clusters
+  0 = # of size 3 clusters
+  0 = # of size 4 clusters
+  2560 = # of frozen angles
+PPPM initialization ...
+Done.
+Initializing Device 0 on core 3...  G vector (1/distance) = 0.180361
+  grid = 18 18 24
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0280706
+  estimated relative force accuracy = 8.45338e-05
+  using double precision FFTs
+  3d grid and FFT values/proc = 2156 648
+
+--------------------------------------------------------------------------
+- Using acceleration for pppm:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.5/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...
+--------------------------------------------------------------------------
+- Using acceleration for pppm:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+
+--------------------------------------------------------------------------
+- Using acceleration for pppm:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.5/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Device 0: Tesla K20X, 14 CUs, 5.5/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...
+--------------------------------------------------------------------------
+- Using acceleration for pppm:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 2...Device 0: Tesla K20X, 14 CUs, 5.5/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 15...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 11...Done.
+
+
+--------------------------------------------------------------------------
+- Using acceleration for lj/cut/coul/long:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.4/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 15...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 15...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 7...Done.
+
+Done.
+Initializing Device 0 on core 8...
+--------------------------------------------------------------------------
+- Using acceleration for lj/cut/coul/long:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.4/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+
+Done.
+Initializing Device 0 on core 14...Done.
+
+
+--------------------------------------------------------------------------
+- Using acceleration for lj/cut/coul/long:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.4/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...
+--------------------------------------------------------------------------
+- Using acceleration for lj/cut/coul/long:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.4/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 15...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 6...Done.
+
+Done.
+
+Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 7...
+--------------------------------------------------------------------------
+- Using acceleration for lj/cut/coul/long:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.4/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 8...WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 6...WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+Done.
+Initializing Device 0 on core 7...Neighbor list info ...
+  0 neighbor list requests
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 16
+  ghost atom cutoff = 16
+  binsize = 8, bins = 7 8 10
+Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...Setting up Verlet run ...
+  Unit style  : real
+  Current step: 0
+  Time step   : 1
+Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Done.
+Initializing Device 0 on core 15...Done.
+
+Done.
+
+Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 14...WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+Done.
+Initializing Device 0 on core 15...WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+Done.
+
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+Neighbor list info ...
+  0 neighbor list requests
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 16
+  ghost atom cutoff = 16
+  binsize = 8, bins = 7 8 10
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+Done.
+Initializing Device 0 on core 12...Neighbor list info ...
+  0 neighbor list requests
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 16
+  ghost atom cutoff = 16
+  binsize = 8, bins = 7 8 10
+Setting up Verlet run ...
+  Unit style  : real
+  Current step: 0
+  Time step   : 1
+Done.
+Initializing Device 0 on core 13...WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+Setting up Verlet run ...
+  Unit style  : real
+  Current step: 0
+  Time step   : 1
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+Neighbor list info ...
+  0 neighbor list requests
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 16
+  ghost atom cutoff = 16
+  binsize = 8, bins = 7 8 10
+Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Setting up Verlet run ...
+  Unit style  : real
+  Current step: 0
+  Time step   : 1
+Done.
+
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+Neighbor list info ...
+  0 neighbor list requests
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 16
+  ghost atom cutoff = 16
+  binsize = 8, bins = 7 8 10
+Setting up Verlet run ...
+  Unit style  : real
+  Current step: 0
+  Time step   : 1
+SHAKE stats (type/ave/delta) on step 0
+  53 1 8.80481e-06 15360
+  55 109.5 0.000738742
+Memory usage per processor = 11.8874 Mbytes
+Step Temp E_pair E_mol TotEng Press Volume 
+       0    303.05454   -62893.717    7523.6197   -44993.339   -76.270559    224329.81 
+SHAKE stats (type/ave/delta) on step 0
+  53 0.999998 8.80481e-06 15360
+  55 109.5 0.000782902
+Memory usage per processor = 11.8593 Mbytes
+Step Temp E_pair E_mol TotEng Press Volume 
+       0    304.49554   -62731.813    7661.0865   -44644.627   -181.59335    225666.13 
+SHAKE stats (type/ave/delta) on step 0
+  53 1.00001 2.56697e-05 15360
+  55 109.5 0.00208874
+Memory usage per processor = 11.8597 Mbytes
+Step Temp E_pair E_mol TotEng Press Volume 
+       0    304.13287   -62986.049    7431.4124   -45140.956    335.54334    224521.33 
+SHAKE stats (type/ave/delta) on step 0
+  53 0.999995 1.83981e-05 15360
+  55 109.5 0.0017559
+Memory usage per processor = 11.8637 Mbytes
+Step Temp E_pair E_mol TotEng Press Volume 
+       0    304.87565   -62704.204    7349.2637   -44915.826     297.2862    225049.21 
+SHAKE stats (type/ave/delta) on step 0
+  53 1.00001 2.15194e-05 15360
+  55 109.5 0.00164495
+Memory usage per processor = 11.8816 Mbytes
+Step Temp E_pair E_mol TotEng Press Volume 
+       0    306.10873   -62930.019    7584.7961   -44863.887   -122.37353    223812.83 
+    1000    305.58996    -62774.34    7599.7147   -44711.052    303.23273    225842.79 
+    1000    301.07371   -62912.482    7624.3974   -44979.151    280.48385    225133.39 
+    1000    305.63836    -62949.86    7612.8806   -44871.749   -790.00809    225194.68 
+    1000    300.71488   -62887.049    7619.3476   -44971.054   -519.93255    224205.22 
+    1000      303.684   -62846.803    7633.7628   -44814.728   -88.862817    224379.34 
+    2000    299.27635   -62818.841    7609.9195   -44961.531    0.1731072    224115.86 
+    2000    304.05965   -62719.322    7624.9056   -44683.242   -68.680131    225959.91 
+    2000    306.36858   -62971.914    7513.7135   -44967.967   -403.04227    225585.54 
+    2000    303.37408   -62965.121    7575.2114    -45002.21   -199.16278     224351.9 
+    2000    300.11005   -62886.572    7453.2525   -45157.382   -308.65489    224100.17 
+    3000    305.03181   -62762.206    7487.6885   -44830.056   -248.67076    225416.74 
+    3000     303.7093   -62859.306    7417.6865   -45042.442   -76.227984     224356.7 
+    3000    307.31053   -62832.597    7561.2415   -44748.869    95.148026    224407.17 
+    3000    304.90787    -62918.84    7529.4481   -44949.174    64.335424     223915.8 
+    3000    303.81758   -62920.196    7566.5728   -44950.737   -16.934065    224785.51 
+    4000    306.54466   -62701.385    7616.7848   -44588.337   -435.76656    224768.68 
+    4000    304.43615   -62849.981    7595.9034   -44830.012   -31.294223    224015.56 
+    4000    303.63559   -62996.036    7563.8303   -45035.551    41.415247    224268.37 
+    4000    305.52672   -62839.276    7561.5834   -44816.285    286.53038    224338.72 
+    4000    305.84881   -62754.707    7559.0752   -44723.196    345.42533    224040.09 
+    5000    302.35741   -62784.078    7671.3456   -44759.844   -173.85316    224000.16 
+    5000    304.34446   -62750.716    7439.4986   -44890.291   -30.460405    224018.74 
+    5000    303.67329   -62890.104     7521.071   -44971.088    78.354959    224278.06 
+    5000     304.1205   -62873.934    7545.4905   -44915.186     284.8373    224412.14 
+    5000     300.6394   -62848.726    7540.3857   -45014.277    608.30441    224147.59 
+    6000    300.46202   -62959.433    7580.7691   -45090.675   -319.65836    223947.98 
+    6000    303.05592   -62856.435    7661.5228   -44818.107   -90.981543    224524.38 
+    6000    308.14792    -62749.33    7507.6684   -44690.503    215.29663    224037.66 
+    6000    305.51108   -62729.836     7500.508   -44768.456    86.129495    224343.51 
+    6000    308.19258   -63024.459    7433.5259   -45038.245   -205.60495    224443.19 
+    7000    301.43668   -62809.859    7581.4661   -44907.031    64.442242    224202.08 
+    7000    301.95612   -62833.287    7570.0198   -44924.119    691.29217     223989.2 
+    7000     305.6804   -62777.562     7488.871   -44822.021     -346.411     223927.6 
+    7000    303.86306    -62851.81    7478.7806   -44968.586    34.311449    224192.74 
+    7000    306.08566   -62880.298    7537.7664   -44861.985     5.736609    224563.22 
+    8000    301.74771   -62831.214    7566.0031   -44933.199    5.5669058    225546.64 
+    8000    301.00762   -62754.778    7575.7729   -44872.334     229.2519    223899.21 
+    8000    304.09334    -62910.69      7503.13   -44995.233   -205.26762    224241.91 
+    8000    303.87782   -62886.714    7618.8588   -44862.907    149.26938    223844.76 
+    8000    307.03287   -62897.097    7687.1905   -44696.928    279.03012    224697.74 
+    9000    305.16463   -62777.418    7592.6907   -44735.718   -87.689289    224406.45 
+    9000    303.53755   -62731.572    7601.9962   -44736.278    307.09622     224513.7 
+    9000     303.3242   -62868.155    7430.2332    -45051.93    151.49112    223634.59 
+    9000     303.7374   -62804.324    7618.0945   -44786.089    129.36354     224517.9 
+    9000    301.42693    -62918.18    7573.9506   -45023.201   -261.06159    224533.43 
+SHAKE stats (type/ave/delta) on step 10000
+  53 0.999997 1.80961e-05 15360
+  55 109.5 0.00192187
+   10000    303.57325   -62791.069    7537.6659   -44858.884    325.53341    224766.68 
+SHAKE stats (type/ave/delta) on step 10000
+  53 0.999998 2.23653e-05 15360
+  55 109.5 0.00239026
+   10000    302.84899   -62941.194    7541.6229    -45029.85    -77.94715    223834.29 
+SHAKE stats (type/ave/delta) on step 10000
+  53 1.00001 8.51842e-06 15360
+  55 109.5 0.000856334
+   10000    306.37213   -62882.153    7673.3494   -44718.449    362.29172    223810.87 
+SHAKE stats (type/ave/delta) on step 10000
+  53 1 7.94682e-06 15360
+  55 109.5 0.00080095
+   10000    307.15536   -62899.863    7538.2944   -44844.396    85.287057    224111.18 
+SHAKE stats (type/ave/delta) on step 10000
+  53 1 6.07626e-06 15360
+  55 109.5 0.000608462
+   10000     304.5319   -62908.739    7442.4099   -45038.985    158.26995    225106.46 
+   11000    302.77836   -62791.679    7524.8026   -44899.574    255.43949    224525.23 
+   11000     305.9309   -62844.678    7735.0954   -44634.336    152.98531    224744.48 
+   11000    300.46898   -62802.046     7592.916   -44920.903    384.42903    224449.02 
+   11000    303.23391   -63017.446    7500.7375   -45133.809   0.41039357    224428.05 
+   11000    303.00424   -62976.351    7654.2894   -44947.025    395.51902     224397.6 
+   12000    304.24863   -62811.123    7586.3647   -44807.113    107.68036    224766.46 
+   12000    302.73639   -62781.994    7470.8417   -44945.287    281.66919    224275.36 
+   12000    307.04022   -62895.433    7418.8578   -44963.345    339.88519    223907.21 
+   12000    304.10715   -62721.136    7512.6992   -44795.636   -448.17881    225726.76 
+   12000     303.9517   -62857.669    7423.7605   -45026.431    248.96879    224157.73 
+   13000    303.10066   -63006.246    7623.1593   -45004.748   -41.538914    223761.99 
+   13000    301.11344   -62907.099    7501.7182   -45095.087   -352.88757    224127.39 
+   13000    301.24321   -62727.114    7521.8049   -44890.572   -248.82234    225029.73 
+   13000    303.10717   -62888.768    7606.6751   -44903.532   -224.10511    224857.86 
+   13000    305.45281   -62839.183    7638.2651   -44742.041    65.358363    223427.32 
+   14000    304.90106   -62709.964    7476.8197    -44793.16   -97.033682    224144.37 
+   14000    306.67164   -62786.705    7526.1683   -44759.927    272.20001    224621.88 
+   14000    305.70359   -62883.114    7565.0779   -44850.573    274.82264    223604.93 
+   14000    307.51682   -62854.525    7541.4813   -44783.494   -97.736785     224084.5 
+   14000    303.25954   -62877.662    7455.4037    -45038.48     387.8807    224226.67 
+   15000    306.03043    -62858.31    7590.4953   -44789.159    136.10204    224584.98 
+   15000    306.16442   -62821.637    7523.6446    -44814.75    311.06274    223806.64 
+   15000    305.10229   -62874.598    7466.5582   -44961.165    -124.7767    224982.07 
+   15000     303.6478    -62807.48    7498.8275    -44911.58   -383.46346    225103.35 
+   15000    306.91935   -62868.877    7574.5686   -44785.217    246.00405     223944.9 
+   16000    304.41096   -62986.965    7488.7483   -45075.014    175.36195    224343.44 
+   16000    303.54142   -62826.958    7668.8851   -44764.643   -509.71369    225362.63 
+   16000    302.63215    -62720.86    7492.2832   -44866.281   -313.85283    224726.53 
+   16000    308.29624   -62874.837    7557.5175   -44761.082   -221.65483    223495.35 
+   16000    307.06412   -62941.069    7570.0985   -44856.921   -143.85721    224265.54 
+   17000    298.45531   -62867.525    7552.8147   -45095.432   -77.421643    224111.09 
+   17000    302.01971   -62921.131    7571.6195   -45008.187   -340.34831    224102.51 
+   17000    306.10112   -62840.667    7617.2585   -44742.333    155.27699    224195.02 
+   17000    302.75242   -62754.365    7467.7863   -44920.165   -61.371689    223728.21 
+   17000    303.24865   -62927.402    7659.5409   -44884.456    258.41153    224561.84 
+   18000    306.69573   -62904.406    7452.3662   -44950.604    -126.5848    223352.25 
+   18000    306.35976   -62914.582    7565.4258   -44859.225     66.52977    224393.87 
+   18000    304.83271   -62750.642    7616.0392   -44696.959    -120.3417    224403.38 
+   18000    302.00293   -62944.364    7579.3134     -45024.3    131.58851    223328.96 
+   18000    305.50268   -62821.545    7598.9057   -44762.055    95.260783    225728.14 
+   19000    306.18361   -62996.457    7560.4727   -44952.084   -276.99575    224879.78 
+   19000    301.27918   -62802.681    7479.7449   -45006.967   -232.57133    224490.19 
+   19000    304.75986   -62909.053    7656.1583   -44817.745    -123.9582    224282.78 
+   19000    302.39264   -62584.135     7550.712   -44679.328   -88.058633     224379.7 
+   19000    301.06173   -62943.661    7571.4385   -45063.699   -37.743711    224517.93 
+SHAKE stats (type/ave/delta) on step 20000
+  53 0.999994 5.89902e-06 15360
+  55 109.5 0.000603044
+   20000    302.70805    -62932.11    7572.3398   -44994.875      15.5979    224389.37 
+SHAKE stats (type/ave/delta) on step 20000
+  53 0.999997 8.56903e-06 15360
+  55 109.5 0.000883793
+   20000    302.73098   -62620.694    7566.5556   -44688.458   -344.63699    224697.11 
+SHAKE stats (type/ave/delta) on step 20000
+  53 1.00001 1.14368e-05 15360
+  55 109.5 0.00120166
+   20000    301.58426   -62799.665    7575.0754   -44898.174    86.346687    224926.25 
+SHAKE stats (type/ave/delta) on step 20000
+  53 1.00001 1.22845e-05 15360
+  55 109.5 0.0012824
+   20000    302.27119   -62717.702    7549.2746   -44818.491   -244.28601    225059.01 
+SHAKE stats (type/ave/delta) on step 20000
+  53 0.999994 1.40957e-05 15360
+  55 109.5 0.00145779
+   20000    307.34348   -62862.937    7504.6284   -44834.694    48.296221    224103.91 
+   21000    302.45873   -63022.838    7601.5226   -45064.958    -514.8848    224477.58 
+   21000      302.922   -62875.273    7576.8055   -44926.247   -147.00677     224636.2 
+   21000    306.31403   -62897.227    7560.8895   -44847.972    126.89025     224603.9 
+   21000    305.68198   -62808.286    7574.7939   -44766.769    -195.2835     223752.3 
+   21000    305.32844   -62898.256    7644.9989   -44798.639    -163.4999     224461.3 
+   22000    304.49054   -63006.342    7638.1945   -44942.219   -265.63053    224111.72 
+   22000     301.8168    -62923.82    7557.3162   -45032.126   -324.29508    224222.99 
+   22000    309.09313   -62765.155    7585.9508   -44595.681    68.757882    224286.99 
+   22000    302.88587   -62761.628    7560.2162   -44830.429   -377.17907    224634.17 
+   22000    301.58052   -62920.123     7573.293   -45020.543    -129.6195     223633.2 
+   23000    302.15377   -62691.689    7600.5574   -44745.216   -720.34596    225301.16 
+   23000    307.36299   -62741.227     7411.969   -44804.975    80.825384    224425.93 
+   23000    308.08329   -62863.363    7486.7665   -44827.651    173.28115    225221.13 
+   23000    307.11827   -62914.933    7634.3406    -44764.69    189.04351    224035.71 
+   23000     305.6501   -62827.349     7540.907   -44820.809   -147.09429    224328.11 
+   24000     305.1341   -62849.895    7547.8543   -44854.077   -112.43857    224171.15 
+   24000     302.7056   -62839.141    7581.1819   -44893.148   -109.74485    224738.28 
+   24000    305.01578   -62794.207    7417.6698   -44932.625    201.28931    224512.74 
+   24000    304.82998   -62924.826    7506.0458    -44981.23    270.40633    224607.99 
+   24000    302.87643   -62919.459    7588.3846   -44960.414   -448.58097    224674.41 
+   25000    306.14775   -62880.675    7620.1359   -44777.867    43.389567     224632.1 
+   25000    300.61409   -62909.905    7481.1084   -45135.601   -371.21957    225193.15 
+   25000     303.9766   -62748.883    7514.8421    -44825.71    213.05041    224202.37 
+   25000    302.79087   -62704.941    7548.9028   -44788.308    12.905253    224802.89 
+   25000    306.72858   -62845.476    7509.6155   -44833.301     31.56123    224211.19 
+   26000    305.48694   -62883.923    7457.7089   -44966.169    334.37764    224004.17 
+   26000    305.28811   -62810.114    7652.7508   -44704.125    316.83657    224311.24 
+   26000    302.91197   -62796.236    7533.5729   -44890.786   -65.625018    224816.14 
+   26000    305.43502   -62900.996    7576.6197   -44866.109    9.8340243    224392.15 
+   26000    301.19581   -62940.739    7663.5662   -44964.058    -278.4747    223925.12 
+   27000    302.94332   -62923.059    7501.6109   -45048.498   -1.0755368    224109.24 
+   27000    306.07842   -62888.114    7581.9348   -44825.881   -87.709036    224112.73 
+   27000    299.22105   -62821.521     7538.802   -45037.221    220.73818    224040.41 
+   27000     308.1202   -62822.183    7537.8438    -44734.13    243.68889    224768.06 
+   27000    306.76514   -63090.393    7601.5719   -44985.009   -499.40944    223664.52 
+   28000    303.75696   -62878.736    7593.6802   -44884.246   -193.25031    224279.31 
+   28000    305.44717   -62869.517    7487.0527    -44923.78   -381.66037    224671.95 
+   28000     299.8384   -62812.853     7505.975   -45040.242   -254.54383    223651.83 
+   28000    304.00797   -62888.795    7488.7285   -44990.661    450.57243    223794.22 
+   28000    301.61924   -62912.845    7622.8319     -44962.4   -123.55005    223358.23 
+   29000    303.62226   -62869.402    7536.6789   -44936.525   -173.00802    224321.44 
+   29000    304.90735   -62711.545    7619.8874   -44651.458   -84.985086    225242.56 
+   29000    303.50429   -62749.908    7616.5491     -44741.2   -40.059968    223935.16 
+   29000    304.71039   -62836.057    7531.6437   -44870.958    181.05482    223947.12 
+   29000    304.43814   -63129.607    7671.9499   -45033.523    8.6624639    223148.33 
+SHAKE stats (type/ave/delta) on step 30000
+  53 1 1.43529e-05 15360
+  55 109.5 0.00153304
+   30000    305.66931   -62894.402     7603.213   -44824.899    61.207779     224524.9 
+SHAKE stats (type/ave/delta) on step 30000
+  53 0.999996 1.39122e-05 15360
+  55 109.5 0.00144983
+   30000    302.94079   -63001.182    7596.0775   -45032.241    -483.8352    224780.86 
+SHAKE stats (type/ave/delta) on step 30000
+  53 1 1.93585e-05 15360
+  55 109.5 0.00200499
+   30000    302.57637   -62804.505    7703.6966   -44740.423   -175.56796    224835.68 
+SHAKE stats (type/ave/delta) on step 30000
+  53 0.999998 1.91091e-05 15360
+  55 109.5 0.00200296
+   30000    308.30016   -62754.483    7524.7131   -44673.398    -252.2964    225060.64 
+SHAKE stats (type/ave/delta) on step 30000
+  53 1.00001 9.5862e-06 15360
+  55 109.5 0.000989983
+   30000    304.15301   -62896.202    7623.9763   -44857.854   -195.90127    223847.23 
+   31000      299.005   -62911.374    7609.0886   -45064.186   -289.30232    224967.24 
+   31000    305.35045   -62844.989    7645.5787   -44744.038    -292.8629    224579.61 
+   31000    300.72541   -62959.739    7526.9132   -45135.818    -169.8973    224019.26 
+   31000    302.08355    -62769.55    7422.3067   -45003.732   -123.71964    224889.14 
+   31000    305.64612   -62875.346    7602.1333   -44807.717    156.20259    225130.09 
+   32000    306.85174   -62967.681    7464.5855   -44996.318    182.18638    224520.18 
+   32000    303.56759   -62878.105    7532.6884   -44951.091   -29.420422    225056.97 
+   32000    302.94044   -62948.014    7494.9208   -45080.242    191.75324    223778.16 
+   32000    300.31761   -62975.866    7534.4489   -45158.372    240.41246    223884.27 
+   32000    304.22846    -63068.15    7599.5994   -45051.596    31.542182    224333.12 
+   33000    304.81392   -62977.165    7522.0455   -45018.119   -363.55645    224574.94 
+   33000    304.81697   -62791.816    7529.3015   -44825.409    27.355106    224483.17 
+   33000    304.90476   -62782.132    7690.9154   -44651.105    -285.6959    224104.59 
+   33000    304.17079   -62627.104    7522.9408   -44689.184    179.02317     224148.5 
+   33000    299.92124    -63030.38    7635.3014   -45125.605    -284.3879    224621.96 
+   34000    305.95181   -62722.312    7471.1239   -44775.225    56.947444    225112.56 
+   34000     302.5977   -62962.607    7549.2633   -45052.227    148.43213    224353.38 
+   34000     304.3345   -62914.848    7576.2065   -44918.056    318.17146    224612.03 
+   34000    308.57699   -62739.681    7556.1228   -44617.708   -480.21898    224164.55 
+   34000    303.67044   -62967.398    7528.9961   -45040.554   -229.84565    224014.59 
+   35000    305.69522   -62791.035    7572.8321   -44751.026    34.529737    224755.79 
+   35000    303.18359   -62913.974    7515.0023   -45017.794    8.1704095     224301.4 
+   35000    303.57035    -62816.47    7636.9487   -44785.101     142.5687    225495.63 
+   35000    301.74366   -62854.674     7459.938   -45062.863   -511.38182    224916.68 
+   35000    301.85164   -62943.846    7465.1822   -45143.093    -123.1688    224846.03 
+   36000    309.66336   -62923.376     7514.728     -44805.6    224.64707    224613.59 
+   36000    309.85258    -62854.51     7568.206   -44676.776    202.64711     224212.8 
+   36000    303.52714   -62888.333    7489.9015   -45005.491    208.52774    224247.46 
+   36000    299.97249   -63032.151    7554.7764   -45206.147    195.72151    223152.93 
+   36000    304.83266   -62797.698     7559.854   -44800.202    103.35141    224755.11 
+   37000    302.43419   -62854.079    7594.6374   -44903.924    155.43004    225162.47 
+   37000    299.75185   -63009.888    7616.7687   -45129.447    110.75498    224000.46 
+   37000    305.41398   -62924.184    7558.1977   -44908.439    332.93167    224855.92 
+   37000    304.18424   -62839.034    7559.5917   -44864.002    91.943242    224316.19 
+   37000    301.35144   -62947.313    7520.2779   -45108.592   -84.174138    224231.19 
+   38000    305.38183   -62930.757    7505.2875   -44969.023    37.226905    224153.49 
+   38000    306.10014   -62914.289    7503.0266   -44930.221   -109.40955    223792.97 
+   38000    305.94728   -62791.179    7550.5781   -44764.793    170.73921    224790.34 
+   38000    299.73309    -62975.97    7563.4294   -45149.511    104.06882    224583.63 
+   38000    303.58056   -62907.828     7699.106   -44813.952    -216.9477    223197.28 
+   39000    304.46174   -62876.267      7580.79   -44870.535    99.762804    224397.38 
+   39000    306.24966   -62984.647    7569.9281   -44928.557   -243.67189    224206.36 
+   39000    299.24227   -62915.193    7570.9586    -45098.01    234.80056    223569.17 
+   39000    304.47316   -62756.774    7614.6034   -44716.838   -115.33953    224347.85 
+   39000    305.94079   -62743.234    7513.8728   -44753.776    549.64496    224174.67 
+SHAKE stats (type/ave/delta) on step 40000
+  53 0.999996 1.47312e-05 15360
+  55 109.5 0.00154966
+   40000    301.39411   -62785.209    7592.0516   -44873.253    42.739641    224204.78 
+SHAKE stats (type/ave/delta) on step 40000
+  53 0.999993 9.21212e-06 15360
+  55 109.5 0.000943546
+   40000    304.74346   -62899.945    7631.1185   -44834.238   -179.87732    224394.25 
+SHAKE stats (type/ave/delta) on step 40000
+  53 0.999995 9.41702e-06 15360
+  55 109.5 0.000984553
+   40000    299.43383   -62861.882    7486.0497   -45123.049    181.28768    223864.45 
+SHAKE stats (type/ave/delta) on step 40000
+  53 1.00001 1.28033e-05 15360
+  55 109.5 0.00131461
+   40000    306.86941    -62873.36    7509.9729   -44856.005   -304.66947    224767.42 
+SHAKE stats (type/ave/delta) on step 40000
+  53 0.999999 2.05909e-05 15360
+  55 109.5 0.00211249
+   40000    304.96824   -62745.159    7531.8218   -44771.053    417.23612    224695.04 
+   41000    309.11798   -62671.908     7497.565   -44589.969   -196.96564    225031.92 
+   41000    301.27658   -63097.879    7628.7704   -45153.228    369.27749       223478 
+   41000    307.52625   -62852.374    7616.1723   -44706.329   -310.15665    223841.62 
+   41000    298.72338   -62866.954    7538.2262    -45100.27   -339.77106    224633.11 
+   41000    307.37885   -62856.801    7531.6773   -44800.298    83.137889    224170.23 
+   42000    305.19657   -62764.543    7548.9728   -44765.467    421.26549    224980.95 
+   42000    302.33814   -63034.732    7540.9571   -45141.546    210.30713    223303.48 
+   42000    303.52016   -62775.993    7550.4194   -44832.872    -222.9153    224520.76 
+   42000     298.4494   -62996.226    7546.8935   -45230.256    43.967445     225014.2 
+   42000    303.65623   -62931.526    7533.7635   -45000.401   -326.72067     223748.4 
+   43000    302.65815   -62843.209    7471.9662   -45008.056    623.52556    224402.84 
+   43000    302.96052   -62961.933    7619.8028   -44968.591     211.7373    223919.56 
+   43000    302.34537   -62917.937    7585.3669   -44980.094   -293.48568    224751.28 
+   43000      300.901   -62880.555    7587.2178   -44990.317   -234.03435    224369.47 
+   43000    303.51797     -62871.8    7442.0383   -45037.135    25.564527    224210.08 
+   44000    306.51934    -62910.28     7451.441   -44963.444    480.24798    223721.14 
+   44000    304.23521   -62891.987    7527.0647   -44947.737    566.85166    223706.23 
+   44000    304.84687   -62799.262    7554.4482   -44806.685   -279.19131    224102.67 
+   44000    304.23728   -62851.765    7498.2789    -44936.23    -123.4139    223912.79 
+   44000    300.90266   -62839.482    7549.5424   -44986.863   -112.71177    224634.98 
+   45000    300.16115   -63131.764    7658.0699   -45196.007   -355.87586    223430.52 
+   45000    302.48011   -63026.368     7463.566   -45205.712    26.587242    224331.71 
+   45000    301.86418   -62827.785    7512.8411   -44978.944    380.55513    223237.37 
+   45000    305.73746   -62878.482    7510.3744   -44899.485   -226.69861       223850 
+   45000    303.30676   -63041.025    7534.9277   -45120.703   -170.35894    224292.16 
+   46000    306.21938   -62851.229    7514.0362   -44852.068    368.37174    223857.95 
+   46000    298.57402   -62989.505    7519.5731   -45246.589   -96.077575    223306.22 
+   46000    304.70981   -62928.412    7538.1512   -44956.825   -597.11644    224524.25 
+   46000    305.14362    -62934.69    7664.8178   -44821.582   -399.13972    223721.06 
+   46000    306.74691     -62826.6     7543.002    -44780.41    -156.1206    224681.42 
+   47000    304.93771   -62918.564    7608.0827   -44869.242    17.363779    223649.75 
+   47000    301.86367   -62932.912    7539.5554   -45057.374   -464.02653    223915.03 
+   47000    306.26562   -62978.424    7555.6589   -44936.057   -606.47219    223649.09 
+   47000    303.04305   -63000.555     7474.982   -45149.208    66.425061     223780.3 
+   47000    299.34237   -62970.279    7410.3508   -45310.276    155.65026    223545.93 
+   48000     298.9406   -62829.634     7512.817   -45080.922    -148.4675    224318.69 
+   48000    301.09022   -62789.045    7546.9762    -44932.57    317.35929    224317.37 
+   48000    305.79183   -62928.024    7373.6064   -45083.933   -54.196272    223600.86 
+   48000    301.67255   -62890.124    7509.9003   -45050.785   -620.19744    224052.09 
+   48000    310.34436   -62971.134    7470.3875    -44874.38    260.80044    224047.14 
+   49000    302.31569   -62824.759    7519.3001   -44953.998   -51.503788    224872.29 
+   49000    302.82384   -63089.388    7471.6388    -45248.89   -469.07216    224249.39 
+   49000    306.81461   -62872.043    7589.0966   -44777.441    323.26982    223729.06 
+   49000    301.36481   -62856.413    7632.4881   -44905.023   -319.24139    224369.89 
+   49000    302.79629   -63035.053    7615.7749   -45051.362   -157.17914    224530.84 
+SHAKE stats (type/ave/delta) on step 50000
+  53 0.999998 1.06387e-05 15360
+  55 109.5 0.00112424
+   50000    308.44003    -62797.08    7504.7747   -44731.144    36.475618    224982.21 
+SHAKE stats (type/ave/delta) on step 50000
+  53 1 5.51674e-06 15360
+  55 109.5 0.000530297
+   50000    306.14443   -62947.213    7617.1808   -44847.474    68.666007    224134.02 
+SHAKE stats (type/ave/delta) on step 50000
+  53 0.999995 4.33751e-06 15360
+  55 109.5 0.000429452
+   50000    299.06928    -62832.93    7511.7672   -45080.862   -15.047089    223789.46 
+SHAKE stats (type/ave/delta) on step 50000
+  53 0.999998 9.54609e-06 15360
+  55 109.5 0.000990732
+   50000    305.68298    -62898.24     7610.567   -44820.915   -350.85943    225047.87 
+SHAKE stats (type/ave/delta) on step 50000
+  53 1 1.16268e-05 15360
+  55 109.5 0.00120739
+   50000    301.99326   -63060.028    7703.5221   -45016.086    93.531811    223728.73 
+   51000    301.11516   -62870.341    7499.5162   -45060.472     766.6151    223150.49 
+   51000    302.74951   -62814.833    7567.4435   -44881.075   -84.107146    225019.05 
+   51000    301.89949   -62911.239    7475.4516   -45098.578    121.20462    224149.81 
+   51000     301.5129   -62837.741    7516.5592   -44997.209   -96.870864     224090.3 
+   51000    306.85264   -62739.459    7522.9027   -44709.749    292.68228    225144.46 
+   52000    304.71836   -62750.254    7675.7984   -44640.727   -181.07945    224293.34 
+   52000    304.05154   -62813.894    7491.3064   -44911.691    316.83329    224531.43 
+   52000    307.07329   -62949.057    7661.7329   -44772.961   -36.729044    224227.41 
+   52000    304.15811   -62851.343    7521.4788   -44915.318    110.98635    224141.09 
+   52000    303.66124   -62893.122    7503.3359   -44992.254   -95.754212    224944.58 
+   53000    307.75918   -62738.322     7504.801   -44695.673      346.615    224357.34 
+   53000    302.34999   -62772.954     7566.649   -44853.671    543.82792    223940.42 
+   53000    299.76545   -63021.408    7550.6542   -45206.615    475.12398    222743.31 
+   53000    304.06276   -62838.729     7606.176   -44821.272    76.642182    223964.68 
+   53000    299.11166   -62875.198    7455.0157    -45178.43   -415.05674       224704 
+   54000    303.85996   -62864.033    7513.7309   -44945.965    158.17284    224636.81 
+   54000    307.05519    -62753.83    7465.6722   -44774.415    238.77931    223799.81 
+   54000    306.24598   -62898.793    7560.8577     -44851.9    115.41156    223579.51 
+   54000     304.1122   -62956.372    7479.9509   -45063.447   -208.67933    224226.54 
+   54000     302.7237   -62865.863    7593.0093   -44907.423   -298.50071    225467.47 
+   55000    306.27943   -62959.132    7576.0946   -44895.857    469.72309    224885.03 
+   55000    306.41062   -62881.344    7614.0502   -44775.621   -90.855815    224238.05 
+   55000     299.6412   -62881.578    7459.9739    -45161.72    -378.7353       223356 
+   55000    304.35505   -62942.934     7530.971   -44990.674    139.67233    224128.44 
+   55000    300.37995   -62891.575     7683.274   -44923.122   -287.04518    225203.37 
+   56000    301.78311   -62941.859    7626.8249    -44981.81    325.36937    224625.89 
+   56000    307.65226   -62949.188    7651.2062   -44763.794   -218.78094     224142.2 
+   56000    304.98511   -62884.763     7537.239   -44904.662    116.96978    224389.58 
+   56000    305.46156   -62786.061    7453.9338   -44872.951    200.08472     224529.1 
+   56000     305.6736   -62999.285    7620.8265   -44912.021   -236.01657    224244.33 
+   57000     305.0863    -62935.31    7538.7789   -44950.204    209.04614    223996.32 
+   57000    303.69213   -62897.598    7529.4663   -44969.541   -69.581631    224392.22 
+   57000    305.21086   -62854.057    7529.9333   -44873.531   -57.435125    224171.41 
+   57000    304.41973   -62780.126    7500.8158   -44855.806     325.0652    224207.37 
+   57000    302.18996   -62931.267    7514.6938   -45069.419    30.092832    223610.21 
+   58000    304.98384   -62924.977    7551.5617   -44930.596   -507.89527    224521.15 
+   58000    301.59248    -62863.91    7480.7005   -45056.513    594.08547    224531.02 
+   58000    303.42878   -62867.306    7627.7213   -44850.012   -265.08961    224129.69 
+   58000    304.07252   -62712.413    7395.0547   -44905.744    47.862436    224023.38 
+   58000    303.37652   -62734.967    7561.1971   -44785.987   -340.56639    224855.54 
+   59000    303.48541    -63020.85    7604.4009   -45024.937    215.51777    223615.86 
+   59000    301.61525   -62757.903    7622.3303   -44808.097    55.904683    224543.74 
+   59000    305.55821   -63123.442    7552.2247   -45108.731   -497.94006    223623.16 
+   59000    300.95229   -62960.524    7572.1365   -45083.611    50.698484    224096.78 
+   59000    302.43881   -62808.725    7485.2405   -44967.809   -56.927947    225654.79 
+SHAKE stats (type/ave/delta) on step 60000
+  53 0.999999 5.59402e-06 15360
+  55 109.5 0.000574431
+   60000    303.88381   -62895.528    7505.2078   -44985.167    7.6908653    224212.89 
+SHAKE stats (type/ave/delta) on step 60000
+  53 0.999998 1.18296e-05 15360
+  55 109.5 0.00126985
+   60000    302.23171   -62914.481    7580.4637   -44985.433    451.71067    223815.85 
+SHAKE stats (type/ave/delta) on step 60000
+  53 1 7.48985e-06 15360
+  55 109.5 0.000781871
+   60000    305.15491   -62875.444     7562.922   -44863.845    534.25169     224147.7 
+SHAKE stats (type/ave/delta) on step 60000
+  53 0.999998 1.11942e-05 15360
+  55 109.5 0.00113346
+   60000    305.19405   -63004.167    7524.8244   -45029.326   -154.44348    223909.31 
+SHAKE stats (type/ave/delta) on step 60000
+  53 0.999993 1.78961e-05 15360
+  55 109.5 0.00192972
+   60000     304.3409   -62879.849    7511.3539   -44947.691    130.18407    223999.21 
+   61000    300.64252   -62955.033    7541.4843   -45119.379   -46.926471    224089.58 
+   61000    305.51532   -62859.579    7625.9319    -44772.63   -1.7518847    224965.25 
+   61000    305.90446    -62956.98    7475.3353   -45007.303    181.07785    223966.85 
+   61000    304.73151   -63035.733    7535.7937    -45065.76    55.542395    224133.75 
+   61000    301.60348   -62977.243    7575.3262   -45074.843   -253.06488    224339.55 
+   62000    302.05551   -62948.808    7543.5936   -45062.663    37.580705    224095.06 
+   62000    303.28114   -62896.769    7490.6518   -45021.599    11.796921    224781.73 
+   62000    303.32175    -63067.56    7549.5806   -45132.071     654.6411    224147.86 
+   62000    304.14173   -62893.981    7547.6531   -44932.343    195.46706     224436.9 
+   62000    305.35097   -62762.258    7517.5844   -44789.284    174.21837    224023.06 
+   63000    301.19251   -62810.245    7549.0202   -44948.223   -809.37731    224741.06 
+   63000    309.02701   -62943.578    7586.4953   -44775.824    253.63473    223918.72 
+   63000    308.26821   -62753.527    7575.8611   -44622.388     209.6155    223825.14 
+   63000    300.89072   -62914.551    7608.9428    -45002.94   -107.71675    224671.93 
+   63000    303.27507   -62886.711    7467.2028   -45035.199   -747.48261    224743.21 
+   64000    305.36043   -62809.238    7601.2289   -44752.295    -642.1097    223822.03 
+   64000    305.54479   -62738.965    7521.7484    -44755.19   -224.44431    224655.81 
+   64000    302.79207   -62686.303    7431.1566   -44887.375   -372.04531    225033.79 
+   64000     304.3858   -62869.763    7674.8948   -44772.526    23.938968    224441.89 
+   64000    306.99821   -62754.333    7397.7832   -44844.757   -295.15998    225231.37 
+   65000    303.52929   -63018.329    7522.2812   -45103.033    114.79781    223191.12 
+   65000    307.38684   -62840.964    7595.7638   -44720.101   -75.946555    224535.45 
+   65000    303.48056   -62954.713    7589.6428   -44973.725    146.91489     224252.5 
+   65000    302.94043   -62823.735    7590.3338    -44860.55   -116.38062    223816.56 
+   65000    308.02453   -62890.764    7479.9168   -44863.913    562.40515    224246.95 
+   66000    303.22868   -62944.529    7576.3429   -44985.465   -226.76557    223909.66 
+   66000    306.79599   -62831.239    7586.1352   -44740.236   -454.13575    224290.68 
+   66000    305.14855    -62750.18    7451.8733   -44849.848    81.087111    224621.46 
+   66000    300.87287   -62922.448    7538.7629   -45081.628   -297.53637    224097.52 
+   66000    297.98066   -62949.873    7624.0618   -45122.785    -64.37454    224235.62 
+   67000    301.20354   -62877.776    7600.3606   -44964.036    235.19598     224470.8 
+   67000    307.29721   -62791.311    7465.5683   -44803.712    -275.7479    223786.41 
+   67000    307.15177   -62744.461    7568.2605    -44659.15   -86.230015    224298.58 
+   67000    305.73117   -62981.204    7545.5609   -44967.235   -682.78322    224132.13 
+   67000    303.68825   -63007.204    7496.0885   -45112.658   -184.98583     224486.7 
+   68000    301.50278   -62855.116    7670.0058   -44861.484   -126.11737    224073.08 
+   68000    300.68913   -62783.222    7533.3739   -44954.082   -144.14756    224184.72 
+   68000    301.13161    -62836.46    7582.9986   -44942.545   -307.83182    224154.76 
+   68000    304.92263   -62779.519    7605.2269   -44733.569   -158.01069    225108.03 
+   68000    307.36901   -62980.494    7574.5952    -44881.41    19.047697     223965.2 
+   69000    302.47871   -62836.814    7538.2758   -44941.496    189.81681    224959.81 
+   69000    302.77741   -62788.959    7417.7158   -45003.973     227.0027    224095.85 
+   69000    301.47661    -62742.24    7608.2897   -44811.221      356.722    224053.47 
+   69000    300.81011   -62756.983    7422.6722   -45034.403     6.108264     223906.3 
+   69000    303.25602   -62844.088    7585.8179   -44874.612    387.18218    224614.19 
+SHAKE stats (type/ave/delta) on step 70000
+  53 0.999996 1.70057e-05 15360
+  55 109.5 0.00180611
+   70000    299.76349    -62897.83    7430.5547   -45203.204    181.76117    223870.12 
+SHAKE stats (type/ave/delta) on step 70000
+  53 1 2.18435e-05 15360
+  55 109.5 0.00233174
+   70000    306.94325   -62817.049    7441.8856   -44865.253    142.45592    223774.03 
+SHAKE stats (type/ave/delta) on step 70000
+  53 0.999999 2.2673e-05 15360
+  55 109.5 0.00240149
+   70000    302.63934   -62897.986    7568.4798   -44966.964   -39.942376    224601.06 
+SHAKE stats (type/ave/delta) on step 70000
+  53 1.00001 3.58968e-06 15360
+  55 109.5 0.000343453
+   70000    299.67999   -62873.137    7559.6005   -45052.325    131.36401     224289.6 
+SHAKE stats (type/ave/delta) on step 70000
+  53 1 1.54436e-05 15360
+  55 109.5 0.00165835
+   70000    307.75582   -62785.517    7410.6824   -44837.101   -118.49582    224272.07 
+   71000    304.09075   -62674.176    7643.4741   -44618.462   -44.474424    225316.47 
+   71000    307.93855   -62874.348     7508.512   -44821.845   -232.88806    224440.55 
+   71000    299.89903   -62753.111    7379.5821   -45104.817    553.61232    223645.13 
+   71000     303.1456   -62736.445    7467.5576   -44889.011    587.04765    224743.76 
+   71000    305.60799   -62812.751    7502.1765   -44846.384    199.53766    223331.61 
+   72000     305.6586   -62718.786    7537.6894   -44715.173   -168.02441    225518.48 
+   72000    303.56699   -62914.491     7500.897   -45019.288     84.62809    224416.49 
+   72000    302.35093   -62911.595    7609.1733   -44949.755    184.59809    224225.39 
+   72000     307.8628    -63065.83    7597.5872   -44926.846   -46.824179    224002.05 
+   72000    306.81285   -63045.716    7518.7139   -45021.557    485.96822    223658.15 
+   73000    301.81698   -62844.693    7561.7083   -44948.601    242.93916    224613.91 
+   73000    301.22578   -62918.116    7566.6877   -45037.288    -421.0566    224519.35 
+   73000    308.19714   -62806.604    7471.5502    -44782.21    479.06682    223959.77 
+   73000    303.69281   -62983.631    7514.8036   -45070.214   -587.11726    224320.83 
+   73000    304.76377   -63091.336    7492.1564   -45163.896     352.7631    223146.44 
+   74000    305.55892   -62885.124    7651.2756   -44771.338    -319.7534    224241.08 
+   74000    303.65699   -62850.675    7619.9958   -44833.293   -563.67259     225087.1 
+   74000    303.48124   -62914.538    7438.7091    -45084.46   -63.327134    223759.67 
+   74000    303.63863   -62948.298    7669.0082   -44882.531   -469.91433    223682.84 
+   74000    306.12689    -62861.87      7612.01   -44767.903    12.043492    223915.47 
+   75000    308.48708   -62793.203    7537.8022   -44692.629    98.965116    224331.86 
+   75000    303.38741   -62849.897    7415.9461   -45045.795    200.62939    224871.11 
+   75000     305.4868   -62821.658    7491.3561   -44870.261    343.71566    224416.57 
+   75000     305.0836   -62976.142    7512.1158   -45017.792    58.116979    223571.32 
+   75000    308.24386   -62940.412    7527.2857   -44858.682    8.4533107    223854.77 
+   76000    305.29867   -62767.215    7535.2151   -44778.401    113.86471     224838.6 
+   76000    303.78021   -62979.752    7492.2848   -45085.861    150.19529    224293.26 
+   76000    302.67667   -62913.258    7443.6209   -45105.817    250.46072    224068.12 
+   76000    302.17982   -63043.199    7498.9943   -45197.397    452.95849    224144.51 
+   76000    304.76635    -62838.31    7526.8023   -44876.136    451.62976    224232.25 
+   77000    306.19986   -62855.989    7586.0374   -44785.495    288.02698    223775.76 
+   77000    305.67664   -62802.116    7483.5958    -44851.98    453.88214    224460.96 
+   77000    307.56896    -62848.17    7579.3775   -44737.458   -127.39523    224240.47 
+   77000    305.13056    -62863.06    7440.5495   -44974.667    42.839555    224527.14 
+   77000     303.7376   -62778.944     7488.053   -44890.744   -19.162645    223926.03 
+   78000    301.44377   -62854.994     7597.719    -44935.67   -303.79386    224129.07 
+   78000    304.35518   -63012.012    7431.9402   -45158.779    1.1356929    224650.75 
+   78000    305.22567   -62873.207    7508.7592   -44913.349    169.78424    224107.28 
+   78000    307.91018   -62953.539    7521.4742   -44889.047    194.96642    224143.86 
+   78000    308.38748   -63007.554    7630.1604   -44818.032   -365.93413     224127.3 
+   79000      306.061   -62871.802    7572.9632   -44819.138     207.5492    224035.31 
+   79000    302.60713   -62733.765    7463.0689   -44909.257    761.72791    223926.39 
+   79000    303.32385   -62853.232    7584.0436   -44883.209   -555.35371    224870.68 
+   79000    305.76864   -62895.548    7476.8584   -44948.999   -547.43707    224681.37 
+   79000     305.3731   -62975.803      7441.85   -45077.806    384.61209    223649.14 
+SHAKE stats (type/ave/delta) on step 80000
+  53 1 1.60941e-05 15360
+  55 109.5 0.00166832
+   80000    305.62847   -62830.563    7603.5888   -44762.083    505.30864    224195.57 
+SHAKE stats (type/ave/delta) on step 80000
+  53 1 8.14697e-06 15360
+  55 109.5 0.000842579
+   80000    306.67239   -62861.406    7353.8027   -45006.967    402.70742     224368.3 
+SHAKE stats (type/ave/delta) on step 80000
+  53 1.00001 4.90793e-06 15360
+  55 109.5 0.000493416
+   80000    305.23774   -62864.323    7600.6332   -44812.177   -227.49325    223349.27 
+SHAKE stats (type/ave/delta) on step 80000
+  53 1.00001 1.89341e-05 15360
+  55 109.5 0.00198379
+   80000    305.65232   -62867.333    7634.3882   -44767.237    -503.0803    224086.54 
+SHAKE stats (type/ave/delta) on step 80000
+  53 1 2.47335e-05 15360
+  55 109.5 0.00261077
+   80000    301.68043   -62988.727    7523.7421   -45135.276    69.778199    223985.77 
+   81000    303.50323   -62920.727    7563.7551    -44964.85   -250.35953    224022.97 
+   81000    306.20382   -62746.136    7478.0686   -44783.475   -208.59177     225412.4 
+   81000    301.33433   -62847.126    7525.7879    -45003.48   -191.39825    223257.19 
+   81000    304.75732   -62877.925    7459.0662   -44983.795   -169.08181    224282.95 
+   81000    301.63318   -62997.428    7576.4237   -45092.914   -260.88474    223892.45 
+   82000    303.48799   -62720.286    7618.2254    -44710.46   -373.18027    224306.73 
+   82000    303.72178   -62802.485    7414.6657   -44988.214   -13.880748    224300.15 
+   82000      303.568   -63045.096    7551.2065   -45099.549   -109.80651    223976.78 
+   82000    305.88189   -62915.392    7557.4295   -44884.394    85.388283    224058.89 
+   82000    300.31062   -62954.974    7564.1321   -45108.037   -409.94223     223376.7 
+   83000    306.02824    -62859.34     7617.631   -44763.129   -429.13926    224678.59 
+   83000    302.10053   -62974.817    7412.0265   -45218.697    319.58442    224394.74 
+   83000     301.8178    -62800.75    7531.7491   -44934.589   -128.72716    224591.65 
+   83000    304.75637   -62954.685    7522.1983   -44997.457     61.74073     224572.5 
+   83000    300.56581   -62915.577    7439.1854   -45184.849   -219.05445    223955.85 
+   84000    305.19398   -62727.273    7575.6638   -44701.595    -20.36935    224949.13 
+   84000    305.39078   -62811.368    7429.7854    -44924.83    179.84387     224762.1 
+   84000    306.27883    -63044.97    7471.9745   -45085.835   -34.834898    223267.09 
+   84000    303.87279    -62968.87    7516.7168   -45047.377   -182.36183     224459.2 
+   84000    302.54333    -62834.72    7563.8018   -44911.664    -74.96614    224585.32 
+   85000    300.64806   -62861.023    7592.4389   -44974.225    39.921648    224231.12 
+   85000    306.10791   -62896.211    7528.0668   -44886.836   -144.39129    225049.47 
+   85000    304.63867   -62879.541     7674.196   -44774.345   -263.25589    223434.15 
+   85000    305.98674   -62824.504    7465.2474   -44882.097   -145.51214    224420.18 
+   85000    303.97181   -62874.293    7515.2191   -44950.907    161.52469    223814.29 
+   86000    302.59056   -62811.147    7473.5546   -44976.721   -354.21355    224610.75 
+   86000    307.32409   -62946.623     7604.473     -44819.2    -257.2006    224005.27 
+   86000    302.04974   -62939.197    7536.3899   -45060.454    39.781539    224429.76 
+   86000    306.95852   -62770.897    7473.3087   -44787.155   -174.80206    224679.48 
+   86000    303.27505   -62813.151    7527.2363   -44901.606   -160.54252    224156.11 
+   87000    303.08303   -62766.274    7528.1545   -44860.385   -102.95348    225133.21 
+   87000    303.34124   -62890.983    7482.4654   -45021.942    706.64028    224516.66 
+   87000    307.67023   -62900.398    7371.9979   -44993.598   -46.263219    223985.25 
+   87000    309.45984   -62813.042    7620.5464   -44596.416   -293.90366    225367.58 
+   87000    298.35641   -62841.211    7502.4893    -45122.83   -238.04212    224265.68 
+   88000    309.14435   -62824.468    7454.2031   -44784.988    175.25682    224773.46 
+   88000    306.08974   -62991.854    7542.6426   -44968.526    156.31676    224444.86 
+   88000    305.98534   -62911.249    7556.5406   -44877.598    319.71435    223701.12 
+   88000    302.79115   -62863.934    7507.9851   -44988.209   -263.75938    224047.19 
+   88000    306.22739   -62850.212    7531.3653   -44833.448   -296.33934    224209.79 
+   89000    310.21724   -62767.411     7476.412   -44668.986    51.801054    225020.91 
+   89000    305.14199    -62996.26    7563.1401   -44984.886    56.218076    224348.77 
+   89000    300.37577   -62839.889    7555.0862   -44999.767    42.860947    224771.24 
+   89000     303.5597   -62741.084    7411.4015   -44935.627    239.25831     224392.9 
+   89000     304.5407   -62643.098    7522.6879   -44692.765   -132.85013    224015.12 
+SHAKE stats (type/ave/delta) on step 90000
+  53 1 1.25559e-05 15360
+  55 109.5 0.00127251
+   90000    302.02645   -62969.879    7655.9299   -44972.393     114.4272    224566.52 
+SHAKE stats (type/ave/delta) on step 90000
+  53 0.999999 7.62534e-06 15360
+  55 109.5 0.000802614
+   90000    304.06827    -63000.18    7470.7476   -45117.963    135.32514    224556.49 
+SHAKE stats (type/ave/delta) on step 90000
+  53 1.00001 1.30313e-05 15360
+  55 109.5 0.00133132
+   90000    302.52344   -62804.665    7545.2578   -44900.834   -93.840909     224538.6 
+SHAKE stats (type/ave/delta) on step 90000
+  53 1 1.48477e-05 15360
+  55 109.5 0.0015725
+   90000    302.88401   -62854.947     7456.384   -45027.644      258.476    223783.24 
+SHAKE stats (type/ave/delta) on step 90000
+  53 0.999995 7.35685e-06 15360
+  55 109.5 0.000730361
+   90000    304.57555   -62820.121    7601.8019    -44789.48   -174.59271    224783.37 
+   91000    299.63327   -62955.434     7557.185   -45138.637   -16.342437    224363.02 
+   91000     307.2206   -62922.808    7491.1496   -44912.251    303.91806    223612.87 
+   91000    301.64932   -62811.706    7460.4756   -45022.587   -646.08195    224233.57 
+   91000    303.22544   -62815.498    7607.6286   -44825.259   -50.164738    223908.25 
+   91000    302.73118   -62869.633     7531.306    -44972.64   -680.82475    224851.87 
+   92000    303.44693   -62924.087    7701.2635   -44832.629   -84.415744    224230.53 
+   92000    304.20875     -62860.6    7453.7773   -44990.543    262.73378    224852.63 
+   92000     305.4819   -62877.178    7588.7953   -44828.509     157.4604    223909.08 
+   92000    302.70026   -62836.988    7491.0615   -44981.298    240.31015    224215.33 
+   92000    303.41227   -62836.025    7528.1628   -44918.855   -217.39134    224611.18 
+   93000    302.37571   -62807.119    7425.6789   -45027.924    273.02483    223423.84 
+   93000    302.90842   -62815.339    7432.6601   -45010.923    469.37756    225444.09 
+   93000    304.27842   -62755.746    7579.3985   -44757.683   -325.35882    224229.68 
+   93000    304.81448   -62854.401     7571.666   -44845.714    197.04739    223875.45 
+   93000     303.3153   -62853.772    7451.3845     -45016.7   -302.02169    224421.29 
+   94000    304.75215   -62805.342    7572.8873   -44797.569   -23.587427    223942.86 
+   94000    306.37428   -62831.586    7523.2484   -44817.909    332.89489    223713.19 
+   94000    304.58019   -62908.944    7475.8451   -45004.101    209.25629    223678.13 
+   94000    299.05616   -63023.338    7561.0481   -45222.438   -457.30595    224344.94 
+   94000    302.75757   -62869.295    7561.4786   -44941.226    349.09962    224276.84 
+   95000    304.43896   -62733.868    7541.6371   -44768.069   -46.103347    223564.87 
+   95000    308.86979   -62851.432    7559.8518   -44715.704   -81.014393    224638.37 
+   95000    307.91534   -62819.111    7512.8981   -44763.017     230.4777    223090.69 
+   95000    301.26462   -62738.049     7599.095   -44823.483    242.13291    224949.71 
+   95000    304.92394   -63148.698    7529.1107   -45178.819    88.793003    224044.35 
+   96000    304.12267   -62891.973    7489.9855   -44988.656    6.3531048    224211.32 
+   96000    303.09106   -62852.278    7513.4287    -44960.84   -103.67141    225029.87 
+   96000    308.59642   -62864.292    7613.5903   -44684.186   -529.74053    224097.13 
+   96000    306.75319    -62889.47    7600.0391   -44786.029   -297.21633    224369.82 
+   96000    305.07863   -62916.171    7499.1217   -44970.985    127.65188    224057.54 
+   97000    301.56351   -62866.964    7544.9678   -44996.291   -162.24906    224206.31 
+   97000    307.04949   -62766.578    7508.5409   -44744.489   -166.23294    223233.24 
+   97000    304.86134   -62707.419    7530.5743    -44738.22    312.62617    224403.83 
+   97000    305.16775    -62815.77    7463.8822   -44902.772    337.29073    223192.44 
+   97000    301.89729   -63022.691    7549.5168   -45136.041   -461.67997    225157.16 
+   98000    306.38469   -62794.154     7573.874   -44729.495    125.57166    224384.54 
+   98000    302.72164   -62852.868    7501.9049   -44985.603   -181.29088    224906.01 
+   98000    303.77388   -62809.115     7428.553   -44979.173   -264.51295    224060.05 
+   98000    303.51048   -62921.646    7556.3963    -44972.88    -34.64799    223629.32 
+   98000    307.06009   -62909.422    7527.2522   -44868.259   -461.29965    224291.72 
+   99000    304.08346   -62786.632    7556.3572   -44818.285    32.376325    224168.87 
+   99000    299.92102   -62867.187    7613.4668   -44984.255   -332.73915    224410.98 
+   99000    306.00017    -63044.99    7585.0379   -44982.334   -354.18947    224777.76 
+   99000    301.81117   -62699.608    7502.5266   -44862.896    218.95124    223856.26 
+   99000     299.8855   -63064.964    7506.1637   -45290.552   -336.06585    224027.04 
+SHAKE stats (type/ave/delta) on step 100000
+  53 1.00001 1.28898e-05 15360
+  55 109.5 0.00133822
+  100000     303.4902   -62967.816    7533.6628   -45042.477   -207.62945    224095.28 
+SHAKE stats (type/ave/delta) on step 100000
+  53 1 1.86234e-05 15360
+  55 109.5 0.00193659
+  100000     303.7326   -62906.948    7509.1117    -44997.86   -402.84464    223526.75 
+SHAKE stats (type/ave/delta) on step 100000
+  53 1 7.04731e-06 15360
+  55 109.5 0.000730946
+  100000     304.0037   -62944.675     7571.549   -44963.868   -105.98003    223503.05 
+SHAKE stats (type/ave/delta) on step 100000
+  53 1 1.84392e-05 15360
+  55 109.5 0.00197808
+  100000    303.89205   -62961.429    7544.9839   -45011.009   -131.89461    223964.98 
+SHAKE stats (type/ave/delta) on step 100000
+  53 1 1.32468e-05 15360
+  55 109.5 0.00132794
+  100000     308.6945   -62945.502    7557.8036   -44817.824    101.23862    223993.72 
+  101000    306.94198   -62846.165    7623.9854   -44712.313   -463.97003    225411.32 
+  101000    309.69736   -62829.244    7449.5169   -44775.514   -200.29822    224483.73 
+  101000    303.95367   -62894.366     7496.592   -44990.229   -415.03881    223646.81 
+  101000    305.59823   -62885.475    7582.9672   -44838.651    127.82037    224082.37 
+  101000    304.70475   -62941.745    7505.6112   -45002.871    354.43906    223299.79 
+  102000    302.82855   -62689.642    7599.2865   -44721.335    182.05839     224938.7 
+  102000    304.60341   -62931.424    7534.2279   -44967.403     34.94066    224548.16 
+  102000    304.52153   -62848.866    7488.4681   -44933.409    26.200273    223244.96 
+  102000    300.98594   -62935.493    7641.4567   -44988.107    427.76028    224169.58 
+  102000    302.13408   -62922.374    7591.5733   -44985.559   -44.823045    224937.46 
+  103000    304.12524   -62769.828    7542.1965   -44814.211   -571.60567    225333.47 
+  103000    303.65905   -62847.114    7522.5804   -44927.076    123.42652    224368.96 
+  103000     306.3676   -62805.404    7577.0085   -44738.196   -15.785584    224566.83 
+  103000    302.75067   -62751.452    7541.7138   -44843.385   -199.32405    224511.07 
+  103000    308.12732   -62863.852    7575.8816   -44737.516   -282.05343       224529 
+  104000    302.51222   -62808.949    7561.3878   -44889.372   -554.23074    225157.49 
+  104000    302.80831   -62923.989    7594.6863   -44960.975    246.80786    223925.53 
+  104000    303.91512   -62910.548    7501.6939   -45002.628   -178.77007    224102.44 
+  104000    304.94117   -62896.214    7591.9616   -44862.895   -263.05695    223947.19 
+  104000    300.85059   -62846.317    7555.7437   -44989.279   -317.74383    224537.54 
+  105000    303.16652   -62814.484    7456.1083   -44977.783    -232.8904    224688.23 
+  105000    304.67975   -62981.903    7562.1975   -44987.299   -181.67706    224843.63 
+  105000     302.1743   -62826.109    7575.8245   -44903.666    -363.1665    224713.62 
+  105000    305.84319   -62836.404     7414.902   -44949.258    449.12243    224185.15 
+  105000    304.94114   -62963.344    7622.9149   -44899.072   -36.331294    224153.29 
+  106000    301.60573   -62895.472    7441.6876   -45126.633   -314.22904    225558.07 
+  106000    305.85013   -62795.272    7550.3068   -44772.484    113.26087    225290.95 
+  106000    304.68267    -62671.94    7618.9483   -44620.485   -152.68999    224697.49 
+  106000      299.989   -62833.212    7502.4221   -45058.997   -389.86444    224218.54 
+  106000    307.41114    -62808.69    7543.3425   -44739.416   -237.32816    223976.23 
+  107000    303.78486   -62826.181    7495.0106   -44929.406    -268.5939    225132.18 
+  107000    305.03574    -62699.84    7475.7967   -44779.448     288.8585    225277.77 
+  107000    303.73399   -62861.058    7456.8543    -45004.18     28.99882    224620.08 
+  107000    304.75584   -62784.918    7620.2517   -44729.654   -180.36168    225003.37 
+  107000    309.01629   -62930.794    7621.3249   -44728.577   -584.29429    225775.66 
+  108000     303.3248   -62618.939     7475.298   -44757.628      430.284    224931.18 
+  108000    300.05252   -62858.021    7551.1585   -45032.895   -22.614434    225985.04 
+  108000    301.81696   -62909.617    7574.1053   -45001.128    444.01513    223926.72 
+  108000    299.57127    -62844.45    7477.8016   -45109.159   -241.95688    225020.35 
+  108000    305.00536   -62707.222    7606.0984   -44657.567   -123.85059    224094.58 
+  109000    301.55766   -62793.626    7435.6909    -45032.43    173.56239    225406.29 
+  109000    302.78734   -62665.045    7449.4809   -44847.955    56.330418    225636.35 
+  109000     305.8338    -62934.12    7616.0886   -44846.109    478.70826    224179.36 
+  109000    305.51749   -62857.886     7496.657   -44900.137   -83.437834    224161.31 
+  109000    307.23549   -62830.607    7492.4049   -44818.285    5.2090188    225247.79 
+SHAKE stats (type/ave/delta) on step 110000
+  53 1.00001 7.50712e-06 15360
+  55 109.5 0.000780572
+  110000    304.00924   -62809.724    7534.8407   -44865.436   -208.04412    224659.53 
+SHAKE stats (type/ave/delta) on step 110000
+  53 1 2.39147e-05 15360
+  55 109.5 0.00250144
+  110000    307.14038    -62992.76    7570.6674   -44905.433    464.09262    224395.39 
+SHAKE stats (type/ave/delta) on step 110000
+  53 1 5.92913e-06 15360
+  55 109.5 0.000592159
+  110000    303.43696   -62920.511    7587.4494   -44943.209    88.222575     224180.1 
+SHAKE stats (type/ave/delta) on step 110000
+  53 0.999989 1.08995e-05 15360
+  55 109.5 0.00114901
+  110000    306.94485   -62923.933     7520.873   -44893.095   -391.02515    224235.09 
+SHAKE stats (type/ave/delta) on step 110000
+  53 1 8.13728e-06 15360
+  55 109.5 0.00084581
+  110000    306.13504   -62815.319     7573.786   -44759.296     11.01293    224674.28 
+  111000    306.23301   -62836.388      7524.31   -44826.487    374.36096    223693.23 
+  111000    307.27775   -63024.382     7449.188   -45053.831    565.83756    223628.33 
+  111000    305.03006   -62940.041    7603.1988    -44892.44   -178.63984    223556.42 
+  111000    304.84615   -62945.969    7562.4283   -44945.436    124.70114    224691.45 
+  111000    304.16035   -62865.326    7489.8824   -44960.822    275.32693    224040.16 
+  112000    306.40132   -62936.538    7569.5359   -44875.648    403.46507    223119.46 
+  112000    297.76279   -62838.767     7476.687   -45166.513     314.0534    224124.78 
+  112000    303.80492    -62912.89    7611.5256   -44898.913    92.883416    223937.51 
+  112000    304.84761   -62796.317    7444.8876   -44913.275    273.39955    224393.46 
+  112000    308.72154   -62705.137    7538.7809   -44595.557   -191.85578    224346.42 
+  113000    303.67156   -62890.119    7553.3172   -44938.916   -279.83108    224563.41 
+  113000    305.64345   -62901.251    7477.8585   -44957.988   -138.51877    224866.45 
+  113000    300.38456   -62870.194     7512.111   -45072.746    370.75799    223613.93 
+  113000     300.8579   -62774.234    7460.2562   -45012.433    46.581629    224917.03 
+  113000     304.5156   -62958.371    7622.5531   -44909.032   -18.572223    223486.15 
+  114000    300.63678   -62857.418    7573.7333   -44989.711   -194.52089    224457.38 
+  114000    306.21719   -62825.745    7624.9258    -44715.77    46.590038    224619.48 
+  114000    304.36547   -62653.334     7514.935   -44716.753     226.0281    224311.48 
+  114000    300.94466   -62908.864     7593.128    -45011.22   -332.90663    225642.29 
+  114000    298.25903   -62940.911     7511.455   -45216.898   -523.45539    224043.05 
+  115000    306.41687   -62669.884    7460.8238   -44717.173    327.26645    223760.43 
+  115000    306.76981   -62756.502     7480.883   -44771.648    62.909112    224612.26 
+  115000    304.80684   -62681.538    7371.8881   -44872.892   -19.532757    224605.34 
+  115000    300.97464    -62960.33    7616.1914   -45038.597   -216.67191    223938.62 
+  115000    303.96703   -62917.319    7589.5408   -44919.775   -611.21225    224003.56 
+  116000    308.58296   -62822.478    7479.4093   -44777.014    -180.0796    224356.68 
+  116000     302.9082   -62799.549    7640.3256   -44787.476    -153.8532    224894.46 
+  116000    298.05515   -62885.136    7578.9594     -45100.6   -390.46027    223904.83 
+  116000    306.00157   -62648.277    7501.8762   -44668.734   -81.875972    225078.12 
+  116000     301.5417   -62993.357    7496.4009   -45171.998   -180.88175    224054.52 
+  117000    307.86175   -62803.026     7563.522   -44698.144    670.01414    224083.84 
+  117000    303.11252   -62872.981    7537.1759   -44957.061    735.27411    224142.61 
+  117000    304.98219   -63097.286    7562.3846   -45092.138    -503.4775    223293.65 
+  117000    301.45747   -62856.358    7574.7575   -44959.526    274.01248    224901.26 
+  117000    302.49352   -62780.401    7459.8476   -44963.004   -80.176416    224082.79 
+  118000    302.38541   -62945.961    7691.7333   -44900.381    257.09988    224195.87 
+  118000    305.00891   -62868.672    7498.9834   -44926.011   -112.18116    224062.32 
+  118000    308.54224   -62934.611    7513.3437   -44856.606   -230.61512    224066.68 
+  118000     304.9508   -62822.825    7506.3939   -44874.744   -131.29149    225193.43 
+  118000     305.9068   -62814.307    7471.3345   -44868.551    157.26167     224532.2 
+  119000     298.6934   -62617.684    7464.0461   -44926.207    747.16439    224528.82 
+  119000    305.51217   -62896.128    7604.9315   -44830.287   -63.501453     225083.4 
+  119000    307.48337   -62881.985    7381.4475   -44972.133    136.42403    223917.19 
+  119000    304.60433   -62866.005    7503.2919   -44932.888      -192.51     224890.8 
+  119000    308.82327   -62952.026    7607.4241   -44770.319    337.76642    223937.42 
+SHAKE stats (type/ave/delta) on step 120000
+  53 1.00001 1.49058e-05 15360
+  55 109.5 0.00156378
+  120000    303.46552   -62677.806    7606.2633   -44680.712   -545.23687    225123.97 
+SHAKE stats (type/ave/delta) on step 120000
+  53 0.999997 2.36932e-05 15360
+  55 109.5 0.00248105
+  120000     304.2542   -62974.202    7608.3108   -44948.055   -655.12336     224764.7 
+SHAKE stats (type/ave/delta) on step 120000
+  53 1 1.39573e-05 15360
+  55 109.5 0.00145131
+  120000    300.39001   -62845.595    7480.4947   -45079.577   -312.04206    223980.67 
+SHAKE stats (type/ave/delta) on step 120000
+  53 1 4.46116e-06 15360
+  55 109.5 0.000454386
+  120000    301.61773   -62703.353    7397.8749   -44977.917    181.23533    224168.71 
+SHAKE stats (type/ave/delta) on step 120000
+  53 0.999997 6.73127e-06 15360
+  55 109.5 0.000679623
+  120000    301.41925    -62954.56    7453.3648   -45180.429    110.20597    224010.28 
+  121000     306.2874   -62783.642    7561.6949   -44734.493   -292.47502    223875.88 
+  121000     302.8736   -62858.513    7560.1509   -44927.799    171.92987       224253 
+  121000    307.14387   -62652.444    7413.4082   -44722.256    367.61609    224146.05 
+  121000     302.8679    -62818.85    7673.7384   -44774.744   -229.29354    224608.17 
+  121000    303.49749    -62847.66    7548.0916   -44907.643   -73.144619    224582.82 
+  122000     303.4586   -62890.843    7611.8209   -44888.428    267.06808    223741.06 
+  122000     301.2936   -62984.826    7582.4846   -45085.878   -15.896688    224531.11 
+  122000    302.13503   -62820.754    7420.9149   -45054.564   -206.64703    224257.73 
+  122000    303.09653   -62824.411     7495.658   -44950.557    -43.20794    224118.94 
+  122000    305.85957   -62850.392    7529.1087   -44848.479    301.32571    223421.39 
+  123000     306.6432   -62814.782     7641.929   -44673.217    927.47197    223965.81 
+  123000    301.59982   -62987.412    7617.5146   -45042.949   -263.94174    224129.37 
+  123000    305.64691   -62783.117    7497.8803   -44819.714   -301.69782     224580.1 
+  123000    300.48313    -62808.04    7597.1361   -44922.192   -72.429095    224519.74 
+  123000      305.567   -62966.426    7649.3554   -44854.284    89.114943    223287.12 
+  124000    307.05214   -62764.069    7564.0806    -44686.35    40.556593    224377.48 
+  124000     306.1216   -63090.705    7518.2007   -45090.728    304.73742    225272.52 
+  124000    304.75547   -62773.789    7591.3366   -44747.453     210.0209    224476.76 
+  124000    302.62858   -62794.364    7496.9389   -44935.251    383.00223    224054.37 
+  124000     301.9489   -62908.908    7550.5721   -45019.435    47.996326    223473.45 
+  125000    305.58503   -62797.542     7541.607   -44792.531    205.41869    224803.62 
+  125000     305.4306   -62923.988    7563.3586   -44902.513    17.207233    225366.63 
+  125000    302.73374   -62753.418    7474.2947   -44913.349    258.84419    224557.42 
+  125000    304.94057   -62940.808    7589.3623   -44910.108    108.80657    223918.83 
+  125000    302.47838   -62654.167    7484.1702   -44812.966    107.10541    224213.33 
+  126000    302.59143   -62811.819    7510.3607   -44940.557    64.826899    225532.95 
+  126000    303.96692   -63013.791    7627.0631   -44978.729   -297.11089    224239.39 
+  126000    308.32443   -62930.827    7539.8241     -44833.8   -141.08307    224501.78 
+  126000    305.53109   -62685.464    7511.1692   -44712.738    231.50756    225022.79 
+  126000    303.63962   -62808.626    7447.6695   -44964.164   -269.19246    224512.19 
+  127000    306.83188   -62971.164    7652.7629   -44812.304   -448.07014    224158.12 
+  127000    302.40808   -62966.113    7601.8403   -45009.649   -485.70197    225416.84 
+  127000    303.73562   -62822.049    7555.0725   -44866.898    11.583278    224461.53 
+  127000    307.73404   -62787.999     7604.984   -44646.027    166.40135    223878.77 
+  127000    304.18662   -63012.059    7724.2111   -44872.326   -212.39661    223959.99 
+  128000    304.68469   -62936.204    7425.7632   -45077.865    33.112273    224121.73 
+  128000    304.95424   -62796.743    7624.0442   -44730.893   -454.79732    224071.88 
+  128000     304.0045   -62923.619    7585.4627    -44928.87    96.365053    224574.15 
+  128000    300.74939   -62995.726    7659.9536   -45037.943   -302.57922    224801.07 
+  128000    304.05089   -62969.874    7536.4463   -45022.554     306.2502    224018.55 
+  129000    306.40573   -62857.096    7589.5991   -44775.992   -359.19622    224573.56 
+  129000    304.35618   -62951.799    7571.4097   -44959.062   -358.21937    224673.31 
+  129000    302.61365   -62789.371    7622.7066   -44805.002   -131.22536    225359.84 
+  129000    306.71731   -62982.281    7517.6234   -44962.483    441.77475    224605.18 
+  129000    306.02646   -62877.671     7569.359   -44829.793   -177.70531    224819.32 
+SHAKE stats (type/ave/delta) on step 130000
+  53 0.999997 1.3894e-05 15360
+  55 109.5 0.0014295
+  130000    300.35531    -62827.63    7547.0353    -44996.26   -474.99059    225113.79 
+SHAKE stats (type/ave/delta) on step 130000
+  53 1 1.54805e-05 15360
+  55 109.5 0.00157787
+  130000    306.50367   -63015.132    7585.7658   -44934.508   -333.36159    224492.27 
+SHAKE stats (type/ave/delta) on step 130000
+  53 1 2.14009e-05 15360
+  55 109.5 0.00222316
+  130000    306.30726   -62839.739    7517.4174   -44834.188    280.24587    224812.27 
+SHAKE stats (type/ave/delta) on step 130000
+  53 0.999994 4.61972e-06 15360
+  55 109.5 0.000451749
+  130000    306.06443   -62847.101    7593.8296   -44773.453    200.33319    224352.91 
+SHAKE stats (type/ave/delta) on step 130000
+  53 1.00001 8.4547e-06 15360
+  55 109.5 0.000884503
+  130000    305.55163   -62881.201    7668.5647   -44750.376   -124.16664    223743.74 
+  131000    308.38087   -62901.467    7477.1455   -44865.187    61.472366    224437.71 
+  131000    303.19817   -62868.555    7644.0645   -44842.814   -257.67221    224679.51 
+  131000    302.92003    -62857.78     7520.725   -44964.902     60.47054    224479.25 
+  131000    304.05885   -62924.296    7638.1454   -44875.004   -143.60943    224744.59 
+  131000    300.79607    -62820.34    7438.7065   -45082.206   -63.498738    224267.81 
+  132000     304.7524   -62777.262     7614.943   -44727.425   -197.12312    224426.57 
+  132000    305.09724   -62666.378    7526.9306   -44692.746    69.061992    224621.68 
+  132000    304.39543   -62929.914    7676.1669   -44831.076    393.60499    223890.46 
+  132000    308.41514   -62810.259    7472.7995   -44777.151   -67.812003    224471.38 
+  132000      307.394   -62847.818    7535.1584   -44787.315   -20.089572    224296.39 
+  133000    307.33004   -62829.008    7572.5226   -44733.331    195.05771    223899.12 
+  133000     310.0984   -62852.618     7554.263   -44680.411    107.13817    223230.47 
+  133000    303.21481    -62848.22    7527.1321   -44938.842     10.92981    224603.02 
+  133000    304.79206   -62841.773    7567.6705    -44837.85    153.78062    224540.09 
+  133000    303.95962   -62939.648    7566.0152   -44965.883   -417.90663    223788.88 
+  134000    304.39462   -62814.392    7550.5717   -44841.177    341.59309    224809.49 
+  134000    304.49393   -62981.697    7588.3681   -44967.285    234.45458    223529.95 
+  134000    306.46826   -62883.552    7561.1206   -44828.785   -137.54258    224174.36 
+  134000    304.67895    -62846.95    7617.2906    -44797.28   -396.48698    223634.36 
+  134000    304.95554   -62887.456    7454.2958    -44991.31   -267.33542    223880.45 
+  135000    302.51548   -62747.061    7587.5339   -44801.226   -112.97539    224607.55 
+  135000    301.71201   -63005.924    7519.3065   -45155.828   -715.10399    225064.62 
+  135000    302.02097   -62829.308    7548.2678   -44939.672    342.89272    222697.83 
+  135000    299.18701   -62764.218    7462.1219   -45057.764   -130.80741     223875.2 
+  135000    304.57266   -62739.093    7498.5273   -44811.825   -53.377767    224840.64 
+  136000    303.57918   -62796.255    7652.5977   -44748.935   -40.335609     224466.5 
+  136000    302.12637   -62849.958    7403.4632   -45101.517    455.31656    224289.79 
+  136000    306.69973   -62988.998    7450.6486   -45036.777   -562.87836    224304.32 
+  136000     302.8008   -63009.014    7529.9303   -45111.013   -705.63257    223902.36 
+  136000    302.58076   -62755.292    7427.3256    -44967.43    63.079788    224489.27 
+  137000    303.64045   -62635.151    7575.7505    -44662.58    408.38994    224789.62 
+  137000    306.87126   -62771.886    7494.5914   -44769.849     208.4376    224294.56 
+  137000    306.25648   -62801.465    7579.6263   -44735.444    9.7640951    224385.06 
+  137000    299.49534   -62727.701     7683.509   -44789.302   -95.628529    224354.69 
+  137000    305.34511   -62876.744    7662.4637   -44759.091   -150.81289    224036.85 
+  138000    305.81251   -62800.541    7581.2972   -44748.051    223.89039     224105.5 
+  138000    307.64761   -62942.276    7617.2747   -44790.973    324.25599    224907.68 
+  138000    304.46493   -63024.631    7510.5483   -45089.031    355.23915    223857.78 
+  138000    306.07584   -62900.353    7588.6888   -44831.455   -240.23049    224175.46 
+  138000    300.04736   -62913.776    7539.1203   -45100.864   -209.31987    223824.31 
+  139000    302.38176   -62774.107    7493.7513   -44926.634    -67.27876    225241.77 
+  139000    302.01736   -62778.781    7454.7332   -44982.803    324.60002     225296.2 
+  139000    304.28167   -62704.087    7435.6877   -44849.623   -100.71018    224454.17 
+  139000    307.15325   -62886.834    7632.4897   -44737.244    289.64484    224297.92 
+  139000    307.35008   -62907.573     7489.736   -44893.997    85.550389    223867.17 
+SHAKE stats (type/ave/delta) on step 140000
+  53 1 5.13866e-06 15360
+  55 109.5 0.000525413
+  140000    305.05514   -62802.592    7569.3555   -44787.976    150.27512    225356.72 
+SHAKE stats (type/ave/delta) on step 140000
+  53 1 2.16966e-05 15360
+  55 109.5 0.00228352
+  140000    303.49681   -62819.828    7486.8044   -44941.122    311.43419    224437.16 
+SHAKE stats (type/ave/delta) on step 140000
+  53 1 2.02418e-05 15360
+  55 109.5 0.00209261
+  140000    306.34219   -62841.915    7562.4902   -44790.095   -297.07877    224083.42 
+SHAKE stats (type/ave/delta) on step 140000
+  53 0.999993 7.02292e-06 15360
+  55 109.5 0.000716419
+  140000    300.03343   -62724.996    7477.4322    -44974.25    64.026435    224299.72 
+SHAKE stats (type/ave/delta) on step 140000
+  53 0.999996 2.26301e-06 15360
+  55 109.5 0.000231024
+  140000    302.32076   -62933.492    7611.9043   -44969.954     151.3315    223701.39 
+  141000     303.4993   -62758.056    7665.9273   -44700.141   -129.57832    224948.44 
+  141000     302.9877   -62810.299    7504.5463   -44931.282   -478.80515     224943.4 
+  141000    301.58184   -62981.943    7600.1918   -45055.418    62.598339    224542.43 
+  141000    302.30191   -62966.763    7540.0443   -45075.731    72.617907    224262.19 
+  141000     303.7369   -62746.535    7580.9602   -44765.452   -40.639354    224906.25 
+  142000     301.9359   -62689.722    7464.0331   -44887.233   -132.50336    224487.71 
+  142000    303.45848   -62788.167    7609.6112   -44787.966   -245.10141    224198.59 
+  142000    304.64283   -62793.879    7479.1231   -44883.613    355.11309    223555.73 
+  142000      307.852    -62709.67    7552.3832    -44616.26    694.46891    223816.24 
+  142000    302.69796   -62860.256    7556.3832   -44939.324    141.34542    224501.76 
+  143000    304.62097   -62672.751    7502.2384   -44740.118   -227.03011    225090.04 
+  143000    302.81846   -62825.768    7579.3153   -44877.777    339.17369    224275.05 
+  143000    308.25928   -62884.626    7477.2837    -44852.37   -511.19621    224735.45 
+  143000    303.21951   -62818.705    7612.1158   -44824.182    105.05066    223583.58 
+  143000    303.38607   -62745.998    7478.1951   -44879.692    348.95349    223803.91 
+  144000    304.17826   -62860.806    7470.4737   -44975.097    115.39546    224252.21 
+  144000    302.58203   -62772.947    7614.9596   -44797.408    -158.5579    224914.08 
+  144000    306.61576   -62810.897    7562.4183   -44749.782    35.619406    224379.06 
+  144000    305.62489   -62879.909    7494.9159   -44920.224    46.491955     223861.3 
+  144000    305.39774   -62705.328    7581.5184   -44666.819    64.553747    225026.54 
+  145000    301.22382   -62826.789    7513.6071   -44999.108   -548.49182    224682.62 
+  145000     303.3182   -62894.423    7593.4096   -44915.227    17.351845    224939.19 
+  145000    306.09218   -62862.211    7514.8562   -44866.585     483.8917    224430.22 
+  145000    303.94706   -63011.674    7537.3179   -45067.037    249.72101    224396.03 
+  145000    303.34957   -62812.961    7603.2207    -44822.88    165.68601    224175.87 
+  146000    307.16743   -62921.475    7492.4205   -44911.468   -188.77914    225190.32 
+  146000    305.98586   -62958.403    7455.0658   -45026.208    614.86649    224514.12 
+  146000    307.35208   -62844.237    7513.5371   -44806.791    25.397192    225923.16 
+  146000    303.80257   -63015.284      7529.31   -45083.602   -29.779423    224429.76 
+  146000    300.31209   -62897.927    7527.5723   -45087.499    233.58668    223347.91 
+  147000     305.4522    -63031.51    7632.4951   -44940.159    87.752861    224287.11 
+  147000    308.13677   -62854.484    7584.1088   -44719.598    314.56673    224599.77 
+  147000    302.60818   -62748.038     7628.658   -44757.905   -123.99694    225011.47 
+  147000    304.26057   -62796.358     7509.265   -44869.039    487.38996    224275.33 
+  147000    304.83069   -62816.611    7569.3893   -44809.646    -694.7909     224043.2 
+  148000    304.64904   -62872.649    7563.0857   -44878.208   -367.62746    224046.47 
+  148000    304.53143   -62811.944    7497.5906   -44887.025    188.34036    224295.29 
+  148000    302.38461   -62870.398    7508.7484    -45007.83   -152.45558    224058.26 
+  148000    301.83586   -62923.897    7563.7381   -45025.128    177.12044    224772.48 
+  148000    304.62029   -62931.581    7524.8519   -44976.358   -92.899302    223923.01 
+  149000     302.1381   -62817.959     7556.001   -44916.578    209.27428    224309.65 
+  149000    306.24493   -62786.674    7559.1467   -44741.528   -609.52628    224778.63 
+  149000    299.51614   -62811.129    7468.3002   -45087.227   -186.34628    224587.74 
+  149000    307.62242   -62843.436    7543.8116   -44766.459    162.18357    224426.61 
+  149000    307.08529   -62811.196    7438.0719    -44858.35    -112.8671    224012.46 
+SHAKE stats (type/ave/delta) on step 150000
+  53 0.999997 3.40567e-06 15360
+  55 109.5 0.000343315
+  150000    302.17519   -62959.674    7526.4904   -45086.535   -24.004891    224827.42 
+SHAKE stats (type/ave/delta) on step 150000
+  53 1.00001 6.2128e-06 15360
+  55 109.5 0.000631693
+  150000    304.17578   -62847.482    7648.9435   -44783.388   -652.61905    225434.74 
+SHAKE stats (type/ave/delta) on step 150000
+  53 1 2.60806e-05 15360
+  55 109.5 0.00276331
+  150000    308.53843   -62783.811     7534.782   -44684.499   -233.69154    224643.87 
+SHAKE stats (type/ave/delta) on step 150000
+  53 0.999994 3.99042e-06 15360
+  55 109.5 0.000406574
+  150000    304.30942    -62756.14    7509.4483   -44826.966   -277.09589    224577.87 
+SHAKE stats (type/ave/delta) on step 150000
+  53 1 1.07626e-05 15360
+  55 109.5 0.00111081
+  150000    308.64158   -62767.711    7539.3528   -44660.296    187.94265    223715.03 
+  151000    305.29972   -62814.377    7592.4272   -44768.315    36.270329    224467.36 
+  151000    305.52657   -62993.437    7488.6726   -45043.362    -249.0277    224441.87 
+  151000    301.15541    -62935.07    7677.2524   -44946.086   -123.69472    224938.86 
+  151000    305.86532   -62938.879    7491.8402   -44974.038   -330.01018    224194.14 
+  151000    300.11958   -62846.696    7604.1843   -44966.248    -122.4968     223854.3 
+  152000    300.04083   -62756.407    7534.7025   -44948.137   -473.83092     224525.8 
+  152000    302.58719    -62847.47    7511.4782   -44975.236   -561.27375    224381.95 
+  152000    300.56994   -62754.359    7705.4295   -44757.245    2.0353222    224989.07 
+  152000    301.52916   -62955.126    7529.8873    -45100.71   -311.45932    224927.96 
+  152000    301.97996    -62900.36     7596.056   -44964.339    180.49368    224226.47 
+  153000    306.86251   -62846.803    7443.0853   -44896.572    51.219162    224393.97 
+  153000    302.51374   -62808.464    7602.6314   -44847.591   -636.76864    224305.33 
+  153000    306.13578   -62907.395    7566.9918   -44858.141   -166.67967    224555.84 
+  153000    300.69596   -62826.576    7417.5581   -45113.018   -125.11195    225423.22 
+  153000    299.27102   -62882.875    7615.7909   -45019.875     106.4263     225061.3 
+  154000    304.98745   -62801.727    7529.9424   -44828.842    350.80394    224524.03 
+  154000    302.03148   -62861.841    7571.9311   -44948.181   -382.81529    223979.96 
+  154000    306.39634   -62934.026    7568.5893   -44874.252    555.24607    223694.81 
+  154000    303.35029   -62852.584    7613.5407   -44852.158   -391.56398    224956.58 
+  154000    302.69531    -62845.65    7498.3529   -44982.839     489.5875    223961.64 
+  155000    301.05156   -62774.619    7727.8663   -44738.578    37.817015    224917.08 
+  155000    305.39989   -62737.472    7541.8274    -44738.58   -402.82615    224942.28 
+  155000    302.17731   -62798.293    7573.7599   -44877.811    498.15488    224805.32 
+  155000    303.70117   -62899.207    7543.7162   -44956.591   -29.406063    223823.92 
+  155000    305.56863   -62735.579    7455.2131   -44817.524    122.71608     224173.6 
+  156000    306.81704   -62828.935    7524.8533   -44798.492     -80.8778    224612.42 
+  156000    301.35961   -62899.192    7573.3811   -45007.088   -521.90446    224361.41 
+  156000    301.98054   -62864.987    7516.0876   -45008.915    223.14645    224711.65 
+  156000     307.3632   -62834.764    7505.3455   -44805.129    62.436901    224753.72 
+  156000    304.72236   -62767.827    7551.1331   -44782.828    108.93757     224342.5 
+  157000    305.05826   -62830.911    7657.9556   -44727.588    130.73902    224732.63 
+  157000    303.11538   -62878.571    7463.1951   -45036.534    112.00143    224367.93 
+  157000     303.4931    -62733.32    7450.1072   -44891.438      589.987    224712.72 
+  157000    305.15827   -62832.748    7533.3992   -44850.557   -222.94391    225140.46 
+  157000    303.50023   -62823.966    7575.7697   -44856.177   -10.943317    224767.94 
+  158000    303.03277   -63016.333    7500.3098    -45140.01    71.277417    224694.65 
+  158000     303.2189   -62853.007    7632.1806    -44838.44     278.1714    223428.04 
+  158000    308.47895   -62911.384    7470.7951   -44878.095    295.93263    224884.18 
+  158000    304.38228   -62797.497    7579.9744   -44795.301   -77.598752    224455.49 
+  158000    305.93046   -63043.905    7485.0258   -45083.648    19.687724    223935.94 
+  159000    303.89719   -62787.192      7505.98     -44875.6     121.5012    223767.04 
+  159000    303.00466   -62846.104    7495.9467   -44975.106    141.29044    224092.33 
+  159000    304.49504   -63004.411    7556.8066   -45021.522   -44.455737    224295.47 
+  159000    307.85164   -62851.219    7362.7262   -44947.478    348.24517    224378.39 
+  159000    301.28383   -62935.659    7583.8043   -45035.726    194.57939    223686.87 
+SHAKE stats (type/ave/delta) on step 160000
+  53 0.999995 1.23797e-05 15360
+  55 109.5 0.0013244
+  160000    303.83532    -62933.66    7610.4006   -44919.766   -5.1066872    223981.73 
+SHAKE stats (type/ave/delta) on step 160000
+  53 1.00001 1.25236e-05 15360
+  55 109.5 0.00131942
+  160000    307.49979   -63018.857    7553.3288   -44936.562    249.74995    224401.12 
+SHAKE stats (type/ave/delta) on step 160000
+  53 0.999997 9.84998e-06 15360
+  55 109.5 0.00103668
+  160000    299.02391   -62846.183    7497.7835   -45109.651     375.5331    224168.36 
+SHAKE stats (type/ave/delta) on step 160000
+  53 0.999997 1.06169e-05 15360
+  55 109.5 0.00107605
+  160000    302.41436   -62695.571    7514.6882   -44826.044    582.46623    224093.82 
+SHAKE stats (type/ave/delta) on step 160000
+  53 1 1.09203e-05 15360
+  55 109.5 0.00106591
+  160000    303.74379   -62732.109    7493.8271   -44837.923    226.30422    223436.67 
+  161000    304.17592   -62911.265    7489.6085   -45006.501    13.789972    224078.08 
+  161000    300.90696   -62855.112    7592.7067   -44959.181    285.68626    224213.98 
+  161000     303.0081   -62772.648    7588.9876   -44808.492    256.48289    223530.12 
+  161000    301.35411   -62816.312     7474.672   -45023.105     -33.1462    223882.76 
+  161000    304.71567   -62989.894    7603.3171    -44952.94   -64.375761    224355.39 
+  162000    305.58243   -62902.158    7545.0702   -44893.773   -345.44491    224730.67 
+  162000    304.68603    -62971.01    7558.2131   -44980.175   -89.208703    224400.53 
+  162000    303.24395    -63052.34    7441.5599   -45227.536    98.661133    223708.37 
+  162000    304.33955   -62848.586    7493.3868   -44934.441     369.2614     223910.9 
+  162000    302.42064   -62883.735    7666.3543   -44862.328    128.22456    224511.24 
+  163000    299.15476   -62798.787    7483.9133   -45071.646    52.157378    224745.98 
+  163000    307.75398   -62883.031    7542.5202    -44802.84    387.21027    223571.31 
+  163000    299.40418   -63009.164    7576.3757    -45181.02    227.67562    223495.49 
+  163000    302.28579    -62769.78    7523.4366   -44895.908    82.428611    224661.68 
+  163000    304.66912   -62910.322    7542.1284    -44936.15    203.80702    224071.35 
+  164000    300.03994   -62805.003    7454.1707   -45077.295    220.29558    223465.89 
+  164000     302.5747   -63055.034    7580.5656   -45114.139   -267.63811    223976.04 
+  164000    303.58667    -62903.75    7404.9584   -45103.812    68.457834     224084.6 
+  164000    305.61319   -62833.375    7406.8822   -44962.124    172.42921     223981.7 
+  164000    304.29914   -62820.646    7503.1062   -44898.165    56.346443    223878.52 
+  165000    305.49465   -62932.623    7468.3898   -45003.924      187.168    224897.43 
+  165000    303.89872   -62935.261    7478.3822   -45051.215   -15.762877    224273.54 
+  165000    302.51263    -62792.31    7484.1978   -44949.908    -318.0998    224542.82 
+  165000    305.89405    -62840.81     7528.511   -44838.314    41.570768     224254.2 
+  165000     305.1653   -62802.328    7560.6017   -44792.693   -189.45279    224219.94 
+  166000    303.59647   -62785.382    7435.0399   -44955.027    8.1716026    225057.67 
+  166000    301.04116   -62879.078    7507.7003   -45063.558    26.329526    224785.74 
+  166000    307.28624    -62945.72    7516.1509   -44907.915   -317.13844    224279.57 
+  166000    304.31183   -62841.568     7487.584   -44934.175    89.376713    224513.63 
+  166000    303.40678   -62906.246    7454.7684   -45062.658    242.61294    223778.49 
+  167000    298.87366   -62918.775    7557.8355   -45127.337   -38.040839    224203.57 
+  167000    305.61512   -63034.667    7523.2482   -45046.984    -204.2062    223706.25 
+  167000    305.06041   -62998.023    7548.0908   -45004.491    -593.3554    224410.49 
+  167000    302.33724   -62945.671    7623.5301   -44969.943    345.41874    223650.66 
+  167000    305.76337   -62843.463    7597.1764   -44776.776    281.96929    224231.92 
+  168000     300.3746   -62823.578    7569.7553   -44968.826    288.75167    224684.67 
+  168000    305.39543   -62756.759    7539.3996   -44760.448   -494.04526    224635.03 
+  168000    307.02823   -62848.245    7553.3626   -44782.062   -386.69167     224299.6 
+  168000    305.19066   -62790.114    7516.1979   -44824.015   -115.57967    223781.96 
+  168000    303.37657   -62859.184    7560.2073   -44911.192    193.64589    224095.04 
+  169000    301.63172   -62773.494    7476.5374   -44968.916   -9.9562636    224287.73 
+  169000    305.28791   -62989.329    7582.3521   -44953.746   -41.516263    224002.38 
+  169000    308.00061   -62943.356    7657.1843   -44740.056   -213.51476    224216.61 
+  169000    305.74283   -63033.232    7636.7204   -44927.704   -774.36504    224596.79 
+  169000    303.52001   -62924.578     7591.478   -44940.404    16.830057    224818.09 
+SHAKE stats (type/ave/delta) on step 170000
+  53 1.00001 2.60785e-05 15360
+  55 109.5 0.00272891
+  170000    301.64394   -62898.257    7514.5161   -45055.282    64.309202     223759.4 
+SHAKE stats (type/ave/delta) on step 170000
+  53 1 1.38524e-05 15360
+  55 109.5 0.00146129
+  170000    305.14973   -63006.461    7593.9757   -44963.986    193.21238    223256.74 
+SHAKE stats (type/ave/delta) on step 170000
+  53 0.999994 2.47851e-05 15360
+  55 109.5 0.00257667
+  170000    307.80971   -62953.763    7560.7243    -44853.46    556.47253    223877.19 
+SHAKE stats (type/ave/delta) on step 170000
+  53 0.999996 9.69579e-06 15360
+  55 109.5 0.000985021
+  170000    309.03072   -62842.074    7512.7249   -44747.963   -613.44523    223987.49 
+SHAKE stats (type/ave/delta) on step 170000
+  53 1 1.26083e-05 15360
+  55 109.5 0.00131689
+  170000    303.48234   -63006.096    7510.7383   -45103.951   -116.83174    223719.49 
+  171000    305.62484   -62862.234    7435.3624   -44962.105     25.63284    223809.47 
+  171000    304.63453   -62919.067    7387.7024   -45100.506   -75.507135    223258.39 
+  171000    301.91751   -62926.857     7590.116   -44998.915    787.69498    224752.13 
+  171000    300.27991   -62873.481    7497.6476   -45094.079   -352.93803    224577.85 
+  171000    304.98897    -62898.82    7489.3581   -44966.467    375.81447    224762.57 
+  172000     302.6294   -62908.453    7514.5728   -45031.678   -200.57369    224105.22 
+  172000    302.96001     -62945.6    7532.4684   -45039.609    311.38145    223239.92 
+  172000    307.52965   -62910.488    7522.8512   -44857.648    372.67383     223688.1 
+  172000    307.09198   -62735.498    7535.2991   -44685.196   -240.09123    224597.98 
+  172000     302.6523   -63049.775    7546.8284   -45139.961   -4.6915403    224027.83 
+  173000    304.54124   -62907.635    7593.3976   -44886.573   -223.36065    224221.59 
+  173000     304.8039   -62600.227    7478.1423   -44685.427    470.24286    224002.54 
+  173000    306.43643   -62889.611    7491.6775   -44905.377   -34.369076    224075.04 
+  173000      300.802   -62749.459    7613.4995   -44836.329   -426.69227    225435.26 
+  173000    302.27636   -62856.898    7611.3282   -44895.457   -123.43911    224481.97 
+  174000    302.42337   -62697.096     7607.437   -44734.512   -84.720708    223984.99 
+  174000    302.83278   -62864.526    7464.5049   -45030.856   -100.82995    224711.19 
+  174000    300.35231   -62952.944    7597.5451   -45071.167   -125.30522    224964.26 
+  174000    301.43609   -62811.662    7511.3269   -44978.993    363.05656    224999.07 
+  174000    304.74108   -62888.514    7548.3162   -44905.691   -4.7711295     224878.7 
+  175000    302.57113   -62846.332    7560.0122   -44926.114   -314.06128    224134.34 
+  175000    305.29075    -62896.16    7561.3334   -44881.499    143.62834    223772.99 
+  175000    301.85154   -62911.964    7563.9943   -45012.403    201.30206    224150.02 
+  175000    306.37392   -62810.791    7611.4043    -44708.97    417.64104    224829.29 
+  175000    303.08494   -63008.326    7508.9466   -45121.579    153.51003    223978.19 
+  176000    307.41888   -62939.249    7508.7764   -44904.277   -731.52006    224266.59 
+  176000    301.52647   -63018.157    7679.4322   -45014.288    184.11493    224611.54 
+  176000    305.09552   -62863.962    7640.8849   -44776.434    104.08497     223418.8 
+  176000    302.81644   -62891.607    7552.2737   -44970.727   -345.84205    225843.18 
+  176000    306.95347   -62909.577     7614.689   -44784.628    727.66429    223874.11 
+  177000    306.17766   -62911.653    7565.8617   -44862.095    89.120883    223130.33 
+  177000    302.96045   -62997.163    7548.0185   -45075.608   -271.27265    224105.65 
+  177000    302.11803   -62904.037    7458.9457   -45100.399   -167.21652    223351.61 
+  177000    304.44362   -62778.493    7423.9271   -44930.244   -117.05677    225432.96 
+  177000    302.10107   -62713.875     7512.724    -44857.04    677.26543    224722.01 
+  178000    302.67907   -62851.009    7534.2328   -44952.874    300.83096    224199.27 
+  178000    300.16393   -62890.034    7592.0627   -45020.189   -240.54032    224998.09 
+  178000    300.61099   -62833.186    7508.1419   -45031.954    472.59452    223707.75 
+  178000    304.34216   -62894.081    7636.2645   -44836.969   -245.38651     225428.8 
+  179000    303.83973   -62921.377    7534.2112   -44983.522   -52.990163    223416.68 
+  178000    306.08524   -62791.066    7444.1957   -44866.339    765.97795    224258.43 
+  179000    308.38182   -62845.869    7473.4474   -44813.254    314.52274     223493.4 
+  179000    300.16525   -62759.058     7415.969   -45065.261    258.99963    223541.68 
+  179000    304.11919   -62906.848      7550.84   -44942.795    265.80208    224805.04 
+SHAKE stats (type/ave/delta) on step 180000
+  53 1.00001 7.11402e-06 15360
+  55 109.5 0.000713844
+  180000    303.44157    -62802.07    7360.4422   -45051.617    562.87632    223991.15 
+  179000    301.58096   -62961.536    7492.7647   -45142.469    37.316946    224240.81 
+SHAKE stats (type/ave/delta) on step 180000
+  53 0.999994 3.34656e-06 15360
+  55 109.5 0.000348298
+  180000    301.34014   -63020.131    7460.8654   -45241.209    77.521883    223612.75 
+SHAKE stats (type/ave/delta) on step 180000
+  53 0.999999 5.98759e-06 15360
+  55 109.5 0.000607904
+  180000    304.78636   -62899.198    7586.1199   -44877.021   -26.148293    223443.65 
+SHAKE stats (type/ave/delta) on step 180000
+  53 1 1.07233e-05 15360
+  55 109.5 0.0011357
+  180000    302.33562    -62906.55    7642.9675    -44911.44    199.84035    224239.99 
+  181000    300.90977   -62868.458    7645.8892   -44919.248   -236.73464    225235.38 
+SHAKE stats (type/ave/delta) on step 180000
+  53 0.999992 9.90208e-06 15360
+  55 109.5 0.00103741
+  180000    301.44538   -63054.604    7628.6764   -45104.268    137.04125    224672.07 
+  181000    307.80748    -62871.59    7494.1244   -44837.964    21.230595     224680.3 
+  181000    301.68006   -62914.153    7448.6251   -45135.833   -51.442478    224070.69 
+  181000    303.71313    -62827.79    7546.6428   -44881.837    305.81532     225186.6 
+  182000    304.36814   -62972.656    7553.7799   -44997.139    151.81036     223667.2 
+  181000    301.95382   -62908.414    7500.7237   -45068.621    37.333086    223909.93 
+  182000      304.716   -62929.122    7692.3269   -44803.147    -180.5116    223344.74 
+  182000    306.79349   -62885.173    7498.4934   -44881.898    208.62103    223605.58 
+  182000    302.82742   -63027.606    7541.6008   -45117.023    410.14392    224952.86 
+  183000    303.70901   -62913.685    7531.2149   -44983.302    199.23165    223931.15 
+  182000    299.00826   -62967.984    7453.8661   -45275.906   -83.255918    224236.34 
+  183000    304.17215   -62870.141    7507.7716   -44947.343    40.566946    224480.39 
+  183000    304.08714   -62931.269    7533.9253   -44985.229   -121.03669    223233.78 
+  183000    303.55113   -62882.874    7466.6706   -45022.441    684.76619    223691.72 
+  184000    300.71764   -62898.496    7608.2031    -44993.55   -38.277695    224811.55 
+  183000    301.07019    -62898.83    7568.5823   -45021.434   -638.79882    223975.52 
+  184000     305.3007   -62859.117     7684.851   -44720.598   -39.668299     224434.6 
+  184000    305.69092   -62930.408    7665.2272    -44798.15   -86.139333    223633.86 
+  184000    308.48393   -62842.721    7479.9594   -44800.098   -486.65621    224811.47 
+  185000    303.69008   -62744.857    7550.5096   -44795.828    304.64586    223170.38 
+  184000    306.16444    -62938.57    7627.8599   -44827.467    75.800141    224303.52 
+  185000    308.91291   -62771.812    7509.2947   -44685.164   -86.140221     224768.4 
+  185000    306.22927   -62782.046    7519.3669   -44777.216    -15.82497    223479.22 
+  185000    306.22349   -62834.716    7569.8614   -44779.589    -169.9793    225248.95 
+  186000    303.71888   -62831.104    7530.0818   -44901.516   -430.09295    224326.83 
+  185000    304.06374   -62867.213    7618.9927   -44836.906   -161.81833     224448.3 
+  186000    302.91718   -62925.305    7480.4958   -45072.754   -111.84007    223745.79 
+  186000    306.72069    -62987.91    7561.6618   -44923.959    351.53222    223051.39 
+  186000    307.42396   -62950.863    7477.8676   -44946.625   -73.955313       224805 
+  187000    301.25233   -62937.494    7495.0999   -45127.343    28.233287    223268.14 
+  186000    305.93322   -62910.882    7442.3106   -44993.245    687.43952    223961.18 
+  187000     302.5348   -62832.369     7497.828   -44975.579    33.840855    223890.74 
+  187000    302.55321   -62951.254    7540.4529   -45051.208    460.22811    224072.42 
+  187000    304.14891   -63065.566    7485.2628   -45166.072   -409.36033    224665.59 
+  188000    302.90471   -62884.781     7609.929   -44903.224    195.14029    223946.27 
+  188000    301.96701    -62782.93    7663.2477   -44780.161   -706.28812       224253 
+  187000    305.47439   -62856.562    7514.0833   -44882.863     290.2939    224460.61 
+  188000    305.14422   -62780.315    7490.0087   -44841.996    238.68631    224078.83 
+  188000    306.78707    -62897.22    7610.2068   -44782.451   -251.00882    224687.85 
+  189000    303.46017   -62883.056    7453.9512   -45038.457    452.35448    224112.91 
+  189000    308.63869   -62874.959    7632.9879   -44674.008   -352.62485    224399.41 
+  188000    301.00819   -62916.992    7561.3573   -45048.944    438.50192    223985.64 
+  189000    302.11886   -63032.685    7609.3712   -45078.593   -432.99533    224067.88 
+  189000    306.45815   -62825.076    7539.8587   -44791.917   -312.89137    223817.38 
+SHAKE stats (type/ave/delta) on step 190000
+  53 1 1.57818e-05 15360
+  55 109.5 0.00162835
+  190000    303.85637   -62805.415    7433.9959   -44967.205    361.31343    223661.98 
+SHAKE stats (type/ave/delta) on step 190000
+  53 1.00001 7.62777e-06 15360
+  55 109.5 0.000786678
+  190000    302.03845   -63022.487    7542.4127   -45138.107    619.33176    223188.62 
+  189000    305.31363   -62782.151     7434.405   -44893.635   -122.51793    224472.71 
+SHAKE stats (type/ave/delta) on step 190000
+  53 0.999997 1.26728e-05 15360
+  55 109.5 0.00134214
+  190000    301.02441   -62974.167     7520.041    -45146.88   -116.53466    224741.47 
+SHAKE stats (type/ave/delta) on step 190000
+  53 0.999996 1.23909e-05 15360
+  55 109.5 0.0012803
+  190000    300.66707    -62929.09    7670.5569   -44963.522   -83.506831    224412.82 
+  191000    302.39093   -62869.767    7600.0289   -44915.702   -228.11824    223566.79 
+  191000    307.07092   -63011.526    7398.2763   -45098.968    658.89708    222574.93 
+SHAKE stats (type/ave/delta) on step 190000
+  53 1 7.5676e-06 15360
+  55 109.5 0.00076972
+  190000    305.64738   -62774.319    7526.8594    -44781.92    125.72295    224363.24 
+  191000    303.15826   -62881.762    7485.7505   -45015.702   -15.444743    224706.32 
+  191000    304.24201   -62780.683     7518.522   -44844.742    276.76511    225505.23 
+  192000    302.92214    -62879.56    7416.0964   -45091.238   -62.670093    224382.36 
+  192000    304.74985   -63145.478    7541.6692   -45169.002    17.241085    223778.14 
+  191000    303.49172   -62885.761    7492.6223   -45001.411   -120.41844    224714.46 
+  192000    306.63235   -62868.417    7570.6648   -44798.487    142.91454    224711.21 
+  192000    308.72648    -62835.76    7673.8767   -44590.914    53.881994     224631.9 
+  193000    304.63408   -62917.856     7543.232   -44943.781   -434.05399    224671.31 
+  193000    302.89147   -62921.391    7586.6132   -44963.603    571.60138    223687.89 
+  192000    303.75219   -62765.553     7478.344   -44886.562    167.93741    224705.42 
+  193000    303.49607   -62815.902    7657.1436   -44766.882   -117.78783    224545.07 
+  193000    302.85536   -62871.815    7494.3093   -45007.567   -172.26694    224893.36 
+  194000    301.06409   -62759.061    7444.2925   -45006.164    162.49078    225562.92 
+  194000    302.79765    -62964.33    7515.2364   -45081.131   -298.61848    223813.24 
+  193000    305.63311   -62739.004    7474.2274   -44799.726   -308.05874    224524.53 
+  194000    302.70259   -62853.252    7451.4427   -45037.101   -282.36862     225248.5 
+  194000    302.86331    -62825.39    7535.8835   -44919.296   -58.429046    224834.65 
+  195000    306.09286   -62668.458     7483.072   -44704.594    322.83151    225031.36 
+  195000    300.45843   -62977.688    7609.5412    -45080.28    156.99536    223442.11 
+  194000    301.73755   -62985.714    7541.4059   -45112.644   -420.25041     224068.4 
+  195000     303.3837   -63009.429    7603.5286   -45017.871   -632.75958    224722.03 
+  195000    304.64194   -62742.235    7588.4385   -44722.685   -140.42602    224635.41 
+  196000    303.36662   -62787.902    7519.3975    -44881.06   -135.95367    224491.03 
+  196000    304.30352   -62829.951    7586.8911   -44823.536    1093.8695    224825.49 
+  195000    303.92398   -62962.195    7471.8091   -45083.858   -92.068086    225181.94 
+  196000    306.14541   -62798.995     7427.303   -44889.101    149.94599     223957.7 
+  196000    301.76757   -62835.185    7509.2372   -44993.256     52.24081     224408.4 
+  197000    305.05414   -62827.818    7528.8239   -44853.768   -329.41557    224937.77 
+  197000    305.85943   -62791.648    7566.7776    -44752.07    249.44177    224040.74 
+  196000    305.92382   -62832.732    7526.4251   -44831.303     54.53934    225192.53 
+  197000    305.04889   -62868.977    7445.8914   -44978.039    100.25932    223781.09 
+  197000    305.32565   -62791.275    7595.4932   -44741.259    217.87521    224481.95 
+  198000    301.70293   -62809.886    7475.2869   -45004.121    248.98374    225032.87 
+  198000     304.5447   -62966.122     7441.464   -45096.875    -253.6181    224818.18 
+  197000     306.2698   -62771.869    7541.5511   -44743.466    314.21253     224694.3 
+  198000    306.72459   -62907.137    7495.8141   -44908.899    1.6165088    225041.68 
+  198000    303.22911   -62895.559    7532.5437   -44980.279    84.680265    223973.61 
+  199000     301.6458   -62811.754    7608.1902   -44875.041    257.32266    224140.01 
+  199000    306.85787    -62999.27    7670.7174   -44821.566   -389.08224    224763.62 
+  198000    306.02465   -62853.271    7473.0629   -44901.751    258.07299     224387.2 
+  199000    302.81256   -62848.851    7566.3141   -44914.064   -341.20467     224884.7 
+  199000    305.36858   -62817.517    7597.4651    -44764.06   -410.01056    224716.99 
+SHAKE stats (type/ave/delta) on step 200000
+  53 0.999997 1.1076e-05 15360
+  55 109.5 0.00114391
+  200000    302.87543   -62689.889    7514.8903   -44804.372    585.44428    224181.02 
+SHAKE stats (type/ave/delta) on step 200000
+  53 0.999999 9.60159e-06 15360
+  55 109.5 0.00098312
+  200000    306.19013   -63043.042    7566.0935   -44992.825   -360.00889    223799.73 
+  199000    302.37637   -62674.208    7458.6839   -44861.986    320.50844    224648.41 
+SHAKE stats (type/ave/delta) on step 200000
+  53 0.999999 7.34157e-06 15360
+  55 109.5 0.000749826
+  200000    302.54429   -62840.707    7610.5408   -44870.879    593.82431    224334.44 
+SHAKE stats (type/ave/delta) on step 200000
+  53 0.999991 3.93752e-06 15360
+  55 109.5 0.000396468
+  200000    304.88328   -62978.018    7498.6538   -45039.988    409.88161    223738.15 
+  201000    305.51348   -62793.278    7410.7235     -44921.6    358.56439    224388.37 
+  201000    309.11403   -62852.852    7493.7922    -44774.82   -189.21833    224227.24 
+SHAKE stats (type/ave/delta) on step 200000
+  53 1 1.42266e-05 15360
+  55 109.5 0.00146713
+  200000    301.17428   -62847.258    7562.4364   -44972.444   -72.572018    224085.91 
+  201000    301.94957   -62851.688    7443.5281   -45069.237    475.26505    224523.94 
+  201000    305.43955   -62749.689     7565.485   -44725.781   -387.15911     224561.7 
+  202000     306.5525   -62713.967    7510.9982   -44706.439   -287.10906    224314.07 
+  202000    304.68548   -62860.351    7451.4968   -44976.251   -625.65667    224323.17 
+  201000    301.98652   -62818.768    7373.1054   -45105.474     94.90594    224381.97 
+  202000     304.9937   -62864.163    7529.5507   -44891.455   -73.550426    223799.42 
+  202000    301.76986   -62922.605    7576.3423   -45013.492    16.898061    224616.22 
+  203000    305.15889   -62894.805    7600.0887   -44845.903   -25.750904    223885.65 
+  203000    301.76908   -62761.371    7570.2338   -44858.393    -486.4736    224881.41 
+  202000    302.87554   -62742.316    7396.3905   -44975.296     181.4032    224287.35 
+  203000     303.9561   -62968.388    7693.3118   -44867.448    75.906021    224263.36 
+  203000    303.82254   -62840.567    7477.8548   -44959.656   -153.18813    224802.92 
+  204000    306.41217   -63036.626    7560.3824   -44984.518    213.89989    224068.05 
+  204000    307.89025   -62990.654    7572.7502   -44875.568   -372.71391    224152.34 
+  203000    303.19589   -63005.023    7554.9821   -45068.442    210.60539    223708.04 
+  204000    306.66801   -62902.649    7517.0331    -44885.13    -174.4536    224431.58 
+  204000     304.8851   -62799.945    7556.3334   -44804.173   -42.594079     223627.9 
+  205000    305.14134   -62723.253    7454.3258   -44820.715    581.09506    223619.56 
+  205000    305.50838   -62950.267    7402.0929   -45087.395    315.16545    224267.09 
+  204000     308.7238    -62739.77    7501.8026   -44667.089   -70.052005    224422.26 
+  205000    304.65765   -62951.829     7548.311   -44971.868    266.69467    223852.12 
+  205000     303.4817   -62971.725    7424.8788   -45155.462   -179.41685    223662.81 
+  206000    308.66591   -62983.485    7459.8248   -44954.765    229.10298    224457.96 
+  206000    306.44137   -62964.226    7584.1624   -44887.338    419.63659    223772.18 
+  205000    300.56459   -62815.147     7575.567   -44948.078     344.7908    224593.46 
+  206000     302.0448   -62892.226    7544.2831   -45005.758   -233.10209    224508.87 
+  206000    307.58932   -62823.638    7544.6604   -44746.946    40.889174    224411.61 
+  207000    303.74756   -62978.041    7572.5023   -45005.051   -311.64159    223765.75 
+  207000    306.53877   -62975.489    7596.0347   -44883.394   -26.897444    224107.32 
+  206000    305.69496   -62978.441    7614.3117   -44896.961    196.96469    224570.37 
+  207000    302.40502   -63028.549    7511.3232   -45162.707   -134.44561    224243.53 
+  207000     307.2972   -62824.849    7471.0543   -44831.765    97.181052    224457.05 
+  208000    308.71661   -62925.517     7604.255   -44750.631    41.459352    224376.18 
+  208000    302.00534   -63058.874    7548.6423   -45169.398   -151.51972    223909.84 
+  207000    304.64438   -62912.155    7575.4619   -44905.497   -204.98832    225071.46 
+  208000    303.96106   -62956.109    7649.0701   -44899.241   -196.38726    224032.29 
+  208000    302.17949   -62830.223    7488.3546   -44995.071    346.55033    224340.32 
+  209000    302.90136   -62837.058    7394.7584   -45070.786    189.61385    224443.75 
+  209000    299.84305   -62845.425    7512.1482   -45066.481    439.46885    223759.02 
+  208000    306.47298   -62769.055    7502.5165    -44772.73    1.3262552    224396.69 
+  209000    307.90064   -63052.293    7524.0228   -44985.579   -624.51889    224029.68 
+  209000    306.72007   -62759.207    7535.1053   -44721.833    15.252442    225286.93 
+SHAKE stats (type/ave/delta) on step 210000
+  53 0.999996 9.36592e-06 15360
+  55 109.5 0.000952898
+  210000     305.0549   -62793.518    7562.0899   -44786.176    395.61539    223750.24 
+SHAKE stats (type/ave/delta) on step 210000
+  53 0.999999 1.25689e-05 15360
+  55 109.5 0.00131842
+  210000    304.90752   -62880.571    7512.1904   -44928.175   -88.376921    224855.11 
+  209000    299.22803   -62801.036    7504.2338   -45051.066    255.22976     224253.1 
+SHAKE stats (type/ave/delta) on step 210000
+  53 1.00001 1.52244e-05 15360
+  55 109.5 0.00159636
+  210000    301.51638   -62984.885    7509.9203   -45150.873   -115.09315    223871.73 
+SHAKE stats (type/ave/delta) on step 210000
+  53 0.999999 1.02379e-05 15360
+  55 109.5 0.00105371
+  210000    302.69073   -62881.947    7404.7207   -45112.925   -25.872764     224642.8 
+  211000    299.90123   -62948.429    7598.7902   -45080.852    122.72399    224103.79 
+  211000    305.93245   -62747.297    7502.1499   -44769.847   -349.19653    224521.04 
+SHAKE stats (type/ave/delta) on step 210000
+  53 1 5.72974e-06 15360
+  55 109.5 0.000587706
+  210000     304.5885   -62935.432    7609.4909   -44896.658   -234.59981    224521.66 
+  211000    302.92628   -62823.274    7541.6131   -44909.294      41.0594    224813.03 
+  211000    304.07917   -62702.358    7543.7038   -44746.811   -24.121533    224507.84 
+  212000    308.36005   -62935.077    7525.2504   -44851.404   -19.307515    224236.96 
+  212000     306.5186   -62924.229    7455.0125   -44973.847    122.78422    224532.87 
+  211000    301.99554   -63052.219     7549.576   -45162.145   -561.07139    223933.38 
+  212000    301.00963   -62786.707     7613.913   -44866.054    151.06479    224793.86 
+  212000    306.40141   -62744.468    7660.5202   -44592.591   -246.85685    224717.77 
+  213000    297.78003    -62859.32    7588.4929    -45074.67   -164.19549    224584.21 
+  213000    301.63562   -62963.755    7481.6956   -45153.885   -10.843209     224037.5 
+  212000    301.64134   -63018.903    7577.5527    -45112.98   -475.07163    224105.77 
+  213000    302.14778   -62812.399    7674.3918   -44792.296   -102.15278    223974.99 
+  213000    305.34656   -62788.612    7392.3778   -44940.996   -547.98964    225529.94 
+  214000    304.49319   -62821.076    7673.8293   -44721.228      2.81301    224889.53 
+  214000    303.26139    -62981.07    7449.5316   -45147.697    776.77865    223934.46 
+  213000    305.51213   -62935.757     7591.238   -44883.611   -75.579757    223856.72 
+  214000    307.74664   -62806.136    7492.4219   -44776.295    33.569742    223887.41 
+  214000     302.0402   -62825.228     7431.376   -45051.825    138.10679    225094.13 
+  215000     302.4468   -62901.301    7544.3411   -45001.011    109.29331    224592.61 
+  215000    304.39887   -63026.748    7624.2331   -44979.725    427.45673    224250.81 
+  214000    305.76893   -62922.533    7532.8688   -44919.963   -401.62546    224539.14 
+  215000    305.92006    -62872.97    7486.9786   -44911.116    390.44214    224826.68 
+  215000    301.38302   -62796.499    7518.7687   -44958.205   -233.37268    225039.73 
+  216000     307.6085   -62793.772    7447.2978   -44813.785  -0.33532485    224674.89 
+  216000    302.69446   -62893.953    7588.7954   -44940.728   -200.47699    225694.16 
+  215000    302.09007   -62869.085    7455.8267   -45069.524   -355.29225    224657.58 
+  216000    306.10119   -62811.647    7514.9827   -44815.586    485.22845    224600.37 
+  216000     306.6327   -62895.106    7568.6934   -44827.136   -507.09428    224867.55 
+  217000    307.18038   -62803.301    7572.4365   -44712.835    144.88859    224246.46 
+  217000    305.29465   -62919.999    7666.1199   -44800.418   -422.83394    224708.77 
+  216000    305.73174   -62929.589    7431.9106   -45029.251     272.9547     223855.6 
+  217000    305.57142   -62758.989    7584.7919   -44711.259   -7.2952943    224926.93 
+  217000    305.70764   -62946.585    7543.3057   -44935.676     219.0255    224049.69 
+  218000    304.26223   -62794.001    7597.5442   -44778.346   -149.13105    223882.02 
+  218000    302.08103   -62925.212    7550.1648   -45031.622   -216.37694    225162.98 
+  218000    302.77613   -62915.871    7371.0978   -45177.547   -176.92765    224507.94 
+  217000    304.65941   -62872.341    7496.2909    -44944.34     284.6499    224345.28 
+  218000    303.96799   -62862.323    7574.7955   -44879.492    48.044857     224723.9 
+  219000    306.20272   -62890.336    7569.0857   -44836.696    35.334272    224015.85 
+  219000    304.62576   -63054.713    7642.8391   -44981.316   -381.97123    223953.39 
+  219000    304.09805   -62830.092    7435.3004   -44982.302   -155.22344    224402.81 
+  218000    305.21128   -62889.452    7400.7002   -45038.145    192.67365    224881.38 
+  219000    302.47574   -62773.231    7424.5613   -44991.729    32.691884    224768.14 
+SHAKE stats (type/ave/delta) on step 220000
+  53 1 8.69202e-06 15360
+  55 109.5 0.000873155
+  220000    305.18218   -62827.849    7625.4712   -44752.768   -53.533913    224384.33 
+Loop time of 2674.92 on 16 procs for 220000 steps with 14048 atoms
+
+Performance: 7.106 ns/day, 3.377 hours/ns, 82.246 timesteps/s
+92.4% CPU use with 16 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 209.65     | 224.2      | 236.84     |  59.2 |  8.38
+Bond    | 67.781     | 115.96     | 153.48     | 264.1 |  4.34
+Kspace  | 1331.7     | 1366.3     | 1415.2     |  73.1 | 51.08
+Neigh   | 4.576      | 7.0859     | 10.133     |  74.7 |  0.26
+Comm    | 287.47     | 321.69     | 358.68     | 172.8 | 12.03
+Output  | 0.015332   | 0.016005   | 0.018579   |   0.6 |  0.00
+Modify  | 586.89     | 611.79     | 634.74     |  90.2 | 22.87
+Other   |            | 27.87      |            |       |  1.04
+
+Nlocal:    878 ave 1250 max 507 min
+Histogram: 6 2 0 0 0 0 0 0 2 6
+Nghost:    10305.8 ave 11984 max 8638 min
+Histogram: 8 0 0 0 0 0 0 0 0 8
+Neighs:    0 ave 0 max 0 min
+Histogram: 16 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 0
+Ave neighs/atom = 0
+Ave special neighs/atom = 2.99544
+Neighbor list builds = 11318
+Dangerous builds = 0
+System init for write_restart ...
+PPPM initialization ...
+  G vector (1/distance) = 0.180471
+  grid = 18 18 24
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.027818
+  estimated relative force accuracy = 8.37732e-05
+  using double precision FFTs
+  3d grid and FFT values/proc = 2156 648
+
+
+---------------------------------------------------------------------
+    Device Time Info (average): 
+---------------------------------------------------------------------
+CPU Poisson:     816.9057 s.
+CPU Idle Time:   494.1201 s.
+Max Mem / Proc:  0.81 MB.
+---------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------
+- Using acceleration for pppm:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.2/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Done.
+
+
+
+---------------------------------------------------------------------
+      Device Time Info (average): 
+---------------------------------------------------------------------
+Neighbor (CPU):  3.7144 s.
+Device Overhead: 148.7024 s.
+Average split:   1.0000.
+Threads / atom:  8.
+Max Mem / Proc:  22.39 MB.
+CPU Driver_Time: 130.8790 s.
+CPU Idle_Time:   7.8947 s.
+---------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------
+- Using acceleration for lj/cut/coul/long:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.4/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Done.
+
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+SHAKE stats (type/ave/delta) on step 220000
+  53 0.999995 1.32935e-05 15360
+  55 109.5 0.00141027
+  220000    307.97221   -62952.531    7652.2795   -44755.109    174.85638    224551.35 
+Loop time of 2675.46 on 16 procs for 220000 steps with 14048 atoms
+
+Performance: 7.105 ns/day, 3.378 hours/ns, 82.229 timesteps/s
+92.4% CPU use with 16 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 211.23     | 222.09     | 234.02     |  51.4 |  8.30
+Bond    | 69.914     | 115.25     | 150.67     | 257.3 |  4.31
+Kspace  | 1339.1     | 1371.6     | 1417.3     |  67.4 | 51.27
+Neigh   | 4.5941     | 7.2454     | 10.408     |  74.6 |  0.27
+Comm    | 286.35     | 321.38     | 358.67     | 174.0 | 12.01
+Output  | 0.015234   | 0.015931   | 0.018492   |   0.6 |  0.00
+Modify  | 584.49     | 610.35     | 634.79     |  92.3 | 22.81
+Other   |            | 27.49      |            |       |  1.03
+
+Nlocal:    878 ave 1263 max 503 min
+Histogram: 7 1 0 0 0 0 0 0 2 6
+Nghost:    10325.2 ave 11991 max 8680 min
+Histogram: 8 0 0 0 0 0 0 0 0 8
+Neighs:    0 ave 0 max 0 min
+Histogram: 16 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 0
+Ave neighs/atom = 0
+Ave special neighs/atom = 2.99544
+Neighbor list builds = 11329
+Dangerous builds = 0
+System init for write_restart ...
+PPPM initialization ...
+  G vector (1/distance) = 0.180496
+  grid = 18 18 24
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0277589
+  estimated relative force accuracy = 8.35951e-05
+  using double precision FFTs
+  3d grid and FFT values/proc = 2156 648
+
+
+---------------------------------------------------------------------
+    Device Time Info (average): 
+---------------------------------------------------------------------
+CPU Poisson:     819.4878 s.
+CPU Idle Time:   497.0257 s.
+Max Mem / Proc:  0.81 MB.
+
+Please see the log.cite file for references relevant to this simulation
+
+Total wall time: 0:44:37
+---------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------
+- Using acceleration for pppm:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.2/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Done.
+
+
+
+---------------------------------------------------------------------
+      Device Time Info (average): 
+---------------------------------------------------------------------
+Neighbor (CPU):  3.6645 s.
+Device Overhead: 148.3884 s.
+Average split:   1.0000.
+Threads / atom:  8.
+Max Mem / Proc:  20.61 MB.
+CPU Driver_Time: 132.3320 s.
+CPU Idle_Time:   7.4802 s.
+---------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------
+- Using acceleration for lj/cut/coul/long:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.4/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Done.
+
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+
+Please see the log.cite file for references relevant to this simulation
+
+Total wall time: 0:44:38
+Application 12502992 resources: utime ~39555s, stime ~929s, Rss ~35804, inblocks ~21769, outblocks ~14093557
+Application 12502994 resources: utime ~39594s, stime ~926s, Rss ~35504, inblocks ~21769, outblocks ~14093984
+SHAKE stats (type/ave/delta) on step 220000
+  53 1 1.17005e-05 15360
+  55 109.5 0.00121545
+  220000    304.80921   -62806.672     7500.284   -44869.549     99.42927     224227.5 
+Loop time of 2677.4 on 16 procs for 220000 steps with 14048 atoms
+
+Performance: 7.099 ns/day, 3.381 hours/ns, 82.169 timesteps/s
+92.6% CPU use with 16 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 216.05     | 229.35     | 241.47     |  54.8 |  8.57
+Bond    | 67.601     | 115.15     | 151.91     | 263.6 |  4.30
+Kspace  | 1331       | 1364.4     | 1411.3     |  71.2 | 50.96
+Neigh   | 4.6191     | 7.2454     | 10.377     |  74.1 |  0.27
+Comm    | 287.1      | 321.93     | 359.12     | 173.5 | 12.02
+Output  | 0.015378   | 0.016048   | 0.018563   |   0.6 |  0.00
+Modify  | 586.24     | 611.23     | 635.58     |  90.7 | 22.83
+Other   |            | 28.1       |            |       |  1.05
+
+Nlocal:    878 ave 1268 max 522 min
+Histogram: 8 0 0 0 0 0 0 0 3 5
+Nghost:    10365.8 ave 12015 max 8725 min
+Histogram: 8 0 0 0 0 0 0 0 0 8
+Neighs:    0 ave 0 max 0 min
+Histogram: 16 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 0
+Ave neighs/atom = 0
+Ave special neighs/atom = 2.99544
+Neighbor list builds = 11352
+Dangerous builds = 0
+System init for write_restart ...
+PPPM initialization ...
+  G vector (1/distance) = 0.180459
+  grid = 18 18 24
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0278506
+  estimated relative force accuracy = 8.38712e-05
+  using double precision FFTs
+  3d grid and FFT values/proc = 2156 648
+
+
+---------------------------------------------------------------------
+    Device Time Info (average): 
+---------------------------------------------------------------------
+CPU Poisson:     819.7126 s.
+CPU Idle Time:   490.0554 s.
+Max Mem / Proc:  1.23 MB.
+---------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------
+- Using acceleration for pppm:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.2/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Done.
+
+
+
+---------------------------------------------------------------------
+      Device Time Info (average): 
+---------------------------------------------------------------------
+Neighbor (CPU):  3.7175 s.
+Device Overhead: 145.8082 s.
+Average split:   1.0000.
+Threads / atom:  8.
+Max Mem / Proc:  21.16 MB.
+CPU Driver_Time: 129.8772 s.
+CPU Idle_Time:   8.6790 s.
+---------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------
+- Using acceleration for lj/cut/coul/long:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.4/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 13...  219000    299.09836   -62643.957    7579.8359   -44822.824   -615.85798     224318.9 
+Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Done.
+
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+
+Please see the log.cite file for references relevant to this simulation
+
+Total wall time: 0:44:40
+Application 12502991 resources: utime ~39699s, stime ~923s, Rss ~35652, inblocks ~21758, outblocks ~14094900
+SHAKE stats (type/ave/delta) on step 220000
+  53 1.00001 6.34582e-06 15360
+  55 109.5 0.000634739
+  220000    304.50335   -62909.917    7654.1153   -44829.435    50.094682    223575.02 
+Loop time of 2681.99 on 16 procs for 220000 steps with 14048 atoms
+
+Performance: 7.087 ns/day, 3.386 hours/ns, 82.029 timesteps/s
+92.7% CPU use with 16 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 213.92     | 226.83     | 240.01     |  56.7 |  8.46
+Bond    | 70.27      | 114.6      | 150.58     | 257.4 |  4.27
+Kspace  | 1341.5     | 1373       | 1418.4     |  67.7 | 51.19
+Neigh   | 4.5374     | 7.1476     | 10.35      |  76.0 |  0.27
+Comm    | 286.75     | 322.16     | 359.9      | 173.7 | 12.01
+Output  | 0.01495    | 0.015668   | 0.018175   |   0.6 |  0.00
+Modify  | 586.16     | 610.41     | 634.05     |  90.7 | 22.76
+Other   |            | 27.85      |            |       |  1.04
+
+Nlocal:    878 ave 1268 max 516 min
+Histogram: 8 0 0 0 0 0 0 0 3 5
+Nghost:    10349.1 ave 11987 max 8683 min
+Histogram: 8 0 0 0 0 0 0 0 0 8
+Neighs:    0 ave 0 max 0 min
+Histogram: 16 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 0
+Ave neighs/atom = 0
+Ave special neighs/atom = 2.99544
+Neighbor list builds = 11323
+Dangerous builds = 0
+System init for write_restart ...
+PPPM initialization ...
+  G vector (1/distance) = 0.180469
+  grid = 18 18 24
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0278722
+  estimated relative force accuracy = 8.39363e-05
+  using double precision FFTs
+  3d grid and FFT values/proc = 2156 648
+
+
+---------------------------------------------------------------------
+    Device Time Info (average): 
+---------------------------------------------------------------------
+CPU Poisson:     820.5363 s.
+CPU Idle Time:   498.6010 s.
+Max Mem / Proc:  0.81 MB.
+---------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------
+- Using acceleration for pppm:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.2/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Done.
+
+
+
+---------------------------------------------------------------------
+      Device Time Info (average): 
+---------------------------------------------------------------------
+Neighbor (CPU):  3.6747 s.
+Device Overhead: 145.7244 s.
+Average split:   1.0000.
+Threads / atom:  8.
+Max Mem / Proc:  20.52 MB.
+CPU Driver_Time: 129.8457 s.
+CPU Idle_Time:   8.2044 s.
+---------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------
+- Using acceleration for lj/cut/coul/long:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.3/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Done.
+
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+
+Please see the log.cite file for references relevant to this simulation
+
+Total wall time: 0:44:45
+Application 12502995 resources: utime ~39794s, stime ~926s, Rss ~35820, inblocks ~21761, outblocks ~14093748
+SHAKE stats (type/ave/delta) on step 220000
+  53 1 1.0996e-05 15360
+  55 109.5 0.00117602
+  220000    306.64702    -62978.03    7550.2186   -44928.044   -373.93792    224226.57 
+Loop time of 2690.01 on 16 procs for 220000 steps with 14048 atoms
+
+Performance: 7.066 ns/day, 3.396 hours/ns, 81.784 timesteps/s
+92.3% CPU use with 16 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 213.33     | 224.6      | 236.7      |  52.8 |  8.35
+Bond    | 68.497     | 115.97     | 153.81     | 266.8 |  4.31
+Kspace  | 1345.4     | 1377.8     | 1423.7     |  70.3 | 51.22
+Neigh   | 4.5681     | 7.1693     | 10.253     |  74.3 |  0.27
+Comm    | 289.74     | 323.84     | 360.28     | 172.6 | 12.04
+Output  | 0.015234   | 0.015929   | 0.018512   |   0.6 |  0.00
+Modify  | 587.31     | 612.59     | 636.8      |  91.2 | 22.77
+Other   |            | 28.06      |            |       |  1.04
+
+Nlocal:    878 ave 1262 max 498 min
+Histogram: 6 2 0 0 0 0 0 0 1 7
+Nghost:    10354.1 ave 12042 max 8616 min
+Histogram: 8 0 0 0 0 0 0 0 0 8
+Neighs:    0 ave 0 max 0 min
+Histogram: 16 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 0
+Ave neighs/atom = 0
+Ave special neighs/atom = 2.99544
+Neighbor list builds = 11331
+Dangerous builds = 0
+System init for write_restart ...
+PPPM initialization ...
+  G vector (1/distance) = 0.180391
+  grid = 18 18 24
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.027986
+  estimated relative force accuracy = 8.4279e-05
+  using double precision FFTs
+  3d grid and FFT values/proc = 2156 648
+
+
+---------------------------------------------------------------------
+    Device Time Info (average): 
+---------------------------------------------------------------------
+CPU Poisson:     820.9689 s.
+CPU Idle Time:   500.7760 s.
+Max Mem / Proc:  0.81 MB.
+---------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------
+- Using acceleration for pppm:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.2/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Done.
+
+
+
+---------------------------------------------------------------------
+      Device Time Info (average): 
+---------------------------------------------------------------------
+Neighbor (CPU):  3.6896 s.
+Device Overhead: 148.1673 s.
+Average split:   1.0000.
+Threads / atom:  8.
+Max Mem / Proc:  21.75 MB.
+CPU Driver_Time: 129.8195 s.
+CPU Idle_Time:   7.7296 s.
+---------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------
+- Using acceleration for lj/cut/coul/long:
+-  with 16 proc(s) per device.
+--------------------------------------------------------------------------
+Device 0: Tesla K20X, 14 CUs, 5.4/5.6 GB, 0.73 GHZ (Mixed Precision)
+--------------------------------------------------------------------------
+
+Initializing Device and compiling on process 0...Done.
+Initializing Device 0 on core 0...Done.
+Initializing Device 0 on core 1...Done.
+Initializing Device 0 on core 2...Done.
+Initializing Device 0 on core 3...Done.
+Initializing Device 0 on core 4...Done.
+Initializing Device 0 on core 5...Done.
+Initializing Device 0 on core 6...Done.
+Initializing Device 0 on core 7...Done.
+Initializing Device 0 on core 8...Done.
+Initializing Device 0 on core 9...Done.
+Initializing Device 0 on core 10...Done.
+Initializing Device 0 on core 11...Done.
+Initializing Device 0 on core 12...Done.
+Initializing Device 0 on core 13...Done.
+Initializing Device 0 on core 14...Done.
+Initializing Device 0 on core 15...Done.
+
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+WARNING: Fix recenter should come after all other integration fixes (../fix_recenter.cpp:132)
+
+Please see the log.cite file for references relevant to this simulation
+
+Total wall time: 0:44:52
+Application 12502993 resources: utime ~39770s, stime ~931s, Rss ~35600, inblocks ~21766, outblocks ~14094067

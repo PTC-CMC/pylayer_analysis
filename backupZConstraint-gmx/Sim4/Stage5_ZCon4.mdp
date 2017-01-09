@@ -1,0 +1,130 @@
+; Run MDP parameters
+integrator                = md
+dt                        = 0.002
+nsteps                    = 1000000
+comm-mode                 = Linear
+nstcomm                   = 1
+
+; Output parameters
+nstxout                   = 0
+nstvout                   = 0
+nstxtcout                 = 5000
+nstenergy                 = 5000
+nstlog                    = 5000
+nstfout                   = 500
+
+; Bond parameters
+continuation              = yes
+constraint-algorithm      = lincs
+constraints               = all-bonds
+lincs-iter                = 1
+lincs-order               = 4
+
+; Neighbor searching
+cutoff-scheme             = Verlet
+nstlist                   = 10
+rcoulomb                  = 1.4
+rvdw                      = 1.4
+
+; Electrostatics
+coulombtype               = PME
+fourierspacing            = 0.16
+pme_order                 = 4
+
+; Temperature coupling
+tcoupl                    = nose-hoover
+tc_grps                   = non-water	water   
+tau_t                     = 0.4     	0.4     
+ref_t                     = 305     	305     
+
+; Pressure coupling
+pcoupl                    = Parrinello-Rahman
+pcoupltype                = isotropic
+tau_p                     = 2.0
+ref_p                     = 1.0
+compressibility           = 4.5e-05
+refcoord_scaling          = com
+
+; Misc stuff
+gen_vel                   = no
+pbc                       = xyz
+DispCorr                  = EnerPres
+
+; Pull parameters
+pull                      = yes
+pull-nstxout              = 5000
+pull-nstfout              = 5000
+pull-ngroups              = 8
+pull-ncoords              = 8
+pull-group1-name          = Tracer1018
+pull-coord1-groups        = 0 1
+pull-coord1-type          = umbrella
+pull-coord1-geometry      = distance
+pull-coord1-origin        = 5.431    1.019    1.800   
+pull-coord1-dim           = N N Y
+pull-coord1-rate          = 0
+pull-coord1-k             = 500.0
+pull-coord1-start         = no
+pull-group2-name          = Tracer802
+pull-coord2-groups        = 0 2
+pull-coord2-type          = umbrella
+pull-coord2-geometry      = distance
+pull-coord2-origin        = 2.093    2.725    2.800   
+pull-coord2-dim           = N N Y
+pull-coord2-rate          = 0
+pull-coord2-k             = 500.0
+pull-coord2-start         = no
+pull-group3-name          = Tracer603
+pull-coord3-groups        = 0 3
+pull-coord3-type          = umbrella
+pull-coord3-geometry      = distance
+pull-coord3-origin        = 4.845    4.410    3.800   
+pull-coord3-dim           = N N Y
+pull-coord3-rate          = 0
+pull-coord3-k             = 500.0
+pull-coord3-start         = no
+pull-group4-name          = Tracer362
+pull-coord4-groups        = 0 4
+pull-coord4-type          = umbrella
+pull-coord4-geometry      = distance
+pull-coord4-origin        = 5.143    2.922    4.800   
+pull-coord4-dim           = N N Y
+pull-coord4-rate          = 0
+pull-coord4-k             = 500.0
+pull-coord4-start         = no
+pull-group5-name          = Tracer1672
+pull-coord5-groups        = 0 5
+pull-coord5-type          = umbrella
+pull-coord5-geometry      = distance
+pull-coord5-origin        = 0.246    4.431    5.800   
+pull-coord5-dim           = N N Y
+pull-coord5-rate          = 0
+pull-coord5-k             = 500.0
+pull-coord5-start         = no
+pull-group6-name          = Tracer427
+pull-coord6-groups        = 0 6
+pull-coord6-type          = umbrella
+pull-coord6-geometry      = distance
+pull-coord6-origin        = 2.422    2.835    6.800   
+pull-coord6-dim           = N N Y
+pull-coord6-rate          = 0
+pull-coord6-k             = 500.0
+pull-coord6-start         = no
+pull-group7-name          = Tracer2538
+pull-coord7-groups        = 0 7
+pull-coord7-type          = umbrella
+pull-coord7-geometry      = distance
+pull-coord7-origin        = 2.162    2.462    7.800   
+pull-coord7-dim           = N N Y
+pull-coord7-rate          = 0
+pull-coord7-k             = 500.0
+pull-coord7-start         = no
+pull-group8-name          = Tracer1131
+pull-coord8-groups        = 0 8
+pull-coord8-type          = umbrella
+pull-coord8-geometry      = distance
+pull-coord8-origin        = 0.961    4.262    8.800   
+pull-coord8-dim           = N N Y
+pull-coord8-rate          = 0
+pull-coord8-k             = 500.0
+pull-coord8-start         = no
