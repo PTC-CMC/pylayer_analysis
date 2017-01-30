@@ -18,16 +18,18 @@ parser.add_option('--t', action = 'store', type = 'string', dest = 'tracerfile',
 parser.add_option('--z', action = 'store', type = 'string', dest = 'zwindows', default  = 'z_windows.out')
 #parser.add_option('--gro', action = 'store', type = 'string', dest = 'grofile' default = 'pureDSPC.gro')
 parser.add_option('--top', action = 'store', type = 'string', dest = 'topfile', default = 'RedonepureDSPC.top')
-parser.add_option('--k', action = 'store', type = 'float', dest = 'pull_coord_k', default = '1000')
+parser.add_option('--k', action = 'store', type = 'float', dest = 'pull_coord_k', default = '500')
 #parser.add_option('--r', action = 'store', type = 'float', dest = 'pull_coord_rate', default = '0.00005') #0.05nm/ns = 0.05e-3 nm/ps
-parser.add_option('--r', action = 'store', type = 'float', dest = 'pull_coord_rate', default = '0.00000') #0.00nm/ns = 0.00e-3 nm/ps
+parser.add_option('--moving', action = "store_true", dest ='moving_sim')
+#parser.add_option('--r', action = 'store', type = 'float', dest = 'pull_coord_rate', default = '0.00000') #0.00nm/ns = 0.00e-3 nm/ps
 (options, args) = parser.parse_args()
 
 thing = SystemSetup()
 tracerlist_filename = options.tracerfile
 zwindows_filename = options.zwindows
 pull_coord_k = options.pull_coord_k
-pull_coord_rate = options.pull_coord_rate
+#pull_coord_rate = options.pull_coord_rate
+moving_sim = options.moving_sim
 topfile = options.topfile
 indexfile = 'FullIndex.ndx'
 
@@ -57,7 +59,8 @@ print('{:10s} = {}'.format('Tracerfile', tracerlist_filename))
 print('{:10s} = {}'.format('Zwindows', zwindows_filename))
 #print('{:10s} = {}'.format('Grofile', grofile))
 print('{:10s} = {}'.format('k', pull_coord_k))
-print('{:10s} = {}'.format('rate', pull_coord_rate))
+#print('{:10s} = {}'.format('rate', pull_coord_rate))
+print('{:10s} = {}'.format('Moving Sim', str(moving_sim)))
 
 
 #tracer_list = thing.get_Tracers()
@@ -76,13 +79,14 @@ for i in range(N_sims):
     directoryname = 'Sim{}'.format(str(i))
     mdpfile = str('Stage3_Moving' + str(i) + '.mdp')
     filename = str('Stage3_Moving' + str(i))
-    oldfilename = str('Stage2_Strong' + str(i))
+    #oldfilename = str('Stage2_Strong' + str(i))
+    oldfilename = str('Stage1_Weak' + str(i))
     cptfile = (oldfilename + '.cpt')
     oldtpr = (oldfilename + '.tpr')
     grofile = (directoryname+'/'+oldfilename+'.gro')
     oldgrofile = (oldfilename + '.gro')
-    thing.write_pulling_mdp(directoryname + '/' + 'Stage3_Moving'+str(i)+'.mdp', tracer_list, z_list, grofile, pull_coord_rate =
-            pull_coord_rate, pull_coord_k = pull_coord_k)
+    thing.write_pulling_mdp(directoryname + '/' + 'Stage3_Moving'+str(i)+'.mdp', tracer_list, z_list, grofile,
+            moving_sim = moving_sim, pull_coord_k = pull_coord_k)
     #thing.write_slurm_stage2(directoryname, filename, mdpfile, grofile, oldfilename)
     thing.write_grompp_file(directoryname, filename, oldgrofile, mdpfile, indexfile, oldtpr=oldtpr, cptfile=cptfile, topfile=topfile) 
 

@@ -123,7 +123,7 @@ class SystemSetup():
         self._z0 = self._zlist[0]
 
     def write_pulling_mdp(self, pull_filename, tracerlist, z_window_list, grofile, pull_coord_rate = 0,  
-             pull_coord_k = 1000, posres = None, t_pulling = None, stagefive = False): 
+             pull_coord_k = 1000, posres = None, t_pulling = None, stagefive = False, moving_sim = False): 
         #Set up a pulling force on each tracer at very far windows
         #specify the group
         #Pulling reaction coordinate is just one direction (z)
@@ -169,12 +169,26 @@ class SystemSetup():
         r_tracer_ref = 0.1 #(nm)Distance between tracer and reference
         pull_coord_origins = list()
         #Set up origins at a particular z-window
-        for i, tracer in enumerate(tracerlist):
-                (x,y,z) = self.get_tracer_coordinates(grofile,tracer)
-                z = z_window_list[i]
+        if moving_sim:
+            for i, tracer in enumerate(tracerlist):
+                (x,y,z) = self.get_tracer_coordinates(grofile, tracer)
+                z += r_tracer_ref
                 pull_coord_origins.append((x,y,z))
+
+        else:
+            for i, tracer in enumerate(tracerlist):
+                    (x,y,z) = self.get_tracer_coordinates(grofile,tracer)
+                    z = z_window_list[i]
+                    pull_coord_origins.append((x,y,z))
         
+        pull_coord_rate_list = pull_coord_rate*np.ones(len(tracerlist))
         #Determine t_pulling 
+        if moving_sim:
+            print('This is a moving simulation')
+            t_pulling = 50e3
+            for i, tracer in enumerate(tracerlist):
+                pull_coord_rate_list[i] = self.calc_pulling_rate(grofile, tracer, z_window_list[i], t_pulling)
+
         if not t_pulling:
             if pull_coord_rate == 0:
                 #50e3ps = 50ns, this is if we have a fixed reference and we just want to pull the tracer in 
@@ -206,7 +220,7 @@ class SystemSetup():
         nsteps = int(t_pulling/dt) #nsteps is the time (converted to ps) divided by the step size
         comm_mode = 'Linear' # Remove center of mass translation
         nstcomm = 1 # Remove center of mass motion every step
-        comm_grps = 'non-water'
+        comm_grps = 'non-water water'
         
         #Output MDP parameters
         nstxout = 0 #Don't save coordinates
@@ -222,7 +236,7 @@ class SystemSetup():
         #Bond parameters 
         continuation = 'yes'
         constraint_algorithm = 'lincs'
-        constraints = 'all-bonds'
+        constraints = 'h-bonds'
         lincs_iter = 1
         lincs_order = 4
         
@@ -245,7 +259,7 @@ class SystemSetup():
         
         #Pressure coupling
         pcoupl = 'Parrinello-Rahman'
-        pcoupltype = 'isotropic'
+        pcoupltype = 'semiisotropic'
         tau_p = 2.0
         ref_p = pres
         compressibility = 4.5e-5
@@ -267,6 +281,7 @@ class SystemSetup():
         mdpfile.write('{:25s} = {}\n'.format('nsteps', str(nsteps)))
         mdpfile.write('{:25s} = {}\n'.format('comm-mode', str(comm_mode)))
         mdpfile.write('{:25s} = {}\n'.format('nstcomm', str(nstcomm)))
+        mdpfile.write('{:25s} = {}\n'.format('comm-grps', str(comm_grps)))
         mdpfile.write('\n; Output parameters\n')
         mdpfile.write('{:25s} = {}\n'.format('nstxout', str(nstxout)))
         mdpfile.write('{:25s} = {}\n'.format('nstvout', str(nstvout)))
@@ -321,7 +336,7 @@ class SystemSetup():
                 mdpfile.write('{:25s} = {:<8.3f} {:<8.3f} {:<8.3f}\n'.format('pull-coord'+str(i+1)+'-origin', 
                     pull_coord_origins[i][0], pull_coord_origins[i][1], pull_coord_origins[i][2]))
                 mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-dim', pull_coord_dim))
-                mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-rate', pull_coord_rate))
+                mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-rate', pull_coord_rate_list[i]))
                 mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-k', pull_coord_k))
                 mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-start', pull_coord_start))
             #mdpfile.write('{:25s} = {}\n'.format('pull_group1_name', str(pull_group1_name)))
@@ -344,6 +359,13 @@ class SystemSetup():
         t_pulling = distance_to_traverse / pull_coord_rate #ps
 
         return t_pulling
+
+    def calc_pulling_rate(self, grofile, tracer, z_window, t_pulling):
+        (x_ref, y_ref, z_ref) = self.get_tracer_coordinates(grofile, tracer)
+
+        distance_to_traverse = np.abs(float(z_window) - float(z_ref)) #nm
+        pull_rate = distance_to_traverse/t_pulling #nm/ps
+        return pull_rate
 
     def get_tracer_coordinates(self, grofile, tracer):
         #Read the .gro file and get the coordinates of the tracer

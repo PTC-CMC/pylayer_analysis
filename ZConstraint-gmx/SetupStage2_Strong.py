@@ -18,6 +18,7 @@ parser.add_option('--t', action = 'store', type = 'string', dest = 'tracerfile',
 parser.add_option('--z', action = 'store', type = 'string', dest = 'zwindows', default  = 'z_windows.out')
 #parser.add_option('--gro', action = 'store', type = 'string', dest = 'grofile' default = 'pureDSPC.gro')
 parser.add_option('--top', action = 'store', type = 'string', dest = 'topfile', default = 'RedonepureDSPC.top')
+#parser.add_option('--k', action = 'store', type = 'float', dest = 'pull_coord_k', default = '40')
 parser.add_option('--k', action = 'store', type = 'float', dest = 'pull_coord_k', default = '500')
 (options, args) = parser.parse_args()
 
