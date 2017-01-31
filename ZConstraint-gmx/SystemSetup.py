@@ -261,8 +261,8 @@ class SystemSetup():
         pcoupl = 'Parrinello-Rahman'
         pcoupltype = 'semiisotropic'
         tau_p = 2.0
-        ref_p = pres
-        compressibility = 4.5e-5
+        ref_p = '{} {}'.format(pres,pres)
+        compressibility = '4.5e-5 4.5e-5'
         refcoord_scaling = 'com'
         
         #Misc stuff
