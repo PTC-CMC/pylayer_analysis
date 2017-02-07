@@ -12,7 +12,7 @@ SetupStage1_Weak:
 '''
 parser = OptionParser()
 parser.add_option('--dz', action = 'store', type = 'float', dest = 'dz', default = 0.2)
-parser.add_option('--z0', action = 'store', type = 'float', dest = 'z0', default = 0.0)
+parser.add_option('--z0', action = 'store', type = 'float', dest = 'z0', default = 1.0)
 parser.add_option('--Nwin', action = 'store', type = 'int', dest = 'N_window', default = 40)
 parser.add_option('--Ntracer', action = 'store', type = 'int', dest = 'N_tracer', default = 8)
 parser.add_option('--gro', action = 'store', type = 'string', dest = 'grofile', default = 'RedonepureDSPC.gro')
