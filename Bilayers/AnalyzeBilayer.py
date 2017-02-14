@@ -821,7 +821,7 @@ def calc_interdigitation(density_profile_top, density_profile_bot, bins):
     """
     interdig = integrate.simps( (4*density_profile_top*density_profile_bot)/
             ((density_profile_top + density_profile_bot)**2), x=bins)
-    interdig *= 0.1
+    #interdig *= 0.1
     interdig_avg = np.mean(interdig)
     interdig_std = np.std(interdig)
     return interdig_avg, interdig_std, interdig
