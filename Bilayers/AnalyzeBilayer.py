@@ -5,7 +5,6 @@ import scipy.integrate as integrate
 import os
 from optparse import OptionParser
 import pdb
-import ipdb
 import numpy as np
 import matplotlib
 import collections
@@ -604,6 +603,151 @@ def calc_nematic_order(traj, lipid_dict):
     s2_std = np.std(s2_list)
     return s2_ave, s2_std, s2_list
 
+def get_leaflets(traj, topol, lipid_dict):
+    """
+    Input:  Trajectory, topology, lipid dictionary (mapping residue numbers to atom numbers)
+    Extract the headgroup atoms from the lipid dictionary values
+    Return: dictionary of residue index keys and headgroup atoms as keys
+    """
+    headgroup_dict = OrderedDict()
+    # Filter out lipid dictionary for only headgroup atoms
+    for i, key in enumerate(lipid_dict.keys()):
+        lipid_i = lipid_dict[key]
+        for index in lipid_i:
+            atom_i = topol.atom(index)
+            resname = atom_i.residue.name
+            if 'DSPC' in resname:
+                if i in headgroup_dict:
+                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name:
+                        headgroup_dict[i].append(index)
+                else:
+                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name:
+                        headgroup_dict[i] = list()
+                        headgroup_dict[i].append(index)
+            elif 'DPPC' in resname:
+                if i in headgroup_dict:
+                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name:
+                        headgroup_dict[i].append(index)
+                else:
+                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name:
+                        headgroup_dict[i] = list()
+                        headgroup_dict[i].append(index)
+            elif 'ISIS' in resname:
+                if i in headgroup_dict:
+                    if 'O' in atom_i.name or 'OE' in atom_i.name:
+                        headgroup_dict[i].append(index)
+                else:
+                    if 'O' in atom_i.name or 'OE' in atom_i.name:
+                        headgroup_dict[i] = list()
+                        headgroup_dict[i].append(index)
+            elif 'SS' in resname:
+                print("SS headgroups not included")
+            elif 'acd16' in resname:
+                if i in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i].append(index)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i] = list()
+                        headgroup_dict[i].append(index)
+
+            elif 'acd22' in resname:
+                if i in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i].append(index)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i] = list()
+                        headgroup_dict[i].append(index)
+            elif 'alc12' in resname:
+                if i in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i].append(index)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i] = list()
+                        headgroup_dict[i].append(index)
+            elif 'alc14' in resname:
+                if i in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i].append(index)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i] = list()
+                        headgroup_dict[i].append(index)
+            elif 'alc16' in resname:
+                if i in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i].append(index)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i] = list()
+                        headgroup_dict[i].append(index)
+            elif 'alc18' in resname:
+                if i in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i].append(index)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i] = list()
+                        headgroup_dict[i].append(index)
+            elif 'alc20' in resname:
+                if i in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i].append(index)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i] = list()
+                        headgroup_dict[i].append(index)
+            elif 'alc22' in resname:
+                if i in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i].append(index)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i] = list()
+                        headgroup_dict[i].append(index)
+            elif 'alc24' in resname:
+                if i in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i].append(index)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict[i] = list()
+                        headgroup_dict[i].append(index)
+    # Calculate average z-coordinate
+    z_threshold = 0.0
+    n_atoms = 0
+    for i, key in enumerate(headgroup_dict.keys()):
+        lipid_i = headgroup_dict[key]
+        for index in lipid_i:
+            z_i = np.mean(traj.atom_slice([index]).xyz[:,0,2])
+            z_threshold += z_i
+            n_atoms += 1
+    z_threshold /= n_atoms
+
+    # Compare lipid headgroups to mid z-coordinate
+    top_layer = []
+    bot_layer = []
+
+    for i, key in enumerate(headgroup_dict.keys()):
+        lipid_i = headgroup_dict[key]
+        z_i = 0.0
+        atom_count = 0
+        for index in lipid_i:
+            z_i += np.mean(traj.atom_slice([index]).xyz[:,0,2])
+            atom_count += 1
+        average_z = z_i / atom_count
+        if average_z <= z_threshold:
+            bot_layer.append(key)
+        else:
+            top_layer.append(key)
+
+    return bot_layer, top_layer
+
+
+
+
 def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
     """
     Input:  Trajectory, topology, lipid dictionary (mapping residue numbers to atom numbers), # bins
@@ -623,9 +767,9 @@ def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
     density_profile = 1e-40 * np.ones((traj.n_frames, n_bins + 1))
     # Generate windows
     bins = np.linspace(0, z_end, num = n_bins + 1)
+    bot_leaflet, top_leaflet = get_leaflets(traj, topol, lipid_dict)
     # For each leaflet, count the mass of a slice in the histogram, divided by volume of that slice
     # masses dictionary
-    badcount = 0
     for i, key in enumerate(lipid_dict.keys()):
         lipid_i = lipid_dict[key]
         for atom_i in lipid_i:
@@ -635,7 +779,7 @@ def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
             # Row represents hte frame and the elemtn is the window it belongs in
             window_i = np.floor(z_i/z_interval)
             for j, bin_j in enumerate(window_i):
-                if i < n_lipid/2:
+                if key in bot_leaflet:
                     density_profile_bot[j, int(bin_j)] += mass_i
                 else:
                     density_profile_top[j, int(bin_j)] += mass_i
@@ -668,7 +812,7 @@ def get_mass(topol, atom_i):
     mass_i = 1.66054e-24 * mass_dict[topol.atom(atom_i).name]
     return mass_i
 
-def calc_interdigitation(density_profile_top, density_profile_bot):
+def calc_interdigitation(density_profile_top, density_profile_bot, bins):
     """
     Input: top and bottom density profile [kg/m3], but units irrelevant since this is dimensionless
     Compute interdigitation according to "Structural Properties.." by Hartkamp (2016)
@@ -676,7 +820,7 @@ def calc_interdigitation(density_profile_top, density_profile_bot):
     Return: Interdigation avg, std, and array of interdigation at each frame (n_frame x 1) [A]
     """
     interdig = integrate.simps( (4*density_profile_top*density_profile_bot)/
-            (density_profile_top + density_profile_bot)**2)
+            ((density_profile_top + density_profile_bot)**2), x=bins)
     interdig *= 0.1
     interdig_avg = np.mean(interdig)
     interdig_std = np.std(interdig)
@@ -728,7 +872,7 @@ print('Calculating density profile...')
 density_profile, density_profile_avg, density_profile_top, density_profile_bot, bins = \
     calc_density_profile(traj, topol, lipid_dict)
 print('Calculating interdigitation...')
-interdig_avg, interdig_std, interdig_list = calc_interdigitation(density_profile_top, density_profile_bot)
+interdig_avg, interdig_std, interdig_list = calc_interdigitation(density_profile_top, density_profile_bot, bins)
 
 # Printing properties
 
