@@ -5,6 +5,7 @@ import scipy.integrate as integrate
 import os
 from optparse import OptionParser
 import pdb
+import ipdb
 import numpy as np
 import matplotlib
 import collections
@@ -19,9 +20,11 @@ def calc_APL(traj, n_lipid):
     Compute areas by looking at x and y unit cell lengths
     Return: array of area per lipids (n_frame x 1) [Angstrom]
     '''
-    area = 100 * traj.unitcell_lengths[:, 0] * traj.unitcell_lengths[:, 1]
-    areaavg = np.mean(area)
-    areastd = np.std(area)/(len(area)**0.5)
+    area = 100 * traj.unitcell_lengths[:, 0] * traj.unitcell_lengths[:, 1] # This is n_frame x 1
+    area_blocked = area[:-1].reshape(int((traj.n_frames-1)/250), 250) # Reshape so that each row is a block of 250 frames (5ns)
+    area_block_avg = np.mean(area_blocked, axis=1)
+    areaavg = np.mean(area_block_avg)
+    areastd = np.std(area_block_avg)#/(len(area_block_avg)**0.5)
     apl_list = np.eye(traj.n_frames, 1)
     apl_list[:,0] = area[:]/(n_lipid/2)
     apl_avg = areaavg/(n_lipid/2)
@@ -398,6 +401,7 @@ def calc_tilt_angle(traj, topol, lipid_tails):
     lowest eigenvalue of inertia tensor.
     Compute angle between charactersitic vector and lipid tail,
     adjusted for the first quadrant of  cartesian coordinate space
+    Blocks of 5 ns (250 frames if 1 frame every 20 fs)
     Return: array of tilt angles (n_frame x n_lipid_tail)
     '''
 
@@ -417,8 +421,12 @@ def calc_tilt_angle(traj, topol, lipid_tails):
         #angle_list.append(lipid_angle)
         angle_list[:,index] = lipid_angle
         index += 1
-    angle_avg = np.mean(angle_list)
-    angle_std = np.std(angle_list)/(len(angle_list)**0.5)
+
+    angle_frame_avg = np.mean(angle_list, axis = 1) # For each frame, average all tail tilt angles
+    angle_blocks = angle_frame_avg[:-1].reshape(int((traj.n_frames-1)/250),250) # Reshape into blocks of 5ns
+    angle_block_avgs = np.mean(angle_blocks, axis = 1)
+    angle_avg = np.mean(angle_block_avgs)
+    angle_std = np.std(angle_block_avgs)#/(len(angle_block_avgs)**0.5)
     return angle_avg, angle_std, angle_list
 
 
@@ -431,8 +439,11 @@ def calc_APT(apl_list, angle_list, n_tails_per_lipid):
     # Each element in apl list is the apl for a frame
     apt_list = angle_list
     apt_list = np.cos(np.deg2rad(angle_list[:,:]))*apl_list[:]/n_tails_per_lipid
-    apt_avg = np.mean(apt_list)
-    apt_std = np.std(apt_list)/(len(apt_list)**0.5)
+    apt_frame_avg = np.mean(apt_list, axis = 1) # For each frame, averge all tail tilt angeles
+    apt_blocks = apt_frame_avg[:-1].reshape(int((traj.n_frames-1)/250),250)
+    apt_block_avgs = np.mean(apt_blocks, axis=1)
+    apt_avg = np.mean(apt_block_avgs)
+    apt_std = np.std(apt_block_avgs)#/(len(apt_block_avgs)**0.5)
     return apt_avg, apt_std, apt_list
 
 def calc_mean(dataset):
@@ -520,8 +531,10 @@ def calc_head_distance(traj, topol, head_indices):
     zcoord_top = zcoord_top / mass_top
     zcoord_bot = zcoord_bot / mass_bot
     head_dist_list = 10 * abs(zcoord_top - zcoord_bot)
-    head_dist_avg = np.mean(head_dist_list)
-    head_dist_std = np.std(head_dist_list)
+    head_dist_blocks = head_dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+    head_dist_block_avgs = np.mean(head_dist_blocks, axis = 1)
+    head_dist_avg = np.mean(head_dist_block_avgs)
+    head_dist_std = np.std(head_dist_block_avgs)
     return head_dist_avg, head_dist_std, head_dist_list
 
 def compute_headgroup_distances(traj, topol, headgroup_dict):
@@ -544,14 +557,21 @@ def calc_bilayer_height(headgroup_distance_dict):
     """
     if headgroup_distance_dict['DSPC']:
         dist_list = headgroup_distance_dict['DSPC'][2]
-        dist_avg = np.mean(dist_list)
-        dist_std = np.std(dist_list)
+        #dist_frame_avg = np.mean(dist_list, axis = 1)
+        dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+        dist_block_avgs = np.mean(dist_blocks,axis=1)
+        dist_avg = np.mean(dist_block_avgs)
+        dist_std = np.std(dist_block_avgs)
     elif headgroup_distance_dict['DPPC']:
         dist_list = headgroup_distance_dict['DPPC'][2]
-        dist_avg = np.mean(dist_list)
-        dist_std = np.std(dist_list)
+        #dist_frame_avg = np.mean(dist_list, axis = 1)
+        dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+        dist_block_avgs = np.mean(dist_blocks, axis=1)
+        dist_avg = np.mean(dist_block_avgs)
+        dist_std = np.std(dist_block_avgs)
     else:
         print ('No phosphate groups to compare')
+    pdb.set_trace()
 
     return (dist_avg, dist_std, dist_list)
 def calc_offsets(headgroup_distance_dict):
@@ -574,13 +594,19 @@ def calc_offsets(headgroup_distance_dict):
         # Determine if reference is DSPC or DPPC
         if use_DSPC:
             offset_list = (headgroup_distance_dict['DSPC'][2] - headgroup_distance_dict[key][2])/2
-            offset_avg = np.mean(offset_list)
-            offset_std = np.std(offset_list)
+            #offset_frame_avg = np.mean(offset_list, axis = 1)
+            offset_blocks = offset_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+            offset_block_avgs = np.mean(offset_blocks, axis = 1)
+            offset_avg = np.mean(offset_block_avgs)
+            offset_std = np.std(offset_block_avgs)
             offset_dict[key] = (offset_avg, offset_std)
         elif use_DPPC:
             offset_list = (headgroup_distance_dict['DPPC'][2] - headgroup_distance_dict[key][2])/2
-            offset_avg = np.mean(offset_list)
-            offset_std = np.std(offset_list)
+            #offset_frame_avg = np.mean(offset_list, axis = 1)
+            offset_blocks = offset_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+            offset_block_avgs = np.mean(offset_blocks, axis = 1)
+            offset_avg = np.mean(offset_block_avgs)
+            offset_std = np.std(offset_blocks_avgs)
             offset_dict[key] = (offset_avg, offset_std)
         else:
             print ('No phosphate groups to compare')
@@ -599,154 +625,11 @@ def calc_nematic_order(traj, lipid_dict):
     s2_top = mdtraj.compute_nematic_order(traj, indices=top_chains)
     s2_bot = mdtraj.compute_nematic_order(traj, indices=bot_chains)
     s2_list = (s2_top + s2_bot)/2
-    s2_ave = np.mean(s2_list)
-    s2_std = np.std(s2_list)
+    s2_blocks = s2_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+    s2_block_avgs = np.mean(s2_blocks, axis = 1)
+    s2_ave = np.mean(s2_block_avgs)
+    s2_std = np.std(s2_block_avgs)
     return s2_ave, s2_std, s2_list
-
-def get_leaflets(traj, topol, lipid_dict):
-    """
-    Input:  Trajectory, topology, lipid dictionary (mapping residue numbers to atom numbers)
-    Extract the headgroup atoms from the lipid dictionary values
-    Return: dictionary of residue index keys and headgroup atoms as keys
-    """
-    headgroup_dict = OrderedDict()
-    # Filter out lipid dictionary for only headgroup atoms
-    for i, key in enumerate(lipid_dict.keys()):
-        lipid_i = lipid_dict[key]
-        for index in lipid_i:
-            atom_i = topol.atom(index)
-            resname = atom_i.residue.name
-            if 'DSPC' in resname:
-                if i in headgroup_dict:
-                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name:
-                        headgroup_dict[i].append(index)
-                else:
-                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name:
-                        headgroup_dict[i] = list()
-                        headgroup_dict[i].append(index)
-            elif 'DPPC' in resname:
-                if i in headgroup_dict:
-                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name:
-                        headgroup_dict[i].append(index)
-                else:
-                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name:
-                        headgroup_dict[i] = list()
-                        headgroup_dict[i].append(index)
-            elif 'ISIS' in resname:
-                if i in headgroup_dict:
-                    if 'O' in atom_i.name or 'OE' in atom_i.name:
-                        headgroup_dict[i].append(index)
-                else:
-                    if 'O' in atom_i.name or 'OE' in atom_i.name:
-                        headgroup_dict[i] = list()
-                        headgroup_dict[i].append(index)
-            elif 'SS' in resname:
-                print("SS headgroups not included")
-            elif 'acd16' in resname:
-                if i in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i].append(index)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i] = list()
-                        headgroup_dict[i].append(index)
-
-            elif 'acd22' in resname:
-                if i in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i].append(index)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i] = list()
-                        headgroup_dict[i].append(index)
-            elif 'alc12' in resname:
-                if i in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i].append(index)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i] = list()
-                        headgroup_dict[i].append(index)
-            elif 'alc14' in resname:
-                if i in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i].append(index)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i] = list()
-                        headgroup_dict[i].append(index)
-            elif 'alc16' in resname:
-                if i in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i].append(index)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i] = list()
-                        headgroup_dict[i].append(index)
-            elif 'alc18' in resname:
-                if i in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i].append(index)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i] = list()
-                        headgroup_dict[i].append(index)
-            elif 'alc20' in resname:
-                if i in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i].append(index)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i] = list()
-                        headgroup_dict[i].append(index)
-            elif 'alc22' in resname:
-                if i in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i].append(index)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i] = list()
-                        headgroup_dict[i].append(index)
-            elif 'alc24' in resname:
-                if i in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i].append(index)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict[i] = list()
-                        headgroup_dict[i].append(index)
-    # Calculate average z-coordinate
-    z_threshold = 0.0
-    n_atoms = 0
-    for i, key in enumerate(headgroup_dict.keys()):
-        lipid_i = headgroup_dict[key]
-        for index in lipid_i:
-            z_i = np.mean(traj.atom_slice([index]).xyz[:,0,2])
-            z_threshold += z_i
-            n_atoms += 1
-    z_threshold /= n_atoms
-
-    # Compare lipid headgroups to mid z-coordinate
-    top_layer = []
-    bot_layer = []
-
-    for i, key in enumerate(headgroup_dict.keys()):
-        lipid_i = headgroup_dict[key]
-        z_i = 0.0
-        atom_count = 0
-        for index in lipid_i:
-            z_i += np.mean(traj.atom_slice([index]).xyz[:,0,2])
-            atom_count += 1
-        average_z = z_i / atom_count
-        if average_z <= z_threshold:
-            bot_layer.append(key)
-        else:
-            top_layer.append(key)
-
-    return bot_layer, top_layer
-
-
-
 
 def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
     """
@@ -767,11 +650,34 @@ def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
     density_profile = 1e-40 * np.ones((traj.n_frames, n_bins + 1))
     # Generate windows
     bins = np.linspace(0, z_end, num = n_bins + 1)
-    bot_leaflet, top_leaflet = get_leaflets(traj, topol, lipid_dict)
     # For each leaflet, count the mass of a slice in the histogram, divided by volume of that slice
     # masses dictionary
+    badcount = 0
+    z_threshold = 0.0
+    n_atoms = 0
     for i, key in enumerate(lipid_dict.keys()):
         lipid_i = lipid_dict[key]
+        atom_i = topol.atom(lipid_i[0])
+        if 'DSPC' in atom_i.residue.name or 'DPPC' in atom_i.residue.name or 'ISIS' in atom_i.residue.name:
+            atom_i = topol.atom(lipid_i[0])
+        else:
+            atom_i = topol.atom(lipid_i[10])
+
+        z_i = np.mean(traj.atom_slice([atom_i.index]).xyz[:,0,2])
+        z_threshold += z_i
+        n_atoms += 1
+    z_threshold /= n_atoms
+    botcount = 0
+    topcount = 0
+    for i, key in enumerate(lipid_dict.keys()):
+        lipid_i = lipid_dict[key]
+        atom_i = topol.atom(lipid_i[0])
+        if 'DSPC' in atom_i.residue.name or 'DPPC' in atom_i.residue.name or 'ISIS' in atom_i.residue.name:
+            atom_i = topol.atom(lipid_i[0])
+        else:
+            atom_i = topol.atom(lipid_i[10])
+
+        base_z = np.mean(traj.atom_slice([atom_i.index]).xyz[:,0,2])
         for atom_i in lipid_i:
         # loop through each lipid atom, get the z coordinate (probably an array over time)
             mass_i = get_mass(topol, atom_i)
@@ -779,16 +685,22 @@ def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
             # Row represents hte frame and the elemtn is the window it belongs in
             window_i = np.floor(z_i/z_interval)
             for j, bin_j in enumerate(window_i):
-                if key in bot_leaflet:
+                #if i < n_lipid/2:
+                if base_z <= z_threshold:
                     density_profile_bot[j, int(bin_j)] += mass_i
+                    botcount +=1
                 else:
                     density_profile_top[j, int(bin_j)] += mass_i
+                    topcount +=1
                 density_profile[j, int(bin_j)] += mass_i
     
     # Divide by volume of slice to get the density
     density_profile_bot /= v_slice
     density_profile_top /= v_slice
     density_profile /= v_slice
+
+    print("topcount {}".format(topcount))
+    print("botcount {}".format(botcount))
     
     # Convert from g/nm3 to kg/m3, and nm to m
     density_profile_bot = 1e24 * density_profile_bot
@@ -812,7 +724,7 @@ def get_mass(topol, atom_i):
     mass_i = 1.66054e-24 * mass_dict[topol.atom(atom_i).name]
     return mass_i
 
-def calc_interdigitation(density_profile_top, density_profile_bot, bins):
+def calc_interdigitation(traj, density_profile_top, density_profile_bot, bins):
     """
     Input: top and bottom density profile [kg/m3], but units irrelevant since this is dimensionless
     Compute interdigitation according to "Structural Properties.." by Hartkamp (2016)
@@ -821,9 +733,10 @@ def calc_interdigitation(density_profile_top, density_profile_bot, bins):
     """
     interdig = integrate.simps( (4*density_profile_top*density_profile_bot)/
             ((density_profile_top + density_profile_bot)**2), x=bins)
-    #interdig *= 0.1
-    interdig_avg = np.mean(interdig)
-    interdig_std = np.std(interdig)
+    interdig_blocks = interdig[:-1].reshape(int((traj.n_frame-1)/250), 250)
+    interdig_block_avgs = np.mean(interdig_blocks,axis=1)
+    interdig_avg = np.mean(interdig_block_avgs)
+    interdig_std = np.std(interdig_block_avgs)
     return interdig_avg, interdig_std, interdig
 
 
@@ -856,6 +769,7 @@ n_tails_per_lipid = n_lipid_tails/n_lipid
 # Vectorized Calculations start here
 print('Calculating area per lipid...')
 apl_avg, apl_std, apl_list = calc_APL(traj,n_lipid)
+
 print('Calculating tilt angles...')
 angle_avg, angle_std, angle_list = calc_tilt_angle(traj, topol, lipid_tails)
 print('Calculating area per tail...')
@@ -868,11 +782,11 @@ print('Calculating bilayer height...')
 Hpp_ave, Hpp_std, Hpp_list = calc_bilayer_height(headgroup_distance_dict)
 print('Calculating component offsets...')
 offset_dict = calc_offsets(headgroup_distance_dict)
-print('Calculating density profile...')
-density_profile, density_profile_avg, density_profile_top, density_profile_bot, bins = \
-    calc_density_profile(traj, topol, lipid_dict)
-print('Calculating interdigitation...')
-interdig_avg, interdig_std, interdig_list = calc_interdigitation(density_profile_top, density_profile_bot, bins)
+#print('Calculating density profile...')
+#density_profile, density_profile_avg, density_profile_top, density_profile_bot, bins = \
+#    calc_density_profile(traj, topol, lipid_dict)
+#print('Calculating interdigitation...')
+#interdig_avg, interdig_std, interdig_list = calc_interdigitation(traj, density_profile_top, density_profile_bot, bins)
 
 # Printing properties
 
@@ -889,7 +803,9 @@ outfile.write('{:<20s}: {} ({})\n'.format('APT (A^2)',apt_avg, apt_std))
 outfile.write('{:<20s}: {} ({})\n'.format('Bilayer Height (A)',Hpp_ave, Hpp_std))
 outfile.write('{:<20s}: {} ({})\n'.format('Tilt Angle', angle_avg, angle_std))
 outfile.write('{:<20s}: {} ({})\n'.format('S2', s2_ave, s2_std))
+"""
 outfile.write('{:<20s}: {} ({})\n'.format('Interdigitation (A)', interdig_avg, interdig_std))
+
 for key in offset_dict.keys():
     outfile.write('{:<20s}: {} ({})\n'.format
             ((key + ' offset (A)'), offset_dict[key][0], offset_dict[key][1]))
@@ -899,8 +815,9 @@ outfile.write('{:<20s}: {} ({})\n'.format(
 outfile.write('{:<20s}: {} ({})\n'.format(
     'Leaflet 2 Tilt Angle', np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])]), 
     np.std(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])])))
-
+"""
 # Plotting
+"""
 fig1 = plt.figure(1)
 plt.subplot(3,2,1)
 plt.plot(apl_list)
@@ -930,6 +847,10 @@ plt.tight_layout()
 outpdf.savefig(fig1)
 plt.close()
 
+density_profile_top_avg = np.mean(density_profile_top, axis = 0)
+density_profile_bot_avg = np.mean(density_profile_bot, axis = 0)
+
+
 fig2 = plt.figure(2)
 plt.subplot(2,1,1)
 plt.plot(bins,density_profile_avg)
@@ -938,6 +859,8 @@ plt.title('Density Profile (kg m$^{-3}$)')
 
 
 plt.subplot(2,1,2)
+
+plt.plot(bins,density_profile_bot_avg)
 plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis = 0), bins = 50,  
         alpha = 0.5, facecolor = 'blue', normed = True)
 plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], axis = 0), bins = 50,  
@@ -953,3 +876,7 @@ outpdf.close()
 print('**********')
 print('{:^10s}'.format('Done'))
 print('**********')
+
+
+"""
+
