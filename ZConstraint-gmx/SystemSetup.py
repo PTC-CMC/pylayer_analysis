@@ -158,8 +158,10 @@ class SystemSetup():
         self.write_ndx(grofile, pull_filename, pull_group_names, tracerlist)
         #Default pull parameters, need to apply to each coord
         pull_coord_type = 'umbrella'
-        pull_coord_geometry = 'distance'
+        #pull_coord_geometry = 'distance'
+        pull_coord_geometry = 'direction'
         pull_coord_dim = 'N N Y'
+        pull_coord_vec = '0 0 1'
         pull_coord_start = 'no'
 
         #print('Writing mdp and ndx files for {}, z_window = {} nm, pull_rate = {} nm/ps'.format(pull_group1_name, np.round(z_window, 2),
@@ -228,6 +230,7 @@ class SystemSetup():
         nstxtcout = int(10/dt) # XTC coordinates every 1p0s 
         nstenergy = int(10/dt) #Energy every 10ps
         nstlog = int(10/dt) #Log every 10ps
+        nstcalcenergy = 1
         if stagefive:
             nstfout = int(1/dt) # Log force every 1 ps
         else: 
@@ -289,6 +292,7 @@ class SystemSetup():
         mdpfile.write('{:25s} = {}\n'.format('nstenergy', str(nstenergy)))
         mdpfile.write('{:25s} = {}\n'.format('nstlog', str(nstlog)))
         mdpfile.write('{:25s} = {}\n'.format('nstfout', str(nstfout)))
+        mdpfile.write('{:25s} = {}\n'.format('nstcalcenergy', str(nstcalcenergy)))
         mdpfile.write('\n; Bond parameters\n')
         mdpfile.write('{:25s} = {}\n'.format('continuation', str(continuation)))
         mdpfile.write('{:25s} = {}\n'.format('constraint-algorithm', str(constraint_algorithm)))
@@ -333,6 +337,7 @@ class SystemSetup():
                 mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-groups', pull_coord_groups[i]))
                 mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-type', pull_coord_type))
                 mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-geometry', pull_coord_geometry))
+                mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-vec', pull_coord_vec))
                 mdpfile.write('{:25s} = {:<8.3f} {:<8.3f} {:<8.3f}\n'.format('pull-coord'+str(i+1)+'-origin', 
                     pull_coord_origins[i][0], pull_coord_origins[i][1], pull_coord_origins[i][2]))
                 mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-dim', pull_coord_dim))
