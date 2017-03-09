@@ -146,6 +146,197 @@ def get_lipids(topol):
 
     return lipid_dict, headgroup_dict
 
+def get_lipid_tails(topol, lipid_dict):
+    """ Compute lipid tails
+
+    Parameters
+    ----------
+    topol : mdtraj topology
+    lipid_dict : dict
+        dictionary mapping key values of residue indices to atom indices
+
+    Returns
+    -------
+    lipid_tails : dict
+        dictionary mapping key values of lipid tail names to atom indices
+        """
+    lipid_tails = OrderedDict()
+    for lipid in lipid_dict.keys():
+        lipid_atoms = lipid_dict[lipid]
+        for atom_index in lipid_atoms:
+            shifted_index = atom_index - lipid_atoms[0]
+            atom_i = topol.atom(atom_index)
+            resname = atom_i.residue.name
+            resindex = atom_i.residue.index
+            if 'DSPC' in resname:
+                if 4 <= shifted_index <= 6:
+                    if (str(resindex) + 'a') in lipid_tails:
+                        lipid_tails[(str(resindex) + 'a')].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex) + 'a')] = list()
+                        lipid_tails[(str(resindex) + 'a')].append(atom_index)
+                elif 9 <= shifted_index <= 11:
+                    if (str(resindex) + 'b') in lipid_tails:
+                        lipid_tails[(str(resindex) + 'b')].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex) + 'b')] = list()
+                        lipid_tails[(str(resindex) + 'b')].append(atom_index)
+            elif 'DPPC' in resname:
+                if 4 <= shifted_index <= 6:
+                    if (str(resindex) + 'a') in lipid_tails:
+                        lipid_tails[(str(resindex) + 'a')].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex) + 'a')] = list()
+                        lipid_tails[(str(resindex) + 'a')].append(atom_index)
+                elif 9 <= shifted_index <= 11:
+                    if (str(resindex) + 'b') in lipid_tails:
+                        lipid_tails[(str(resindex) + 'b')].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex) + 'b')] = list()
+                        lipid_tails[(str(resindex) + 'b')].append(atom_index)
+            elif 'C12OH' in resname:
+                if 1 <= shifted_index <= 2:
+                    if (str(resindex)) in lipid_tails:
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
+            elif 'C14OH' in resname:
+                if 1 <= shifted_index <= 3:
+                    if (str(resindex)) in lipid_tails:
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
+            elif 'C16OH' in resname:
+                if 1 <= shifted_index <= 3:
+                    if (str(resindex)) in lipid_tails:
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
+            elif 'C18OH' in resname:
+                if 1 <= shifted_index <= 4:
+                    if (str(resindex)) in lipid_tails:
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
+            elif 'C20OH' in resname:
+                if 1 <= shifted_index <= 4:
+                    if (str(resindex)) in lipid_tails:
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
+            elif 'C22OH' in resname:
+                if 1 <= shifted_index <= 5:
+                    if (str(resindex)) in lipid_tails:
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
+            elif 'C24OH' in resname:
+                if 1 <= shifted_index <= 5:
+                    if (str(resindex)) in lipid_tails:
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
+            elif 'C16FFA' in resname:
+                if 1 <= shifted_index <= 4:
+                    if (str(resindex)) in lipid_tails:
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
+            elif 'C22FFA' in resname:
+                if 1 <= shifted_index <= 5:
+                    if (str(resindex)) in lipid_tails:
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
+            else:
+                print('Lipid {} not incorporated in lipid tail identification'.format(resname))
+                sys.exit()
+    return lipid_tails
+
+def calc_tilt_angle(traj, topol, lipid_tails):
+    """ Compute tilt angles for given atom indices over a trajectory
+    Input: Trajectory, topology, dictionary of lipid tails with atom index values
+    
+    Return: array of tilt angles (n_frame x n_lipid_tail)
+    Parameters
+    ----------
+    traj : mdtraj trajectory
+    topol : mdtraj topology
+    lipid_tails : dict
+        dictionary mapping key values of lipid tail names to atom indices
+
+    Returns
+    -------
+    angle_avg : float
+        Average angle over all lipids and frames
+    angle_std : float
+        Standard deviation of tilt angle over all lipids and frames
+    angle_list : matrix (n x m)
+        matrix of tilt angles, rows correspond to frame, columns correspond to tail
+
+    Notes
+    -----
+    Compute characteristic vector using eigenvector associated with
+    lowest eigenvalue of inertia tensor.
+    Compute angle between charactersitic vector and lipid tail,
+    adjusted for the first quadrant of  cartesian coordinate space
+    Blocks of 5 ns (250 frames if 1 frame every 20 fs)
+    """
+
+    surface_normal = np.asarray([0, 0, 1.0])
+    angle_list = []
+    angle_list = np.eye(traj.n_frames, len(lipid_tails.keys()))
+    index = 0
+    for key in lipid_tails.keys():
+        lipid_i_atoms = lipid_tails[key]
+        traj_lipid_i = traj.atom_slice(lipid_i_atoms)
+        director = mdtraj.geometry.order._compute_director(traj_lipid_i)
+        lipid_angle = np.rad2deg(np.arccos(np.dot(director, surface_normal)))
+        for i,angle in enumerate(lipid_angle):
+            if angle >= 90:
+                angle = 180- angle
+                lipid_angle[i] = angle
+        #angle_list.append(lipid_angle)
+        angle_list[:,index] = lipid_angle
+        index += 1
+# This is the block averaging stuff
+#    angle_frame_avg = np.mean(angle_list, axis = 1) # For each frame, average all tail tilt angles
+#    angle_blocks = angle_frame_avg[:-1].reshape(int((traj.n_frames-1)/250),250) # Reshape into blocks of 5ns
+#    angle_block_avgs = np.mean(angle_blocks, axis = 1)
+#    angle_avg = np.mean(angle_block_avgs)
+#    angle_std = np.std(angle_block_avgs)#/(len(angle_block_avgs)**0.5)
+#    
+    angle_avg = np.mean(angle_list)
+    angle_std = np.std(angle_list)
+    return angle_avg, angle_std, angle_list
+
+def calc_APT(apl_list, angle_list, n_tails_per_lipid):
+    ''' Input: a matrix of area per lipids (each row is a frame               
+        a matrix of tilt angels (each row is a frame, each column is a lipid)
+        Return matrix of area per tail (n_frame x n_lipid_tail)
+    '''
+    # Each element in angle list correspond to a tail, and that element is a row of tilts per frame
+    # Each element in apl list is the apl for a frame
+    apt_list = angle_list
+    apt_list = np.cos(np.deg2rad(angle_list[:,:]))*apl_list[:]/n_tails_per_lipid
+    #apt_frame_avg = np.mean(apt_list, axis = 1) # For each frame, averge all tail tilt angeles
+    #apt_blocks = apt_frame_avg[:-1].reshape(int((traj.n_frames-1)/250),250)
+    #apt_block_avgs = np.mean(apt_blocks, axis=1)
+    #apt_avg = np.mean(apt_block_avgs)
+    #apt_std = np.std(apt_block_avgs)#/(len(apt_block_avgs)**0.5)
+    apt_avg = np.mean(apt_list)
+    apt_std = np.std(apt_list)
+    return apt_avg, apt_std, apt_list
+
 def calc_head_distance(traj, topol, head_indices):
     """
     Input: Trajectory, topology, indices of headgroup atoms
@@ -328,21 +519,21 @@ topol = traj.topology
 # Compute system information
 print('Gathering system information <{}>...'.format(grofile))
 lipid_dict, headgroup_dict = get_lipids(topol)
-#lipid_tails = get_lipid_tails(topol, lipid_dict)
+lipid_tails = get_lipid_tails(topol, lipid_dict)
 
 n_lipid = len(lipid_dict.keys())
-#n_lipid_tails = len(lipid_tails.keys())
-#n_tails_per_lipid = n_lipid_tails/n_lipid
+n_lipid_tails = len(lipid_tails.keys())
+n_tails_per_lipid = n_lipid_tails/n_lipid
 
 
 # Vectorized Calculations start here
 print('Calculating area per lipid...')
 apl_avg, apl_std, apl_list = calc_APL(traj,n_lipid)
 
-#print('Calculating tilt angles...')
-#angle_avg, angle_std, angle_list = calc_tilt_angle(traj, topol, lipid_tails)
-#print('Calculating area per tail...')
-#apt_avg, apt_std, apt_list = calc_APT(apl_list, angle_list, n_tails_per_lipid)
+print('Calculating tilt angles...')
+angle_avg, angle_std, angle_list = calc_tilt_angle(traj, topol, lipid_tails)
+print('Calculating area per tail...')
+apt_avg, apt_std, apt_list = calc_APT(apl_list, angle_list, n_tails_per_lipid)
 print('Calculating nematic order...')
 s2_ave, s2_std, s2_list = calc_nematic_order(traj, lipid_dict)
 print('Calculating headgroup distances...')
@@ -366,14 +557,14 @@ outfile.write('{:<20s}: {}\n'.format('Trajectory',trajfile))
 outfile.write('{:<20s}: {}\n'.format('Structure',grofile))
 outfile.write('{:<20s}: {}\n'.format('# Frames',traj.n_frames))
 outfile.write('{:<20s}: {}\n'.format('Lipids',n_lipid))
-#outfile.write('{:<20s}: {}\n'.format('Tails',n_lipid_tails))
+outfile.write('{:<20s}: {}\n'.format('Tails',n_lipid_tails))
 outfile.write('{:<20s}: {} ({})\n'.format('APL (A^2)',apl_avg, apl_std))
-#outfile.write('{:<20s}: {} ({})\n'.format('APT (A^2)',apt_avg, apt_std))
+outfile.write('{:<20s}: {} ({})\n'.format('APT (A^2)',apt_avg, apt_std))
 outfile.write('{:<20s}: {} ({})\n'.format('Bilayer Height (A)',Hpp_ave, Hpp_std))
-#outfile.write('{:<20s}: {} ({})\n'.format('Tilt Angle', angle_avg, angle_std))
+outfile.write('{:<20s}: {} ({})\n'.format('Tilt Angle', angle_avg, angle_std))
 outfile.write('{:<20s}: {} ({})\n'.format('S2', s2_ave, s2_std))
-"""
-outfile.write('{:<20s}: {} ({})\n'.format('Interdigitation (A)', interdig_avg, interdig_std))
+
+#outfile.write('{:<20s}: {} ({})\n'.format('Interdigitation (A)', interdig_avg, interdig_std))
 
 for key in offset_dict.keys():
     outfile.write('{:<20s}: {} ({})\n'.format
@@ -384,5 +575,65 @@ outfile.write('{:<20s}: {} ({})\n'.format(
 outfile.write('{:<20s}: {} ({})\n'.format(
     'Leaflet 2 Tilt Angle', np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])]), 
     np.std(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])])))
-"""
+
+# Plotting
+fig1 = plt.figure(1)
+plt.subplot(3,2,1)
+plt.plot(apl_list)
+plt.title('APL')
+
+plt.subplot(3,2,2)
+plt.plot(np.mean(angle_list, axis=1))
+plt.title('Tilt Angle ($^o$)')
+
+plt.subplot(3,2,3)
+plt.plot(np.mean(apt_list,axis=1))
+plt.title('APT')
+
+plt.subplot(3,2,4)
+plt.plot(Hpp_list)
+plt.title('H$_{PP}$')
+
+plt.subplot(3,2,5)
+plt.plot(s2_list)
+plt.title('S2')
+
+#plt.subplot(3,2,6)
+#plt.plot(interdig_list)
+#plt.title('Interdigitation (A)')
+
+plt.tight_layout()
+outpdf.savefig(fig1)
+plt.close()
+
+#density_profile_top_avg = np.mean(density_profile_top, axis = 0)
+#density_profile_bot_avg = np.mean(density_profile_bot, axis = 0)
+
+
+fig2 = plt.figure(2)
+#plt.subplot(2,1,1)
+#plt.plot(bins,density_profile_avg)
+#plt.xlabel('Depth (nm)')
+#plt.title('Density Profile (kg m$^{-3}$)')
+
+
+plt.subplot(2,1,2)
+
+#plt.plot(bins,density_profile_bot_avg)
+plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis = 0), bins = 50,  
+        alpha = 0.5, facecolor = 'blue', normed = True)
+plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], axis = 0), bins = 50,  
+        alpha = 0.5, facecolor = 'red', normed = True)
+plt.title('Angle Distribution by Leaflet')
+plt.xlabel('Angle ($^o$)')
+
+plt.tight_layout()
+outpdf.savefig(fig2)
+plt.close()
+outpdf.close()
+
+print('**********')
+print('{:^10s}'.format('Done'))
+print('**********')
+
 
