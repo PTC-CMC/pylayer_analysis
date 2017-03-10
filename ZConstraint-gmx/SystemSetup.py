@@ -123,7 +123,8 @@ class SystemSetup():
         self._z0 = self._zlist[0]
 
     def write_pulling_mdp(self, pull_filename, tracerlist, z_window_list, grofile, pull_coord_rate = 0,  
-             pull_coord_k = 1000, posres = None, t_pulling = None, stagefive = False, moving_sim = False): 
+            pull_coord_k = 1000, posres = None, t_pulling = None, stagefive = False, stagethree = False, 
+            moving_sim = False): 
         #Set up a pulling force on each tracer at very far windows
         #specify the group
         #Pulling reaction coordinate is just one direction (z)
@@ -159,7 +160,10 @@ class SystemSetup():
         #Default pull parameters, need to apply to each coord
         pull_coord_type = 'umbrella'
         #pull_coord_geometry = 'distance'
-        pull_coord_geometry = 'direction'
+        if stagethree:
+            pull_coord_geometry = 'direction-periodic'
+        else:
+            pull_coord_geometry = 'direction'
         pull_coord_dim = 'N N Y'
         pull_coord_vec = '0 0 1'
         pull_coord_start = 'no'
@@ -261,12 +265,20 @@ class SystemSetup():
         ref_t = '{:8s}\t{:8s}'.format(str(temp), str(temp))
         
         #Pressure coupling
-        pcoupl = 'Parrinello-Rahman'
-        pcoupltype = 'semiisotropic'
-        tau_p = 2.0
-        ref_p = '{} {}'.format(pres,pres)
-        compressibility = '4.5e-5 4.5e-5'
-        refcoord_scaling = 'com'
+        if stagethree:
+            pcoupl = 'no'
+            pcoupltype = ''
+            tau_p = 0.0
+            ref_p = '0 0'
+            compressibility = '0 0'
+            refcoord_scaling = 'com'
+        else:
+            pcoupl = 'Parrinello-Rahman'
+            pcoupltype = 'semiisotropic'
+            tau_p = 2.0
+            ref_p = '{} {}'.format(pres,pres)
+            compressibility = '4.5e-5 4.5e-5'
+            refcoord_scaling = 'com'
         
         #Misc stuff
         gen_vel = 'no'

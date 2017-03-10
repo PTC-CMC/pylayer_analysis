@@ -20,7 +20,7 @@ parser.add_option('--z', action = 'store', type = 'string', dest = 'zwindows', d
 parser.add_option('--top', action = 'store', type = 'string', dest = 'topfile', default = 'RedonepureDSPC.top')
 parser.add_option('--k', action = 'store', type = 'float', dest = 'pull_coord_k', default = '500')
 #parser.add_option('--r', action = 'store', type = 'float', dest = 'pull_coord_rate', default = '0.00005') #0.05nm/ns = 0.05e-3 nm/ps
-parser.add_option('--moving', action = "store_true", dest ='moving_sim')
+#parser.add_option('--moving', action = "store_true", dest ='moving_sim')
 #parser.add_option('--r', action = 'store', type = 'float', dest = 'pull_coord_rate', default = '0.00000') #0.00nm/ns = 0.00e-3 nm/ps
 (options, args) = parser.parse_args()
 
@@ -80,13 +80,13 @@ for i in range(N_sims):
     mdpfile = str('Stage3_Moving' + str(i) + '.mdp')
     filename = str('Stage3_Moving' + str(i))
     #oldfilename = str('Stage2_Strong' + str(i))
-    oldfilename = str('Stage1_Weak' + str(i))
+    oldfilename = str('Stage2_Strong' + str(i))
     cptfile = (oldfilename + '.cpt')
     oldtpr = (oldfilename + '.tpr')
     grofile = (directoryname+'/'+oldfilename+'.gro')
     oldgrofile = (oldfilename + '.gro')
     thing.write_pulling_mdp(directoryname + '/' + 'Stage3_Moving'+str(i)+'.mdp', tracer_list, z_list, grofile,
-            moving_sim = moving_sim, pull_coord_k = pull_coord_k)
+            moving_sim = True, pull_coord_k = pull_coord_k, stagethree = True)
     #thing.write_slurm_stage2(directoryname, filename, mdpfile, grofile, oldfilename)
     thing.write_grompp_file(directoryname, filename, oldgrofile, mdpfile, indexfile, oldtpr=oldtpr, cptfile=cptfile, topfile=topfile) 
 
