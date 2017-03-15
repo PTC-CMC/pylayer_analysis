@@ -47,5 +47,5 @@ for i, Sim in enumerate(filenames):
         forcefilename = 'forceout{}'.format(index)
         forcefile = open(forcefilename,'w')
         for timestep in range(len(all_data)):
-            forcefile.write('{}\t{}\n'.format(all_data[timestep][0], all_data[timestep][k+1]))
+            forcefile.write('{}\t{}\n'.format(all_data[timestep][0], abs(float(all_data[timestep][k+1]))))
         forcefile.close()
