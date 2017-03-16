@@ -732,7 +732,7 @@ def calc_interdigitation(traj, density_profile_top, density_profile_bot, bins):
     """
     interdig = integrate.simps( (4*density_profile_top*density_profile_bot)/
             ((density_profile_top + density_profile_bot)**2), x=bins)
-    interdig_blocks = interdig[:-1].reshape(int((traj.n_frame-1)/250), 250)
+    interdig_blocks = interdig[:-1].reshape(int((traj.n_frames-1)/250), 250)
     interdig_block_avgs = np.mean(interdig_blocks,axis=1)
     interdig_avg = np.mean(interdig_block_avgs)
     interdig_std = np.std(interdig_block_avgs)
