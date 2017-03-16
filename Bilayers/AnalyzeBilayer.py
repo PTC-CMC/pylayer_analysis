@@ -571,7 +571,6 @@ def calc_bilayer_height(headgroup_distance_dict):
         dist_std = np.std(dist_block_avgs)
     else:
         print ('No phosphate groups to compare')
-    pdb.set_trace()
 
     return (dist_avg, dist_std, dist_list)
 def calc_offsets(headgroup_distance_dict):
@@ -782,11 +781,11 @@ print('Calculating bilayer height...')
 Hpp_ave, Hpp_std, Hpp_list = calc_bilayer_height(headgroup_distance_dict)
 print('Calculating component offsets...')
 offset_dict = calc_offsets(headgroup_distance_dict)
-#print('Calculating density profile...')
-#density_profile, density_profile_avg, density_profile_top, density_profile_bot, bins = \
-#    calc_density_profile(traj, topol, lipid_dict)
-#print('Calculating interdigitation...')
-#interdig_avg, interdig_std, interdig_list = calc_interdigitation(traj, density_profile_top, density_profile_bot, bins)
+print('Calculating density profile...')
+density_profile, density_profile_avg, density_profile_top, density_profile_bot, bins = \
+    calc_density_profile(traj, topol, lipid_dict)
+print('Calculating interdigitation...')
+interdig_avg, interdig_std, interdig_list = calc_interdigitation(traj, density_profile_top, density_profile_bot, bins)
 
 # Printing properties
 
@@ -803,7 +802,7 @@ outfile.write('{:<20s}: {} ({})\n'.format('APT (A^2)',apt_avg, apt_std))
 outfile.write('{:<20s}: {} ({})\n'.format('Bilayer Height (A)',Hpp_ave, Hpp_std))
 outfile.write('{:<20s}: {} ({})\n'.format('Tilt Angle', angle_avg, angle_std))
 outfile.write('{:<20s}: {} ({})\n'.format('S2', s2_ave, s2_std))
-"""
+
 outfile.write('{:<20s}: {} ({})\n'.format('Interdigitation (A)', interdig_avg, interdig_std))
 
 for key in offset_dict.keys():
@@ -815,9 +814,9 @@ outfile.write('{:<20s}: {} ({})\n'.format(
 outfile.write('{:<20s}: {} ({})\n'.format(
     'Leaflet 2 Tilt Angle', np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])]), 
     np.std(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])])))
-"""
+
 # Plotting
-"""
+
 fig1 = plt.figure(1)
 plt.subplot(3,2,1)
 plt.plot(apl_list)
@@ -878,5 +877,5 @@ print('{:^10s}'.format('Done'))
 print('**********')
 
 
-"""
+
 
