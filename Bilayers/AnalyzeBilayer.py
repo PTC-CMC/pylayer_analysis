@@ -71,12 +71,12 @@ def get_lipids(topol):
                     if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name:
                         headgroup_dict['DPPC'] = list()
                         headgroup_dict['DPPC'].append(i)
-            elif 'ISIS' in resname:
+            elif 'ISIS' in resname or 'isis' in resname:
                 if 'ISIS' in headgroup_dict:
-                    if 'O' in atom_i.name or 'OE' in atom_i.name:
+                    if 'CH' not in atom_i.name:
                         headgroup_dict['ISIS'].append(i)
                 else:
-                    if 'O' in atom_i.name or 'OE' in atom_i.name:
+                    if 'CH' not in atom_i.name:
                         headgroup_dict['ISIS'] = list()
                         headgroup_dict['ISIS'].append(i)
             elif 'SS' in resname:
@@ -231,8 +231,8 @@ def get_lipid_tails(topol, lipid_dict):
                         lipid_tails[(str(resindex) + 'b')] = list()
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
 
-            elif 'ISIS' in resname:
-                if 6 <= shifted_index <= 17:
+            elif 'ISIS' in resname or 'isis' in resname:
+                if 0 <= shifted_index <= 17:
                     #if (resname + str(resindex) + 'a') in lipid_tails:
                     if ( str(resindex) + 'a') in lipid_tails:
                         #lipid_tails[(resname + str(resindex) + 'a')].append(atom_index)
@@ -243,7 +243,7 @@ def get_lipid_tails(topol, lipid_dict):
                         lipid_tails[( str(resindex) + 'a')] = list()
                         lipid_tails[( str(resindex) + 'a')].append(atom_index)
 
-                elif 19 == shifted_index or 21 <= shifted_index <= 31:
+                elif 21 <= shifted_index <= 37:
                     #if (resname + str(resindex) + 'b') in lipid_tails:
                     if (str(resindex) + 'b') in lipid_tails:
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
@@ -657,7 +657,7 @@ def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
     for i, key in enumerate(lipid_dict.keys()):
         lipid_i = lipid_dict[key]
         atom_i = topol.atom(lipid_i[0])
-        if 'DSPC' in atom_i.residue.name or 'DPPC' in atom_i.residue.name or 'ISIS' in atom_i.residue.name:
+        if 'DSPC' in atom_i.residue.name or 'DPPC' in atom_i.residue.name or 'ISIS' in atom_i.residue.name or 'isis' in atom_i.residue.name:
             atom_i = topol.atom(lipid_i[0])
         else:
             atom_i = topol.atom(lipid_i[10])
@@ -671,7 +671,7 @@ def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
     for i, key in enumerate(lipid_dict.keys()):
         lipid_i = lipid_dict[key]
         atom_i = topol.atom(lipid_i[0])
-        if 'DSPC' in atom_i.residue.name or 'DPPC' in atom_i.residue.name or 'ISIS' in atom_i.residue.name:
+        if 'DSPC' in atom_i.residue.name or 'DPPC' in atom_i.residue.name or 'ISIS' in atom_i.residue.name or 'isis' in atom_i.residue.name:
             atom_i = topol.atom(lipid_i[0])
         else:
             atom_i = topol.atom(lipid_i[10])
