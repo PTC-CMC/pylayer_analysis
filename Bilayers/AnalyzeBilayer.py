@@ -639,7 +639,13 @@ def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
     # First, divide box into 50 segments, based on z coordinates
     # Z end is based on the max z box dimension
     n_lipid = len(lipid_dict.keys())
-    z_end = np.amax(traj.xyz[:,:,2])
+    # It might be better to do this off of just the lipid dictionary
+    z_end = 0
+    for i, key in enumerate(lipid_dict.keys()):
+        lipid_z_max = max(traj.atom_slice(lipid_dict[key]).xyz[:,0,2])
+        z_end = max(z_end, lipid_z_max)
+    print(z_end)
+    #z_end = np.amax(traj.xyz[:,:,2])
     area = np.mean(traj.unitcell_lengths[:, 0] * traj.unitcell_lengths[:, 1])
     # Interval is the last z coordinate divied by bins
     z_interval = z_end/(n_bins)
@@ -654,6 +660,8 @@ def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
     badcount = 0
     z_threshold = 0.0
     n_atoms = 0
+    # This loop gets the middle z value to distinguish two leaflets
+    # Leaflets are distinguished based on the z-coordinate of a headgroup atom compared to the threshold
     for i, key in enumerate(lipid_dict.keys()):
         lipid_i = lipid_dict[key]
         atom_i = topol.atom(lipid_i[0])
@@ -676,6 +684,8 @@ def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
         else:
             atom_i = topol.atom(lipid_i[10])
 
+        # base_z is the z-coordiante of a headgroup atom
+        # will be compared to z_threshold to identify which leaflet its molecule belongs to
         base_z = np.mean(traj.atom_slice([atom_i.index]).xyz[:,0,2])
         for atom_i in lipid_i:
         # loop through each lipid atom, get the z coordinate (probably an array over time)
@@ -685,6 +695,7 @@ def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
             window_i = np.floor(z_i/z_interval)
             for j, bin_j in enumerate(window_i):
                 #if i < n_lipid/2:
+                # 
                 if base_z <= z_threshold:
                     density_profile_bot[j, int(bin_j)] += mass_i
                     botcount +=1
@@ -860,12 +871,14 @@ plt.title('Density Profile (kg m$^{-3}$)')
 plt.subplot(2,1,2)
 
 plt.plot(bins,density_profile_bot_avg)
-plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis = 0), bins = 50,  
-        alpha = 0.5, facecolor = 'blue', normed = True)
-plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], axis = 0), bins = 50,  
-        alpha = 0.5, facecolor = 'red', normed = True)
-plt.title('Angle Distribution by Leaflet')
-plt.xlabel('Angle ($^o$)')
+plt.plot(bins,density_profile_top_avg)
+
+#plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis = 0), bins = 50,  
+        #alpha = 0.5, facecolor = 'blue', normed = True)
+#plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], axis = 0), bins = 50,  
+        #alpha = 0.5, facecolor = 'red', normed = True)
+#plt.title('Angle Distribution by Leaflet')
+#plt.xlabel('Angle ($^o$)')
 
 plt.tight_layout()
 outpdf.savefig(fig2)
