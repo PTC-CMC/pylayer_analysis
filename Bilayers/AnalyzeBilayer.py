@@ -98,6 +98,14 @@ def get_lipids(topol):
                     if 'CH' not in atom_i.name:
                         headgroup_dict['acd22'] = list()
                         headgroup_dict['acd22'].append(i)
+            elif 'acd24' in resname:
+                if 'acd24' in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict['acd24'].append(i)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict['acd24'] = list()
+                        headgroup_dict['acd24'].append(i)
             elif 'alc12' in resname:
                 if 'alc12' in headgroup_dict:
                     if 'CH' not in atom_i.name:
@@ -368,13 +376,9 @@ def get_lipid_tails(topol, lipid_dict):
 
             elif 'alc22' in resname:
                 if 0 <= shifted_index <= 21:
-                    #if (resname + str(resindex)) in lipid_tails:
                     if ( str(resindex)) in lipid_tails:
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex))] = list()
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
             elif 'alc24' in resname:
@@ -388,6 +392,19 @@ def get_lipid_tails(topol, lipid_dict):
                         #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
+            elif 'acd24' in resname:
+                #if shifted_index == 22 or 10 <= shifted_index <= 20:
+                if 0 <= shifted_index <= 22:
+                   # if (resname + str(resindex)) in lipid_tails:
+                    if ( str(resindex)) in lipid_tails:
+                        #lipid_tails[(resname + str(resindex))].append(atom_index)
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        #lipid_tails[(resname + str(resindex))] = list()
+                        #lipid_tails[(resname + str(resindex))].append(atom_index)
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
+
 
             else:
                 print('Lipid {} not incorporated in lipid tail identification'.format(resname))
@@ -640,15 +657,19 @@ def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
     # Z end is based on the max z box dimension
     n_lipid = len(lipid_dict.keys())
     # It might be better to do this off of just the lipid dictionary
-    z_end = 0
+    z_end = -np.inf
+    z_begin = np.inf
     for i, key in enumerate(lipid_dict.keys()):
         lipid_z_max = max(traj.atom_slice(lipid_dict[key]).xyz[:,0,2])
+        lipid_z_min = min(traj.atom_slice(lipid_dict[key]).xyz[:,0,2])
         z_end = max(z_end, lipid_z_max)
-    print(z_end)
+        z_begin = min(z_begin, lipid_z_min)
     #z_end = np.amax(traj.xyz[:,:,2])
     area = np.mean(traj.unitcell_lengths[:, 0] * traj.unitcell_lengths[:, 1])
     # Interval is the last z coordinate divied by bins
-    z_interval = z_end/(n_bins)
+    z_begin -= 1
+    z_end += 1
+    z_interval = abs(z_end - z_begin)/(n_bins)
     v_slice = z_interval * area
     density_profile_top = 1e-40 * np.ones((traj.n_frames, n_bins + 1))
     density_profile_bot = 1e-40 * np.ones((traj.n_frames, n_bins + 1)) 
@@ -870,15 +891,15 @@ plt.title('Density Profile (kg m$^{-3}$)')
 
 plt.subplot(2,1,2)
 
-plt.plot(bins,density_profile_bot_avg)
-plt.plot(bins,density_profile_top_avg)
+#plt.plot(bins,density_profile_bot_avg)
+#plt.plot(bins,density_profile_top_avg)
 
-#plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis = 0), bins = 50,  
-        #alpha = 0.5, facecolor = 'blue', normed = True)
-#plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], axis = 0), bins = 50,  
-        #alpha = 0.5, facecolor = 'red', normed = True)
-#plt.title('Angle Distribution by Leaflet')
-#plt.xlabel('Angle ($^o$)')
+plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis = 0), bins = 50,  
+        alpha = 0.5, facecolor = 'blue', normed = True)
+plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], axis = 0), bins = 50,  
+        alpha = 0.5, facecolor = 'red', normed = True)
+plt.title('Angle Distribution by Leaflet')
+plt.xlabel('Angle ($^o$)')
 
 plt.tight_layout()
 outpdf.savefig(fig2)
