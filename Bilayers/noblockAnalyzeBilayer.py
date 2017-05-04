@@ -89,6 +89,23 @@ def get_lipids(topol):
                     if 'CH' not in atom_i.name:
                         headgroup_dict['acd16'] = list()
                         headgroup_dict['acd16'].append(i)
+            elif 'acd18' in resname:
+                if 'acd18' in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict['acd18'].append(i)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict['acd18'] = list()
+                        headgroup_dict['acd18'].append(i)
+            elif 'acd20' in resname:
+                if 'acd20' in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict['acd20'].append(i)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict['acd20'] = list()
+                        headgroup_dict['acd20'].append(i)
+
 
             elif 'acd22' in resname:
                 if 'acd22' in headgroup_dict:
@@ -281,6 +298,32 @@ def get_lipid_tails(topol, lipid_dict):
             elif 'acd16' in resname:
                 #if shifted_index == 16 or 4 <= shifted_index <= 14:
                 if 0 <= shifted_index <= 14:
+                    #if (resname + str(resindex)) in lipid_tails:
+                    if ( str(resindex)) in lipid_tails:
+                        #lipid_tails[(resname + str(resindex))].append(atom_index)
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        #lipid_tails[(resname + str(resindex))] = list()
+                        #lipid_tails[(resname + str(resindex))].append(atom_index)
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
+
+            elif 'acd18' in resname:
+                #if shifted_index == 16 or 4 <= shifted_index <= 14:
+                if 0 <= shifted_index <= 16:
+                    #if (resname + str(resindex)) in lipid_tails:
+                    if ( str(resindex)) in lipid_tails:
+                        #lipid_tails[(resname + str(resindex))].append(atom_index)
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        #lipid_tails[(resname + str(resindex))] = list()
+                        #lipid_tails[(resname + str(resindex))].append(atom_index)
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
+
+            elif 'acd20' in resname:
+                #if shifted_index == 16 or 4 <= shifted_index <= 14:
+                if 0 <= shifted_index <= 18:
                     #if (resname + str(resindex)) in lipid_tails:
                     if ( str(resindex)) in lipid_tails:
                         #lipid_tails[(resname + str(resindex))].append(atom_index)
