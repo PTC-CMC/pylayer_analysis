@@ -2,10 +2,11 @@ from __future__ import print_function
 import mdtraj as mdtraj
 import sys
 import scipy.integrate as integrate
+import pandas as pd
 import os
 from optparse import OptionParser
 import pdb
-import ipdb
+import itertools
 import numpy as np
 import matplotlib
 import collections
@@ -812,7 +813,7 @@ def calc_interdigitation(traj, density_profile_top, density_profile_bot, bins):
     interdig_std = np.std(interdig_block_avgs)
     return interdig_avg, interdig_std, interdig
 
-def calc_hbonds(traj, topol, lipid_dict, headgroup_dict):
+def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict):
     """ Compute hydrogen bonding between lipids and water
     
     Parameters
@@ -850,14 +851,32 @@ def calc_hbonds(traj, topol, lipid_dict, headgroup_dict):
             full_residue = topol.select("resid {}".format(resindex))
             # Append to lipid_type_atoms as long as no duplicates
             for residue_atom_index in full_residue:
-                if residue_atom_index not in lipid_type_atoms:
+                if residue_atom_index not in lipid_type_atoms[lipid_type]:
                     lipid_type_atoms[lipid_type].append(residue_atom_index)
 
     # Add waters
     lipid_type_atoms['HOH'] = topol.select("water")
 
     # Loop through each combination of lipid types
+    # Calc hbonds within a particular lipid type
+    #hbond = pd.DataFrame(index=['DSPC', 'alc20', 'HOH'], columns = ['DSPC', 'alc20','HOH'])
+    labelmap = {'DSPC': 0, 'alc20':1, 'HOH':2}
+    hbonds = np.zeros((len(labelmap.keys()), len(labelmap.keys())))
+    #hbonds = np.zeros(3,3)
+    #output = mdtraj.baker_hubbard(traj, exclude_water = False)
+    #print(output)
+    #pdb.set_trace()
+
+    for lipid_type in lipid_type_atoms.keys():
+        temp_traj = traj_pdb.atom_slice(lipid_type_atoms[lipid_type])
+        output= mdtraj.baker_hubbard(temp_traj, exclude_water = False)
+        #output= mdtraj.wernet_nilsson(temp_traj, exclude_water = False)
+        #pdb.set_trace()
+        print(output)
+        #hbonds[labelmap[lipid_type], labelmap[lipid_type]] = output
+
     pdb.set_trace()
+
 
 
 
@@ -865,17 +884,19 @@ def calc_hbonds(traj, topol, lipid_dict, headgroup_dict):
 parser = OptionParser()
 parser.add_option('-f', action="store", type="string", default = 'nopbc.xtc', dest = 'trajfile')
 parser.add_option('-c', action="store", type="string", default = 'Stage5_ZCon0.gro', dest = 'grofile')
+parser.add_option('-p', action="store", type="string", default = 'Stage5_ZCon0.gro', dest = 'pdbfile')
 parser.add_option('-o', action='store', type='string', default = 'BilayerAnalysis', dest = 'outfilename')
 
 (options, args) = parser.parse_args()
 trajfile = options.trajfile
 grofile = options.grofile
+pdbfile = options.pdbfile
 outfilename = options.outfilename
 
 print('Loading trajectory <{}>...'.format(trajfile))
 traj = mdtraj.load(trajfile, top=grofile)
+traj_pdb = mdtraj.load(trajfile, top=pdbfile)
 topol = traj.topology
-
 
 # Compute system information
 print('Gathering system information <{}>...'.format(grofile))
@@ -886,7 +907,7 @@ n_lipid = len(lipid_dict.keys())
 n_lipid_tails = len(lipid_tails.keys())
 n_tails_per_lipid = n_lipid_tails/n_lipid
 
-calc_hbonds(traj=traj, topol=topol, lipid_dict=lipid_dict, headgroup_dict=headgroup_dict)
+calc_hbonds(traj, traj_pdb, topol,lipid_dict, headgroup_dict)
 
 
 # Vectorized Calculations start here
