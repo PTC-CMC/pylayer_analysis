@@ -812,14 +812,17 @@ def calc_interdigitation(traj, density_profile_top, density_profile_bot, bins):
     interdig_std = np.std(interdig_block_avgs)
     return interdig_avg, interdig_std, interdig
 
-def calc_hbonds(traj, lipid_dict):
-    """ Compute hydrogen bonding between lipids
+def calc_hbonds(traj, topol, lipid_dict, headgroup_dict):
+    """ Compute hydrogen bonding between lipids and water
     
     Parameters
     ---------
-    traj : mdtraj topology
+    traj : mdtraj trajectory
+    topol: mdtraj topology
     lipid_dict : dict
         Mapping residue indices to associated atom indices
+    headgroup_dict : dict
+        Mapping lipid type to atoms that comprise headgroups
 
     Returns
     ------
@@ -830,6 +833,29 @@ def calc_hbonds(traj, lipid_dict):
     Using wernet-nilsson
     Baker-hubbard seems more appropriate for protein studies
     """
+
+    # Identify which lipid types we're dealing with
+    # Loop through the headgroup dict, each key is a lipid type
+    for lipid_type in headgroup_dict.keys():
+        # Get the values (atoms that mkae the headgroup)
+        headgroup_indices = headgroup_dict[lipid_type]
+    
+        # From that small subset of atoms for the headgroups, get the residues to get all the atoms of that lipid type
+        lipid_type_atoms = []
+        for headgroup_index in headgroup_indices:
+            atom_i = topol.select(headgroup_index)
+            resindex = atom_i.residue.index
+            full_residue = topol.select("resid {}".format(resindex))
+            # Append to lipid_type_atoms as long as no duplicates
+            for residue_atom_index in full_residue:
+                if residue_atom_index not in lipid_type_atoms:
+                    lipid_type_atoms.append(residue_atom_index)
+        pdb.set_trace()
+
+
+
+    # Loop through each combination of lipid types
+
 
 
 
@@ -858,120 +884,122 @@ n_lipid = len(lipid_dict.keys())
 n_lipid_tails = len(lipid_tails.keys())
 n_tails_per_lipid = n_lipid_tails/n_lipid
 
+calc_hbonds(traj=traj, topol=topol, lipid_dict=lipid_dict, headgroup_dict=headgroup_dict)
+
 
 # Vectorized Calculations start here
-print('Calculating area per lipid...')
-apl_avg, apl_std, apl_list = calc_APL(traj,n_lipid)
-
-print('Calculating tilt angles...')
-angle_avg, angle_std, angle_list = calc_tilt_angle(traj, topol, lipid_tails)
-print('Calculating area per tail...')
-apt_avg, apt_std, apt_list = calc_APT(apl_list, angle_list, n_tails_per_lipid)
-print('Calculating nematic order...')
-s2_ave, s2_std, s2_list = calc_nematic_order(traj, lipid_dict)
-print('Calculating headgroup distances...')
-headgroup_distance_dict = compute_headgroup_distances(traj, topol, headgroup_dict)
-print('Calculating bilayer height...')
-Hpp_ave, Hpp_std, Hpp_list = calc_bilayer_height(headgroup_distance_dict)
-print('Calculating component offsets...')
-offset_dict = calc_offsets(headgroup_distance_dict)
-print('Calculating density profile...')
-density_profile, density_profile_avg, density_profile_top, density_profile_bot, bins = \
-    calc_density_profile(traj, topol, lipid_dict)
-print('Calculating interdigitation...')
-interdig_avg, interdig_std, interdig_list = calc_interdigitation(traj, density_profile_top, density_profile_bot, bins)
+#print('Calculating area per lipid...')
+#apl_avg, apl_std, apl_list = calc_APL(traj,n_lipid)
+#
+#print('Calculating tilt angles...')
+#angle_avg, angle_std, angle_list = calc_tilt_angle(traj, topol, lipid_tails)
+#print('Calculating area per tail...')
+#apt_avg, apt_std, apt_list = calc_APT(apl_list, angle_list, n_tails_per_lipid)
+#print('Calculating nematic order...')
+#s2_ave, s2_std, s2_list = calc_nematic_order(traj, lipid_dict)
+#print('Calculating headgroup distances...')
+#headgroup_distance_dict = compute_headgroup_distances(traj, topol, headgroup_dict)
+#print('Calculating bilayer height...')
+#Hpp_ave, Hpp_std, Hpp_list = calc_bilayer_height(headgroup_distance_dict)
+#print('Calculating component offsets...')
+#offset_dict = calc_offsets(headgroup_distance_dict)
+#print('Calculating density profile...')
+#density_profile, density_profile_avg, density_profile_top, density_profile_bot, bins = \
+#    calc_density_profile(traj, topol, lipid_dict)
+#print('Calculating interdigitation...')
+## interdig_avg, interdig_std, interdig_list = calc_interdigitation(traj, density_profile_top, density_profile_bot, bins)
 
 # Printing properties
 
-print('Outputting to <{}>...'.format(outfilename))
-outfile = open((outfilename + '.txt'),'w')
-outpdf = PdfPages((outfilename+'.pdf'))
-outfile.write('{:<20s}: {}\n'.format('Trajectory',trajfile))
-outfile.write('{:<20s}: {}\n'.format('Structure',grofile))
-outfile.write('{:<20s}: {}\n'.format('# Frames',traj.n_frames))
-outfile.write('{:<20s}: {}\n'.format('Lipids',n_lipid))
-outfile.write('{:<20s}: {}\n'.format('Tails',n_lipid_tails))
-outfile.write('{:<20s}: {} ({})\n'.format('APL (A^2)',apl_avg, apl_std))
-outfile.write('{:<20s}: {} ({})\n'.format('APT (A^2)',apt_avg, apt_std))
-outfile.write('{:<20s}: {} ({})\n'.format('Bilayer Height (A)',Hpp_ave, Hpp_std))
-outfile.write('{:<20s}: {} ({})\n'.format('Tilt Angle', angle_avg, angle_std))
-outfile.write('{:<20s}: {} ({})\n'.format('S2', s2_ave, s2_std))
-
-outfile.write('{:<20s}: {} ({})\n'.format('Interdigitation (A)', interdig_avg, interdig_std))
-
-for key in offset_dict.keys():
-    outfile.write('{:<20s}: {} ({})\n'.format
-            ((key + ' offset (A)'), offset_dict[key][0], offset_dict[key][1]))
-outfile.write('{:<20s}: {} ({})\n'.format(
-    'Leaflet 1 Tilt Angle', np.mean(angle_list[:, 0 :int(np.floor(n_lipid_tails/2))]),
-    np.std(angle_list[:, 0 :int(np.floor(n_lipid_tails/2))])))
-outfile.write('{:<20s}: {} ({})\n'.format(
-    'Leaflet 2 Tilt Angle', np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])]), 
-    np.std(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])])))
+#print('Outputting to <{}>...'.format(outfilename))
+#outfile = open((outfilename + '.txt'),'w')
+#outpdf = PdfPages((outfilename+'.pdf'))
+#outfile.write('{:<20s}: {}\n'.format('Trajectory',trajfile))
+#outfile.write('{:<20s}: {}\n'.format('Structure',grofile))
+#outfile.write('{:<20s}: {}\n'.format('# Frames',traj.n_frames))
+#outfile.write('{:<20s}: {}\n'.format('Lipids',n_lipid))
+#outfile.write('{:<20s}: {}\n'.format('Tails',n_lipid_tails))
+#outfile.write('{:<20s}: {} ({})\n'.format('APL (A^2)',apl_avg, apl_std))
+#outfile.write('{:<20s}: {} ({})\n'.format('APT (A^2)',apt_avg, apt_std))
+#outfile.write('{:<20s}: {} ({})\n'.format('Bilayer Height (A)',Hpp_ave, Hpp_std))
+#outfile.write('{:<20s}: {} ({})\n'.format('Tilt Angle', angle_avg, angle_std))
+#outfile.write('{:<20s}: {} ({})\n'.format('S2', s2_ave, s2_std))
+#
+#outfile.write('{:<20s}: {} ({})\n'.format('Interdigitation (A)', interdig_avg, interdig_std))
+#
+#for key in offset_dict.keys():
+#    outfile.write('{:<20s}: {} ({})\n'.format
+#            ((key + ' offset (A)'), offset_dict[key][0], offset_dict[key][1]))
+#outfile.write('{:<20s}: {} ({})\n'.format(
+#    'Leaflet 1 Tilt Angle', np.mean(angle_list[:, 0 :int(np.floor(n_lipid_tails/2))]),
+#    np.std(angle_list[:, 0 :int(np.floor(n_lipid_tails/2))])))
+#outfile.write('{:<20s}: {} ({})\n'.format(
+#    'Leaflet 2 Tilt Angle', np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])]), 
+#    np.std(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])])))
 
 # Plotting
-
-fig1 = plt.figure(1)
-plt.subplot(3,2,1)
-plt.plot(apl_list)
-plt.title('APL')
-
-plt.subplot(3,2,2)
-plt.plot(np.mean(angle_list, axis=1))
-plt.title('Tilt Angle ($^o$)')
-
-plt.subplot(3,2,3)
-plt.plot(np.mean(apt_list,axis=1))
-plt.title('APT')
-
-plt.subplot(3,2,4)
-plt.plot(Hpp_list)
-plt.title('H$_{PP}$')
-
-plt.subplot(3,2,5)
-plt.plot(s2_list)
-plt.title('S2')
-
-plt.subplot(3,2,6)
-plt.plot(interdig_list)
-plt.title('Interdigitation (A)')
-
-plt.tight_layout()
-outpdf.savefig(fig1)
-plt.close()
-
-density_profile_top_avg = np.mean(density_profile_top, axis = 0)
-density_profile_bot_avg = np.mean(density_profile_bot, axis = 0)
-
-
-fig2 = plt.figure(2)
-plt.subplot(2,1,1)
-plt.plot(bins,density_profile_avg)
-plt.xlabel('Depth (nm)')
-plt.title('Density Profile (kg m$^{-3}$)')
-
-
-plt.subplot(2,1,2)
-
-#plt.plot(bins,density_profile_bot_avg)
-#plt.plot(bins,density_profile_top_avg)
-
-plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis = 0), bins = 50,  
-        alpha = 0.5, facecolor = 'blue', normed = True)
-plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], axis = 0), bins = 50,  
-        alpha = 0.5, facecolor = 'red', normed = True)
-plt.title('Angle Distribution by Leaflet')
-plt.xlabel('Angle ($^o$)')
-
-plt.tight_layout()
-outpdf.savefig(fig2)
-plt.close()
-outpdf.close()
-
-print('**********')
-print('{:^10s}'.format('Done'))
-print('**********')
-
-
-
-
+#
+#fig1 = plt.figure(1)
+#plt.subplot(3,2,1)
+#plt.plot(apl_list)
+#plt.title('APL')
+#
+#plt.subplot(3,2,2)
+#plt.plot(np.mean(angle_list, axis=1))
+#plt.title('Tilt Angle ($^o$)')
+#
+#plt.subplot(3,2,3)
+#plt.plot(np.mean(apt_list,axis=1))
+#plt.title('APT')
+#
+#plt.subplot(3,2,4)
+#plt.plot(Hpp_list)
+#plt.title('H$_{PP}$')
+#
+#plt.subplot(3,2,5)
+#plt.plot(s2_list)
+#plt.title('S2')
+#
+#plt.subplot(3,2,6)
+#plt.plot(interdig_list)
+#plt.title('Interdigitation (A)')
+#
+#plt.tight_layout()
+#outpdf.savefig(fig1)
+#plt.close()
+#
+#density_profile_top_avg = np.mean(density_profile_top, axis = 0)
+#density_profile_bot_avg = np.mean(density_profile_bot, axis = 0)
+#
+#
+#fig2 = plt.figure(2)
+#plt.subplot(2,1,1)
+#plt.plot(bins,density_profile_avg)
+#plt.xlabel('Depth (nm)')
+#plt.title('Density Profile (kg m$^{-3}$)')
+#
+#
+#plt.subplot(2,1,2)
+#
+##plt.plot(bins,density_profile_bot_avg)
+##plt.plot(bins,density_profile_top_avg)
+#
+#plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis = 0), bins = 50,  
+#        alpha = 0.5, facecolor = 'blue', normed = True)
+#plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], axis = 0), bins = 50,  
+#        alpha = 0.5, facecolor = 'red', normed = True)
+#plt.title('Angle Distribution by Leaflet')
+#plt.xlabel('Angle ($^o$)')
+#
+#plt.tight_layout()
+#outpdf.savefig(fig2)
+#plt.close()
+#outpdf.close()
+#
+#print('**********')
+#print('{:^10s}'.format('Done'))
+#print('**********')
+#
+#
+#
+#
