@@ -835,27 +835,29 @@ def calc_hbonds(traj, topol, lipid_dict, headgroup_dict):
     """
 
     # Identify which lipid types we're dealing with
+    lipid_type_atoms = OrderedDict()
     # Loop through the headgroup dict, each key is a lipid type
     for lipid_type in headgroup_dict.keys():
+        lipid_type_atoms[lipid_type] = []
         # Get the values (atoms that mkae the headgroup)
         headgroup_indices = headgroup_dict[lipid_type]
     
         # From that small subset of atoms for the headgroups, get the residues to get all the atoms of that lipid type
-        lipid_type_atoms = []
+        
         for headgroup_index in headgroup_indices:
-            atom_i = topol.select(headgroup_index)
+            atom_i = topol.atom(headgroup_index)
             resindex = atom_i.residue.index
             full_residue = topol.select("resid {}".format(resindex))
             # Append to lipid_type_atoms as long as no duplicates
             for residue_atom_index in full_residue:
                 if residue_atom_index not in lipid_type_atoms:
-                    lipid_type_atoms.append(residue_atom_index)
-        pdb.set_trace()
+                    lipid_type_atoms[lipid_type].append(residue_atom_index)
 
-
+    # Add waters
+    lipid_type_atoms['HOH'] = topol.select("water")
 
     # Loop through each combination of lipid types
-
+    pdb.set_trace()
 
 
 
