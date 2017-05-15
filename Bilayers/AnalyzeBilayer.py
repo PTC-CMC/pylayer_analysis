@@ -812,6 +812,26 @@ def calc_interdigitation(traj, density_profile_top, density_profile_bot, bins):
     interdig_std = np.std(interdig_block_avgs)
     return interdig_avg, interdig_std, interdig
 
+def calc_hbonds(traj, lipid_dict):
+    """ Compute hydrogen bonding between lipids
+    
+    Parameters
+    ---------
+    traj : mdtraj topology
+    lipid_dict : dict
+        Mapping residue indices to associated atom indices
+
+    Returns
+    ------
+    Matrix whose elements correspond to the hydrogen bonds between the two groups
+
+    Notes
+    -----
+    Using wernet-nilsson
+    Baker-hubbard seems more appropriate for protein studies
+    """
+
+
 
 # CODE STARTS HERE
 parser = OptionParser()
