@@ -53,14 +53,14 @@ for i, val in enumerate(filenames):
             os.system("echo '0 1' | gmx trjconv -f md_{}.xtc -s md_{}.gro -pbc nojump -o nojump.xtc -center -n newindex.ndx".format(val, val))
             # trjconv and pbc mol to move everything into box
             os.system("echo '0' | gmx trjconv -f nojump.xtc -s md_{}.tpr -pbc mol -dt 20 -o nopbc.xtc".format(val))
-            os.system("echo '0' | gmx trjconv -f nojump.xtc -s md_{}.tpr -pbc mol -b 480000 -e 500000 -dt 20 -o last20.xtc".format(val))
+            os.system("echo '0' | gmx trjconv -f nojump.xtc -s md_{}.tpr -pbc mol -b 80000 -e 100000 -dt 20 -o last20.xtc".format(val))
             os.system("echo '0' | gmx trjconv -f md_{0}.gro -s md_{0}.tpr -pbc mol -o md_{0}.pdb -conect".format(val))
 
             
             # truncate last 20 ns 
             os.system('cp ~/Programs/Analysis/Bilayers/AnalyzeBilayer.py .')
-            os.system('python AnalyzeBilayer.py -f nopbc.xtc -c md_{}.gro -o full'.format(val))
-            os.system('python AnalyzeBilayer.py -f last20.xtc -c md_{}.gro -o last20'.format(val))
+            os.system('python AnalyzeBilayer.py -f nopbc.xtc -c md_{}.gro -p md_{}.pdb -o full'.format(val, val))
+            os.system('python AnalyzeBilayer.py -f last20.xtc -c md_{}.gro -p md_{}.pdb -o last20'.format(val, val))
             os.system('rm nojump.xtc')
             os.system('rm nopbc.xtc')
             #os.system('rm last20.xtc')
