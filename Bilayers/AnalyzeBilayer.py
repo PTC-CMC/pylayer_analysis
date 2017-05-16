@@ -855,7 +855,7 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict):
                     lipid_type_atoms[lipid_type].append(residue_atom_index)
 
     # Add waters
-    lipid_type_atoms['HOH'] = topol.select("water")
+    #lipid_type_atoms['HOH'] = topol.select("water")
 
     # Loop through each combination of lipid types
     # Calc hbonds within a particular lipid type
@@ -863,19 +863,33 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict):
     labelmap = {'DSPC': 0, 'alc20':1, 'HOH':2}
     hbonds = np.zeros((len(labelmap.keys()), len(labelmap.keys())))
     #hbonds = np.zeros(3,3)
-    #output = mdtraj.baker_hubbard(traj, exclude_water = False)
+    print('---------------')
+
+    output = mdtraj.baker_hubbard(traj_pdb, exclude_water = True)
     #print(output)
     #pdb.set_trace()
 
+    # Self h-bonding
     for lipid_type in lipid_type_atoms.keys():
+        print('------------------------')
+        print(lipid_type)
         temp_traj = traj_pdb.atom_slice(lipid_type_atoms[lipid_type])
-        output= mdtraj.baker_hubbard(temp_traj, exclude_water = False)
-        #output= mdtraj.wernet_nilsson(temp_traj, exclude_water = False)
+        output= mdtraj.baker_hubbard(temp_traj, exclude_water = True)
+        #output= mdtraj.wernet_nilsson(temp_traj, exclude_water = True)
         #pdb.set_trace()
         print(output)
         #hbonds[labelmap[lipid_type], labelmap[lipid_type]] = output
 
-    pdb.set_trace()
+    # Cross h-bonding
+    #for type_1, type_2 in itertools.combinations(lipid_type_atoms.keys(),2):
+    for type_1, type_2 in itertools.permutations(lipid_type_atoms.keys(),2):
+        print('-----------------')
+        print(type_1)
+        print(type_2)
+        temp_traj = traj_pdb.atom_slice(lipid_type_atoms[type_1] + lipid_type_atoms[type_2])
+        output=mdtraj.baker_hubbard(temp_traj, exclude_water = True)
+        print(output)
+
 
 
 
