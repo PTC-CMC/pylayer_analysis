@@ -889,70 +889,70 @@ for row_label in labelmap.keys():
         hbond_std = hbond_matrix_std[row_index, col_index]
         outfile.write('{:<20s}: {} ({})\n'.format(str(row_label+"-"+ col_label), hbond_avg, hbond_std))
 
-#
-## Plotting
-#
-#fig1 = plt.figure(1)
-#plt.subplot(3,2,1)
-#plt.plot(apl_list)
-#plt.title('APL')
-#
-#plt.subplot(3,2,2)
-#plt.plot(np.mean(angle_list, axis=1))
-#plt.title('Tilt Angle ($^o$)')
-#
-#plt.subplot(3,2,3)
-#plt.plot(np.mean(apt_list,axis=1))
-#plt.title('APT')
-#
-#plt.subplot(3,2,4)
-#plt.plot(Hpp_list)
-#plt.title('H$_{PP}$')
-#
-#plt.subplot(3,2,5)
-#plt.plot(s2_list)
-#plt.title('S2')
-#
-#plt.subplot(3,2,6)
-#plt.plot(interdig_list)
-#plt.title('Interdigitation (A)')
-#
-#plt.tight_layout()
-#outpdf.savefig(fig1)
-#plt.close()
-#
-#density_profile_top_avg = np.mean(density_profile_top, axis = 0)
-#density_profile_bot_avg = np.mean(density_profile_bot, axis = 0)
-#
-#
-#fig2 = plt.figure(2)
-#plt.subplot(2,1,1)
-#plt.plot(bins,density_profile_avg)
-#plt.xlabel('Depth (nm)')
-#plt.title('Density Profile (kg m$^{-3}$)')
-#
-#
-#plt.subplot(2,1,2)
-#
-##plt.plot(bins,density_profile_bot_avg)
-##plt.plot(bins,density_profile_top_avg)
-#
-#plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis = 0), bins = 50,  
-#        alpha = 0.5, facecolor = 'blue', normed = True)
-#plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], axis = 0), bins = 50,  
-#        alpha = 0.5, facecolor = 'red', normed = True)
-#plt.title('Angle Distribution by Leaflet')
-#plt.xlabel('Angle ($^o$)')
-#
-#plt.tight_layout()
-#outpdf.savefig(fig2)
-#plt.close()
-#outpdf.close()
-#
-#print('**********')
-#print('{:^10s}'.format('Done'))
-#print('**********')
-#
-#
-#
-#
+
+# Plotting
+
+fig1 = plt.figure(1)
+plt.subplot(3,2,1)
+plt.plot(apl_list)
+plt.title('APL')
+
+plt.subplot(3,2,2)
+plt.plot(np.mean(angle_list, axis=1))
+plt.title('Tilt Angle ($^o$)')
+
+plt.subplot(3,2,3)
+plt.plot(np.mean(apt_list,axis=1))
+plt.title('APT')
+
+plt.subplot(3,2,4)
+plt.plot(Hpp_list)
+plt.title('H$_{PP}$')
+
+plt.subplot(3,2,5)
+plt.plot(s2_list)
+plt.title('S2')
+
+plt.subplot(3,2,6)
+plt.plot(interdig_list)
+plt.title('Interdigitation (A)')
+
+plt.tight_layout()
+outpdf.savefig(fig1)
+plt.close()
+
+density_profile_top_avg = np.mean(density_profile_top, axis = 0)
+density_profile_bot_avg = np.mean(density_profile_bot, axis = 0)
+
+
+fig2 = plt.figure(2)
+plt.subplot(2,1,1)
+plt.plot(bins,density_profile_avg)
+plt.xlabel('Depth (nm)')
+plt.title('Density Profile (kg m$^{-3}$)')
+
+
+plt.subplot(2,1,2)
+
+#plt.plot(bins,density_profile_bot_avg)
+#plt.plot(bins,density_profile_top_avg)
+
+plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis = 0), bins = 50,  
+        alpha = 0.5, facecolor = 'blue', normed = True)
+plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], axis = 0), bins = 50,  
+        alpha = 0.5, facecolor = 'red', normed = True)
+plt.title('Angle Distribution by Leaflet')
+plt.xlabel('Angle ($^o$)')
+
+plt.tight_layout()
+outpdf.savefig(fig2)
+plt.close()
+outpdf.close()
+
+print('**********')
+print('{:^10s}'.format('Done'))
+print('**********')
+
+
+
+
