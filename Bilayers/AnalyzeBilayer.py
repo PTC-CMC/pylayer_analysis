@@ -866,18 +866,26 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict):
     print('---------------')
 
     output = mdtraj.baker_hubbard(traj_pdb, exclude_water = True)
-    #print(output)
+    print('WHOLE:')
+    print(output)
+    print('------------------')
+
+    output=mdtraj.baker_hubbard(traj_pdb.atom_slice(range(4864)))
+    print('SLICED')
+    print(output)
     #pdb.set_trace()
 
     # Self h-bonding
     for lipid_type in lipid_type_atoms.keys():
         print('------------------------')
         print(lipid_type)
-        temp_traj = traj_pdb.atom_slice(lipid_type_atoms[lipid_type])
+        temp_list = list(set(lipid_type_atoms[lipid_type]))
+        temp_traj = traj_pdb.atom_slice(temp_list)
         output= mdtraj.baker_hubbard(temp_traj, exclude_water = True)
         #output= mdtraj.wernet_nilsson(temp_traj, exclude_water = True)
         #pdb.set_trace()
         print(output)
+        print(temp_traj.n_atoms)
         #hbonds[labelmap[lipid_type], labelmap[lipid_type]] = output
 
     # Cross h-bonding
@@ -886,9 +894,15 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict):
         print('-----------------')
         print(type_1)
         print(type_2)
-        temp_traj = traj_pdb.atom_slice(lipid_type_atoms[type_1] + lipid_type_atoms[type_2])
+        temp_set1 = set(lipid_type_atoms[type_1])
+        temp_set2 = set(lipid_type_atoms[type_2])
+        both_list = list(temp_set1.union(temp_set2))
+        temp_traj = traj_pdb.atom_slice(both_list)
         output=mdtraj.baker_hubbard(temp_traj, exclude_water = True)
         print(output)
+        print(temp_traj.n_atoms)
+        #pdb.set_trace()
+
 
 
 
