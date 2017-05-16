@@ -209,211 +209,139 @@ def get_lipid_tails(topol, lipid_dict):
             # Looking at 12 carbons after the headgroup
             if 'DSPC' in resname:
                 if 14 == shifted_index or 16 <= shifted_index <= 26:
-                    #if (resname + str(resindex) + 'a') in lipid_tails:
                     if (str(resindex) + 'a') in lipid_tails:
-                        #lipid_tails[(resname + str(resindex) + 'a')].append(atom_index)
                         lipid_tails[(str(resindex) + 'a')].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex) + 'a')] = list()
-                        #lipid_tails[(resname + str(resindex) + 'a')].append(atom_index)
                         lipid_tails[(str(resindex) + 'a')] = list()
                         lipid_tails[(str(resindex) + 'a')].append(atom_index)
 
 
                 elif 35 == shifted_index or 37 <= shifted_index <= 47:
-                    #if (resname + str(resindex) + 'b') in lipid_tails:
                     if (str(resindex) + 'b') in lipid_tails:
-                        #lipid_tails[(resname + str(resindex) + 'b')].append(atom_index)
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex) + 'b')] = list()
-                        #lipid_tails[(resname + str(resindex) + 'b')].append(atom_index)
                         lipid_tails[(str(resindex) + 'b')] = list()
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
 
 
             elif 'DPPC' in resname:
                 if 14 == shifted_index or 16 <= shifted_index <= 26:
-                   # if (resname + str(resindex) + 'a') in lipid_tails:
                     if (str(resindex) + 'a') in lipid_tails:
-                        #lipid_tails[(resname + str(resindex) + 'a')].append(atom_index)
                         lipid_tails[(str(resindex) + 'a')].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex) + 'a')] = list()
-                        #lipid_tails[(resname + str(resindex) + 'a')].append(atom_index)
                         lipid_tails[(str(resindex) + 'a')] = list()
                         lipid_tails[(str(resindex) + 'a')].append(atom_index)
 
 
                 elif 33 == shifted_index or 35 <= shifted_index <= 45:
-                    #if (resname + str(resindex) + 'b') in lipid_tails:
                     if ( str(resindex) + 'b') in lipid_tails:
-                        #lipid_tails[(resname + str(resindex) + 'b')].append(atom_index)
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex) + 'b')] = list()
-                        #lipid_tails[(resname + str(resindex) + 'b')].append(atom_index)
                         lipid_tails[(str(resindex) + 'b')] = list()
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
 
             elif 'ISIS' in resname or 'isis' in resname:
                 if 0 <= shifted_index <= 17:
-                    #if (resname + str(resindex) + 'a') in lipid_tails:
                     if ( str(resindex) + 'a') in lipid_tails:
-                        #lipid_tails[(resname + str(resindex) + 'a')].append(atom_index)
                         lipid_tails[(str(resindex) + 'a')].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex) + 'a')] = list()
-                        #lipid_tails[(resname + str(resindex) + 'a')].append(atom_index)
                         lipid_tails[( str(resindex) + 'a')] = list()
                         lipid_tails[( str(resindex) + 'a')].append(atom_index)
 
                 elif 21 <= shifted_index <= 37:
-                    #if (resname + str(resindex) + 'b') in lipid_tails:
                     if (str(resindex) + 'b') in lipid_tails:
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
-                        #lipid_tails[(resname + str(resindex) + 'b')].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex) + 'b')] = list()
-                        #lipid_tails[(resname + str(resindex) + 'b')].append(atom_index)
                         lipid_tails[(str(resindex) + 'b')] = list()
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
 
             elif 'SS' in resname:
                 if 5 <= shifted_index <= 16:
-                   # if (resname + str(resindex) + 'a') in lipid_tails:
                     if ( str(resindex) + 'a') in lipid_tails:
-                        #lipid_tails[(resname + str(resindex) + 'a')].append(atom_index)
                         lipid_tails[(str(resindex) + 'a')].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex) + 'a')] = list()
-                        #lipid_tails[(resname + str(resindex) + 'a')].append(atom_index)
                         lipid_tails[(str(resindex) + 'a')] = list()
                         lipid_tails[(str(resindex) + 'a')].append(atom_index)
 
                 elif 18 == shifted_index or 20 <= shifted_index <= 30:
-                    #if (resname + str(resindex) + 'b') in lipid_tails:
                     if ( str(resindex) + 'b') in lipid_tails:
-                        #lipid_tails[(resname + str(resindex) + 'b')].append(atom_index)
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex) + 'b')] = list()
-                        #lipid_tails[(resname + str(resindex) + 'b')].append(atom_index)
                         lipid_tails[(str(resindex) + 'b')] = list()
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
 
 
             elif 'acd16' in resname:
-                #if shifted_index == 16 or 4 <= shifted_index <= 14:
                 if 0 <= shifted_index <= 14:
-                    #if (resname + str(resindex)) in lipid_tails:
                     if ( str(resindex)) in lipid_tails:
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex))] = list()
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
 
             elif 'acd18' in resname:
-                #if shifted_index == 16 or 4 <= shifted_index <= 14:
                 if 0 <= shifted_index <= 16:
-                    #if (resname + str(resindex)) in lipid_tails:
                     if ( str(resindex)) in lipid_tails:
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex))] = list()
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
 
             elif 'acd20' in resname:
-                #if shifted_index == 16 or 4 <= shifted_index <= 14:
                 if 0 <= shifted_index <= 18:
-                    #if (resname + str(resindex)) in lipid_tails:
                     if ( str(resindex)) in lipid_tails:
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex))] = list()
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
 
             elif 'acd22' in resname:
-                #if shifted_index == 22 or 10 <= shifted_index <= 20:
                 if 0 <= shifted_index <= 20:
-                   # if (resname + str(resindex)) in lipid_tails:
                     if ( str(resindex)) in lipid_tails:
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex))] = list()
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
 
 
             elif 'alc12' in resname:
                 if 0 <= shifted_index <= 11:
-                    #if (resname + str(resindex)) in lipid_tails:
                     if ( str(resindex)) in lipid_tails:
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex) )].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex))] = list()
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
 
             elif 'alc14' in resname:
                 if 0 <= shifted_index <= 13:
-                    #if (resname + str(resindex)) in lipid_tails:
                     if ( str(resindex)) in lipid_tails:
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex))] = list()
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
 
 
             elif 'alc16' in resname:
                 if 0 <= shifted_index <= 15:
-                    #if (resname + str(resindex)) in lipid_tails:
                     if ( str(resindex)) in lipid_tails:
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex))] = list()
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
 
             elif 'alc18' in resname:
                 if 0 <= shifted_index <= 17:
-                    #if (resname + str(resindex)) in lipid_tails:
                     if ( str(resindex)) in lipid_tails:
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex) )].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex))] = list()
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[( str(resindex))] = list()
                         lipid_tails[( str(resindex))].append(atom_index)
 
             elif 'alc20' in resname:
                 if 0 <= shifted_index <= 19:
-                    #if (resname + str(resindex)) in lipid_tails:
                     if ( str(resindex)) in lipid_tails:
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex))] = list()
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[( str(resindex))] = list()
                         lipid_tails[( str(resindex))].append(atom_index)
 
@@ -426,25 +354,16 @@ def get_lipid_tails(topol, lipid_dict):
                         lipid_tails[(str(resindex))].append(atom_index)
             elif 'alc24' in resname:
                 if 0 <= shifted_index <= 23:
-                    #if (resname + str(resindex)) in lipid_tails:
                     if ( str(resindex)) in lipid_tails:
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex))] = list()
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
             elif 'acd24' in resname:
-                #if shifted_index == 22 or 10 <= shifted_index <= 20:
                 if 0 <= shifted_index <= 22:
-                   # if (resname + str(resindex)) in lipid_tails:
                     if ( str(resindex)) in lipid_tails:
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))].append(atom_index)
                     else:
-                        #lipid_tails[(resname + str(resindex))] = list()
-                        #lipid_tails[(resname + str(resindex))].append(atom_index)
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
 
@@ -836,75 +755,50 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict):
     """
 
     # Identify which lipid types we're dealing with
-    lipid_type_atoms = OrderedDict()
+    #lipid_type_atoms = OrderedDict()
     # Loop through the headgroup dict, each key is a lipid type
+    # Construct label map to convert a lipid type into a numerical index for an array
+    label_to_number = 0
+    labelmap = OrderedDict()
     for lipid_type in headgroup_dict.keys():
-        lipid_type_atoms[lipid_type] = []
-        # Get the values (atoms that mkae the headgroup)
-        headgroup_indices = headgroup_dict[lipid_type]
-    
-        # From that small subset of atoms for the headgroups, get the residues to get all the atoms of that lipid type
+        labelmap[lipid_type] = label_to_number
+        label_to_number += 1
         
-        for headgroup_index in headgroup_indices:
-            atom_i = topol.atom(headgroup_index)
-            resindex = atom_i.residue.index
-            full_residue = topol.select("resid {}".format(resindex))
-            # Append to lipid_type_atoms as long as no duplicates
-            for residue_atom_index in full_residue:
-                if residue_atom_index not in lipid_type_atoms[lipid_type]:
-                    lipid_type_atoms[lipid_type].append(residue_atom_index)
 
     # Add waters
-    #lipid_type_atoms['HOH'] = topol.select("water")
+    #labelmap['HOH'] = label_to_number
 
-    # Loop through each combination of lipid types
+    
     # Calc hbonds within a particular lipid type
-    #hbond = pd.DataFrame(index=['DSPC', 'alc20', 'HOH'], columns = ['DSPC', 'alc20','HOH'])
-    labelmap = {'DSPC': 0, 'alc20':1, 'HOH':2}
-    hbonds = np.zeros((len(labelmap.keys()), len(labelmap.keys())))
-    #hbonds = np.zeros(3,3)
-    print('---------------')
+    # Generic list to hold subsequent hbond matrices per frame
+    hbond_matrix_list = []
 
-    output = mdtraj.baker_hubbard(traj_pdb, exclude_water = True)
-    print('WHOLE:')
-    print(output)
-    print('------------------')
+    # Actual mdtraj computation of hbonds
+    #hbonds = mdtraj.baker_hubbard(traj_pdb, exclude_water = True)
+    hbonds = mdtraj.wernet_nilsson(traj_pdb, exclude_water = True)
 
-    output=mdtraj.baker_hubbard(traj_pdb.atom_slice(range(4864)))
-    print('SLICED')
-    print(output)
-    #pdb.set_trace()
+    # MDtraj generates a huge list of hyrogen bonds per frame
+    for hbond_frame in hbonds:
+        hbond_frame_matrix = np.zeros((len(labelmap.keys()), len(labelmap.keys())))
+        # Interpret the hydrogen bond lists from mdtraj, sort into arrays of donors/acceptors
+        for (atom_i, atom_j, atom_k) in hbond_frame:
+            # Get the residues for each atom participating in a hbond
+            # i is the donor atom, j is the hydrogen, k is the acceptor
+            residue_i = topol.atom(atom_i).residue.name
+            residue_j = topol.atom(atom_j).residue.name
+            residue_k = topol.atom(atom_k).residue.name
+            participating_residues = (residue_i, residue_j, residue_k)
+            # Get residue names, convert them to indices for the matrix
+            donor = labelmap[participating_residues[0]]
+            acceptor = labelmap[participating_residues[2]]
+            hbond_frame_matrix[donor,acceptor]+=1
+        # Add the frame's hbond matrix to the overall hbond matrix list
+        hbond_matrix_list.append(hbond_frame_matrix)
+    # Compute avgs and stds
+    hbond_matrix_avg = np.mean(hbond_matrix_list, axis = 0)
+    hbond_matrix_std = np.std(hbond_matrix_list, axis = 0)
 
-    # Self h-bonding
-    for lipid_type in lipid_type_atoms.keys():
-        print('------------------------')
-        print(lipid_type)
-        temp_list = list(set(lipid_type_atoms[lipid_type]))
-        temp_traj = traj_pdb.atom_slice(temp_list)
-        output= mdtraj.baker_hubbard(temp_traj, exclude_water = True)
-        #output= mdtraj.wernet_nilsson(temp_traj, exclude_water = True)
-        #pdb.set_trace()
-        print(output)
-        print(temp_traj.n_atoms)
-        #hbonds[labelmap[lipid_type], labelmap[lipid_type]] = output
-
-    # Cross h-bonding
-    #for type_1, type_2 in itertools.combinations(lipid_type_atoms.keys(),2):
-    for type_1, type_2 in itertools.permutations(lipid_type_atoms.keys(),2):
-        print('-----------------')
-        print(type_1)
-        print(type_2)
-        temp_set1 = set(lipid_type_atoms[type_1])
-        temp_set2 = set(lipid_type_atoms[type_2])
-        both_list = list(temp_set1.union(temp_set2))
-        temp_traj = traj_pdb.atom_slice(both_list)
-        output=mdtraj.baker_hubbard(temp_traj, exclude_water = True)
-        print(output)
-        print(temp_traj.n_atoms)
-        #pdb.set_trace()
-
-
-
+    return (hbond_matrix_avg, hbond_matrix_std, hbond_matrix_list, labelmap)
 
 
 
@@ -922,7 +816,9 @@ pdbfile = options.pdbfile
 outfilename = options.outfilename
 
 print('Loading trajectory <{}>...'.format(trajfile))
+print('Loading topology <{}>...'.format(grofile))
 traj = mdtraj.load(trajfile, top=grofile)
+print('Loading topology <{}>...'.format(pdbfile))
 traj_pdb = mdtraj.load(trajfile, top=pdbfile)
 topol = traj.topology
 
@@ -935,60 +831,66 @@ n_lipid = len(lipid_dict.keys())
 n_lipid_tails = len(lipid_tails.keys())
 n_tails_per_lipid = n_lipid_tails/n_lipid
 
-calc_hbonds(traj, traj_pdb, topol,lipid_dict, headgroup_dict)
 
 
 # Vectorized Calculations start here
-#print('Calculating area per lipid...')
-#apl_avg, apl_std, apl_list = calc_APL(traj,n_lipid)
-#
-#print('Calculating tilt angles...')
-#angle_avg, angle_std, angle_list = calc_tilt_angle(traj, topol, lipid_tails)
-#print('Calculating area per tail...')
-#apt_avg, apt_std, apt_list = calc_APT(apl_list, angle_list, n_tails_per_lipid)
-#print('Calculating nematic order...')
-#s2_ave, s2_std, s2_list = calc_nematic_order(traj, lipid_dict)
-#print('Calculating headgroup distances...')
-#headgroup_distance_dict = compute_headgroup_distances(traj, topol, headgroup_dict)
-#print('Calculating bilayer height...')
-#Hpp_ave, Hpp_std, Hpp_list = calc_bilayer_height(headgroup_distance_dict)
-#print('Calculating component offsets...')
-#offset_dict = calc_offsets(headgroup_distance_dict)
-#print('Calculating density profile...')
-#density_profile, density_profile_avg, density_profile_top, density_profile_bot, bins = \
-#    calc_density_profile(traj, topol, lipid_dict)
-#print('Calculating interdigitation...')
-## interdig_avg, interdig_std, interdig_list = calc_interdigitation(traj, density_profile_top, density_profile_bot, bins)
+print('Calculating area per lipid...')
+apl_avg, apl_std, apl_list = calc_APL(traj,n_lipid)
+print('Calculating tilt angles...')
+angle_avg, angle_std, angle_list = calc_tilt_angle(traj, topol, lipid_tails)
+print('Calculating area per tail...')
+apt_avg, apt_std, apt_list = calc_APT(apl_list, angle_list, n_tails_per_lipid)
+print('Calculating nematic order...')
+s2_ave, s2_std, s2_list = calc_nematic_order(traj, lipid_dict)
+print('Calculating headgroup distances...')
+headgroup_distance_dict = compute_headgroup_distances(traj, topol, headgroup_dict)
+print('Calculating bilayer height...')
+Hpp_ave, Hpp_std, Hpp_list = calc_bilayer_height(headgroup_distance_dict)
+print('Calculating component offsets...')
+offset_dict = calc_offsets(headgroup_distance_dict)
+print('Calculating density profile...')
+density_profile, density_profile_avg, density_profile_top, density_profile_bot, bins = \
+    calc_density_profile(traj, topol, lipid_dict)
+print('Calculating interdigitation...')
+interdig_avg, interdig_std, interdig_list = calc_interdigitation(traj, density_profile_top, density_profile_bot, bins)
+print('Calculating hydrogen bonds...')
+hbond_matrix_avg, hbond_matrix_std, hbond_matrix_list, labelmap = calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict)
 
 # Printing properties
+print('Outputting to <{}>...'.format(outfilename))
+outfile = open((outfilename + '.txt'),'w')
+outpdf = PdfPages((outfilename+'.pdf'))
+outfile.write('{:<20s}: {}\n'.format('Trajectory',trajfile))
+outfile.write('{:<20s}: {}\n'.format('Structure',grofile))
+outfile.write('{:<20s}: {}\n'.format('# Frames',traj.n_frames))
+outfile.write('{:<20s}: {}\n'.format('Lipids',n_lipid))
+outfile.write('{:<20s}: {}\n'.format('Tails',n_lipid_tails))
+outfile.write('{:<20s}: {} ({})\n'.format('APL (A^2)',apl_avg, apl_std))
+outfile.write('{:<20s}: {} ({})\n'.format('APT (A^2)',apt_avg, apt_std))
+outfile.write('{:<20s}: {} ({})\n'.format('Bilayer Height (A)',Hpp_ave, Hpp_std))
+outfile.write('{:<20s}: {} ({})\n'.format('Tilt Angle', angle_avg, angle_std))
+outfile.write('{:<20s}: {} ({})\n'.format('S2', s2_ave, s2_std))
+outfile.write('{:<20s}: {} ({})\n'.format('Interdigitation (A)', interdig_avg, interdig_std))
+for key in offset_dict.keys():
+    outfile.write('{:<20s}: {} ({})\n'.format
+            ((key + ' offset (A)'), offset_dict[key][0], offset_dict[key][1]))
+outfile.write('{:<20s}: {} ({})\n'.format(
+    'Leaflet 1 Tilt Angle', np.mean(angle_list[:, 0 :int(np.floor(n_lipid_tails/2))]),
+    np.std(angle_list[:, 0 :int(np.floor(n_lipid_tails/2))])))
+outfile.write('{:<20s}: {} ({})\n'.format(
+    'Leaflet 2 Tilt Angle', np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])]), 
+    np.std(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])])))
+outfile.write('{:<20s}:\n'.format("Hbonding (D-A)"))
+for row_label in labelmap.keys():
+    for col_label in labelmap.keys():
+        row_index = labelmap[row_label]
+        col_index = labelmap[col_label]
+        hbond_avg = hbond_matrix_avg[row_index, col_index]
+        hbond_std = hbond_matrix_std[row_index, col_index]
+        outfile.write('{:<20s}: {} ({})\n'.format(str(row_label+"-"+ col_label), hbond_avg, hbond_std))
 
-#print('Outputting to <{}>...'.format(outfilename))
-#outfile = open((outfilename + '.txt'),'w')
-#outpdf = PdfPages((outfilename+'.pdf'))
-#outfile.write('{:<20s}: {}\n'.format('Trajectory',trajfile))
-#outfile.write('{:<20s}: {}\n'.format('Structure',grofile))
-#outfile.write('{:<20s}: {}\n'.format('# Frames',traj.n_frames))
-#outfile.write('{:<20s}: {}\n'.format('Lipids',n_lipid))
-#outfile.write('{:<20s}: {}\n'.format('Tails',n_lipid_tails))
-#outfile.write('{:<20s}: {} ({})\n'.format('APL (A^2)',apl_avg, apl_std))
-#outfile.write('{:<20s}: {} ({})\n'.format('APT (A^2)',apt_avg, apt_std))
-#outfile.write('{:<20s}: {} ({})\n'.format('Bilayer Height (A)',Hpp_ave, Hpp_std))
-#outfile.write('{:<20s}: {} ({})\n'.format('Tilt Angle', angle_avg, angle_std))
-#outfile.write('{:<20s}: {} ({})\n'.format('S2', s2_ave, s2_std))
 #
-#outfile.write('{:<20s}: {} ({})\n'.format('Interdigitation (A)', interdig_avg, interdig_std))
-#
-#for key in offset_dict.keys():
-#    outfile.write('{:<20s}: {} ({})\n'.format
-#            ((key + ' offset (A)'), offset_dict[key][0], offset_dict[key][1]))
-#outfile.write('{:<20s}: {} ({})\n'.format(
-#    'Leaflet 1 Tilt Angle', np.mean(angle_list[:, 0 :int(np.floor(n_lipid_tails/2))]),
-#    np.std(angle_list[:, 0 :int(np.floor(n_lipid_tails/2))])))
-#outfile.write('{:<20s}: {} ({})\n'.format(
-#    'Leaflet 2 Tilt Angle', np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])]), 
-#    np.std(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])])))
-
-# Plotting
+## Plotting
 #
 #fig1 = plt.figure(1)
 #plt.subplot(3,2,1)
