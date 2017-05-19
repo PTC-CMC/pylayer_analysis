@@ -82,6 +82,25 @@ def get_lipids(topol):
                         headgroup_dict['ISIS'].append(i)
             elif 'SS' in resname:
                 print("SS headgroups not included")
+
+            elif 'acd12' in resname:
+                if 'acd12' in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict['acd12'].append(i)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict['acd12'] = list()
+                        headgroup_dict['acd12'].append(i)
+
+            elif 'acd14' in resname:
+                if 'acd14' in headgroup_dict:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict['acd14'].append(i)
+                else:
+                    if 'CH' not in atom_i.name:
+                        headgroup_dict['acd14'] = list()
+                        headgroup_dict['acd14'].append(i)
+
             elif 'acd16' in resname:
                 if 'acd16' in headgroup_dict:
                     if 'CH' not in atom_i.name:
@@ -271,6 +290,21 @@ def get_lipid_tails(topol, lipid_dict):
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
 
 
+            elif 'acd12' in resname:
+                if 0 <= shifted_index <= 10:
+                    if ( str(resindex)) in lipid_tails:
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
+
+            elif 'acd14' in resname:
+                if 0 <= shifted_index <= 12:
+                    if ( str(resindex)) in lipid_tails:
+                        lipid_tails[(str(resindex))].append(atom_index)
+                    else:
+                        lipid_tails[(str(resindex))] = list()
+                        lipid_tails[(str(resindex))].append(atom_index)
             elif 'acd16' in resname:
                 if 0 <= shifted_index <= 14:
                     if ( str(resindex)) in lipid_tails:
