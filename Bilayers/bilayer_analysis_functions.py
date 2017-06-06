@@ -562,7 +562,7 @@ def compute_headgroup_distances(traj, topol, headgroup_dict):
         headgroup_distance_dict[key] = calc_head_distance(traj, topol, headgroup_dict[key])
     return headgroup_distance_dict
 
-def calc_bilayer_height(headgroup_distance_dict):
+def calc_bilayer_height(traj, headgroup_distance_dict):
     """
     Input: Dictionary of molecule types and their headroup distances
     Calculate bilayer height by comparing DSPC or DPPC headgroup distances
@@ -586,7 +586,7 @@ def calc_bilayer_height(headgroup_distance_dict):
         print ('No phosphate groups to compare')
 
     return (dist_avg, dist_std, dist_list)
-def calc_offsets(headgroup_distance_dict):
+def calc_offsets(traj, headgroup_distance_dict):
     """ 
     Input: dictionary of molecule types and their headgroup distances
     Calculate the offsets with respect to the phosphate group
