@@ -443,7 +443,7 @@ def calc_tilt_angle(traj, topol, lipid_tails):
     return angle_avg, angle_std, angle_list
 
 
-def calc_APT(apl_list, angle_list, n_tails_per_lipid):
+def calc_APT(traj, apl_list, angle_list, n_tails_per_lipid):
     ''' Input: a matrix of area per lipids (each row is a frame               
         a matrix of tilt angels (each row is a frame, each column is a lipid)
         Return matrix of area per tail (n_frame x n_lipid_tail)
