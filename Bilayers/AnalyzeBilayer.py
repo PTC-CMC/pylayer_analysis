@@ -4,6 +4,7 @@ from optparse import OptionParser
 import mdtraj
 import pdb
 import bilayer_analysis_functions 
+from collections import OrderedDict
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -32,7 +33,7 @@ topol = traj.topology
 # Compute system information
 print('Gathering system information <{}>...'.format(grofile))
 lipid_dict, headgroup_dict = bilayer_analysis_functions.get_lipids(topol)
-lipid_tails = bilayer_analysis_functions.get_lipid_tails(topol, lipid_dict)
+lipid_tails,lipid_heads = bilayer_analysis_functions.get_lipid_tails(topol, lipid_dict)
 
 n_lipid = len(lipid_dict.keys())
 n_lipid_tails = len(lipid_tails.keys())
