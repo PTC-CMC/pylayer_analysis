@@ -47,17 +47,9 @@ def compute_occupied_profile_all(traj, topol, lipid_dict, bin_spacing =0.1,cente
     z_profile = []
     f_occ_profile = []
     # Need to pass lists of parameters for the mapping function
-    traj_repeated = np.repeat(traj, len(z_bins))
-    topol_repeated = np.repeat(topol, len(z_bins))
-    lipid_dict_repeated = np.repeat(lipid_dict, len(z_bins))
-    print("Beginning parallel void fraction calculation...")
-    import time
-    start = time.time()
     with ThreadPool() as pool:
         occupied_profile = np.asarray(pool.starmap(_compute_occupied_profile_slice, 
                 zip(itertools.repeat(traj), itertools.repeat(topol), itertools.repeat(lipid_dict), z_bins)))
-    end = time.time()
-    print("Finished: {}".format(end-start))
     return occupied_profile
 
 def _compute_occupied_profile_slice(traj, topol, lipid_dict, z_bin):
@@ -120,6 +112,7 @@ def _compute_com( traj):
     totalmass = sum(atom.element.mass for atom in traj.top.atoms)
     com_z = numerator/totalmass 
     return com_z
+
 
 if __name__ == "__main__":
     parser = OptionParser()
