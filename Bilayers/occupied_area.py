@@ -1,11 +1,11 @@
 from __future__ import print_function
 import mdtraj as mdtraj
 import time
-import pdb
+import bilayer_analysis_functions 
 import itertools
+from optparse import OptionParser
 import numpy as np
-from collections import OrderedDict
-from multiprocessing import Pool
+from multiprocessing.pool import ThreadPool
 
 def compute_occupied_profile_all(traj, topol, lipid_dict, bin_spacing =0.1,centered=True):
     """ Compute void fraction  according to bins
@@ -53,7 +53,7 @@ def compute_occupied_profile_all(traj, topol, lipid_dict, bin_spacing =0.1,cente
     print("Beginning parallel void fraction calculation...")
     import time
     start = time.time()
-    with Pool() as pool:
+    with ThreadPool() as pool:
         occupied_profile = np.asarray(pool.starmap(_compute_occupied_profile_slice, 
                 zip(itertools.repeat(traj), itertools.repeat(topol), itertools.repeat(lipid_dict), z_bins)))
     end = time.time()
@@ -120,3 +120,30 @@ def _compute_com( traj):
     totalmass = sum(atom.element.mass for atom in traj.top.atoms)
     com_z = numerator/totalmass 
     return com_z
+
+if __name__ == "__main__":
+    parser = OptionParser()
+    parser.add_option('-f', action="store", type="string", default = 'nopbc.xtc', dest = 'trajfile')
+    parser.add_option('-c', action="store", type="string", default = 'nopbc.gro', dest = 'grofile')
+    parser.add_option('-o', action="store", type="string", default = 'occupied_area.txt', dest = 'outfile')
+    (options, args) = parser.parse_args()
+
+    outfile = open(options.outfile, 'w')
+
+    print('Loading trajectory <{}>...'.format(options.trajfile))
+    print('Loading topology <{}>...'.format(options.grofile))
+    traj = mdtraj.load(trajfile, top=options.grofile)
+    topol = traj.topology
+
+    # Compute system information
+    print('Gathering system information <{}>...'.format(options.grofile))
+    lipid_dict, headgroup_dict = bilayer_analysis_functions.get_lipids(topol)
+    lipid_tails = bilayer_analysis_functions.get_lipid_tails(topol, lipid_dict)
+
+    start = time.time()
+    occupied_area_profile = occupied_area_parallel.compute_occupied_profile_all(traj[0], topol, lipid_dict, bin_spacing = 0.1, centered=True)
+    end = time.time()
+    print("{:30s}: {}".format(options.grofile[:-4], end-start))
+    np.savetxt(outfile, occupied_area_profile)
+
+
