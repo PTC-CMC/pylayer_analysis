@@ -136,7 +136,7 @@ if __name__ == "__main__":
     lipid_tails = bilayer_analysis_functions.get_lipid_tails(topol, lipid_dict)
 
     start = time.time()
-    occupied_area_profile = occupied_area_parallel.compute_occupied_profile_all(traj[0], topol, lipid_dict, bin_spacing = 0.1, centered=True)
+    occupied_area_profile = compute_occupied_profile_all(traj[0], topol, lipid_dict, bin_spacing = 0.1, centered=True)
     end = time.time()
     print("{:30s}: {}".format(options.grofile[:-4], end-start))
     np.savetxt(outfile, occupied_area_profile)
