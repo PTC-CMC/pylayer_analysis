@@ -5,7 +5,7 @@ import bilayer_analysis_functions
 import itertools
 from optparse import OptionParser
 import numpy as np
-from multiprocessing.pool import ThreadPool
+from multiprocessing import Pool
 
 def compute_occupied_profile_all(traj, topol, lipid_dict, bin_spacing =0.1,centered=True):
     """ Compute void fraction  according to bins
@@ -47,9 +47,11 @@ def compute_occupied_profile_all(traj, topol, lipid_dict, bin_spacing =0.1,cente
     z_profile = []
     f_occ_profile = []
     # Need to pass lists of parameters for the mapping function
-    with ThreadPool() as pool:
+    print("starting pooling")
+    with Pool() as pool:
         occupied_profile = np.asarray(pool.starmap(_compute_occupied_profile_slice, 
                 zip(itertools.repeat(traj), itertools.repeat(topol), itertools.repeat(lipid_dict), z_bins)))
+    print("done pooling")
     return occupied_profile
 
 def _compute_occupied_profile_slice(traj, topol, lipid_dict, z_bin):
