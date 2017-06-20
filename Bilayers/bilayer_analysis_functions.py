@@ -210,6 +210,7 @@ def get_lipid_tails(topol, lipid_dict):
         So Lipida and Lipidb are different keys in the lipid_tails dict
         But respective values correspond to that tail
         Return lipid_tails, a dictionary mapping each lipid tail to its atoms
+        Return lipid_heads, a dictionary apping each lipid head to its atoms
     '''
 
     # Get an atom
@@ -217,6 +218,7 @@ def get_lipid_tails(topol, lipid_dict):
     # Shift atom indices by the index of the first atom in the residue 0
     # Based on the residue, check if that atom's shifted index falls within the tail range
     lipid_tails = OrderedDict()
+    lipid_heads = OrderedDict()
     for lipid in lipid_dict.keys():
         lipid_atoms = lipid_dict[lipid]
         for atom_index in lipid_atoms:
@@ -241,7 +243,10 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex) + 'b')] = list()
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
-
+                elif 0 <= shifted_index <= 13:
+                    if str(resindex) not in lipid_heads:
+                        lipid_heads[str(resindex)] = []
+                    lipid_heads[str(resindex)].append(atom_index)
 
             elif 'DPPC' in resname:
                 if 14 == shifted_index or 16 <= shifted_index <= 26:
@@ -258,6 +263,10 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex) + 'b')] = list()
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
+                elif 0 <= shifted_index <= 13:
+                    if str(resindex) not in lipid_heads:
+                        lipid_heads[str(resindex)] = []
+                    lipid_heads[str(resindex)].append(atom_index)
 
             elif 'ISIS' in resname or 'isis' in resname:
                 if 0 <= shifted_index <= 17:
@@ -273,6 +282,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex) + 'b')] = list()
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
 
             elif 'SS' in resname:
                 if 5 <= shifted_index <= 16:
@@ -288,6 +302,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex) + 'b')] = list()
                         lipid_tails[(str(resindex) + 'b')].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
 
 
             elif 'acd12' in resname:
@@ -297,6 +316,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
 
             elif 'acd14' in resname:
                 if 0 <= shifted_index <= 12:
@@ -305,6 +329,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
             elif 'acd16' in resname:
                 if 0 <= shifted_index <= 14:
                     if ( str(resindex)) in lipid_tails:
@@ -312,6 +341,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
 
             elif 'acd18' in resname:
                 if 0 <= shifted_index <= 16:
@@ -320,6 +354,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
 
             elif 'acd20' in resname:
                 if 0 <= shifted_index <= 18:
@@ -328,6 +367,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
 
             elif 'acd22' in resname:
                 if 0 <= shifted_index <= 20:
@@ -336,6 +380,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
+               # else:
+               #     if str(resindex) not in lipid_heads:
+               #         lipid_heads[str(resindex)] = []
+               #     lipid_heads[str(resindex)].append(atom_index)
+
 
 
             elif 'alc12' in resname:
@@ -345,6 +394,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
 
             elif 'alc14' in resname:
                 if 0 <= shifted_index <= 13:
@@ -353,6 +407,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
 
 
             elif 'alc16' in resname:
@@ -362,6 +421,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
 
             elif 'alc18' in resname:
                 if 0 <= shifted_index <= 17:
@@ -370,6 +434,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[( str(resindex))] = list()
                         lipid_tails[( str(resindex))].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
 
             elif 'alc20' in resname:
                 if 0 <= shifted_index <= 19:
@@ -378,6 +447,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[( str(resindex))] = list()
                         lipid_tails[( str(resindex))].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
 
             elif 'alc22' in resname:
                 if 0 <= shifted_index <= 21:
@@ -386,6 +460,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
             elif 'alc24' in resname:
                 if 0 <= shifted_index <= 23:
                     if ( str(resindex)) in lipid_tails:
@@ -393,6 +472,11 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
             elif 'acd24' in resname:
                 if 0 <= shifted_index <= 22:
                     if ( str(resindex)) in lipid_tails:
@@ -400,12 +484,17 @@ def get_lipid_tails(topol, lipid_dict):
                     else:
                         lipid_tails[(str(resindex))] = list()
                         lipid_tails[(str(resindex))].append(atom_index)
+                #else:
+                #    if str(resindex) not in lipid_heads:
+                #        lipid_heads[str(resindex)] = []
+                #    lipid_heads[str(resindex)].append(atom_index)
+
 
 
             else:
                 print('Lipid {} not incorporated in lipid tail identification'.format(resname))
                 sys.exit()
-    return lipid_tails
+    return lipid_tails, lipid_heads
 
 def calc_tilt_angle(traj, topol, lipid_tails):
     ''' 
@@ -800,7 +889,7 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict):
         
 
     # Add waters
-    #labelmap['HOH'] = label_to_number
+    labelmap['SOL'] = label_to_number
 
     
     # Calc hbonds within a particular lipid type
@@ -809,7 +898,7 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict):
 
     # Actual mdtraj computation of hbonds
     #hbonds = mdtraj.baker_hubbard(traj_pdb, exclude_water = True)
-    hbonds = mdtraj.wernet_nilsson(traj_pdb, exclude_water = True)
+    hbonds = mdtraj.wernet_nilsson(traj_pdb, exclude_water = True, include_water_solute=False)
 
     # MDtraj generates a huge list of hyrogen bonds per frame
     for hbond_frame in hbonds:
@@ -824,7 +913,10 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict):
             participating_residues = (residue_i, residue_j, residue_k)
             # Get residue names, convert them to indices for the matrix
             donor = labelmap[participating_residues[0]]
-            acceptor = labelmap[participating_residues[2]]
+            try:
+                acceptor = labelmap[participating_residues[2]]
+            except KeyError:
+                acceptor = labelmap['ISIS']
             hbond_frame_matrix[donor,acceptor]+=1
         # Add the frame's hbond matrix to the overall hbond matrix list
         hbond_matrix_list.append(hbond_frame_matrix)
