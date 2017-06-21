@@ -7,7 +7,7 @@ from optparse import OptionParser
 import numpy as np
 from multiprocessing import Pool
 
-def compute_occupied_profile_all(traj, topol, lipid_dict, bin_spacing =0.1,centered=True):
+def compute_occupied_profile_all(traj, topol, lipid_dict, bin_spacing=0.1, z_bins=None, centered=True):
     """ Compute void fraction  according to bins
 
     Parameters
@@ -37,21 +37,20 @@ def compute_occupied_profile_all(traj, topol, lipid_dict, bin_spacing =0.1,cente
         traj.xyz[0,:,:] += center - com_z
 
 
-    # Identify limits for bins
-    z_min = np.min( traj.atom_slice([atom for atom in itertools.chain.from_iterable(lipid_dict.values())]).xyz[:,:,2])
-    z_max = np.max( traj.atom_slice([atom for atom in itertools.chain.from_iterable(lipid_dict.values())]).xyz[:,:,2])
-    z_min -= 0.5
-    z_max += 0.5
-    z_bins = np.arange(z_min, z_max, bin_spacing)
+    # Identify limits for bins, unless they've been provided
+    if z_bins is None:
+        z_min = np.min( traj.atom_slice([atom for atom in itertools.chain.from_iterable(lipid_dict.values())]).xyz[:,:,2])
+        z_max = np.max( traj.atom_slice([atom for atom in itertools.chain.from_iterable(lipid_dict.values())]).xyz[:,:,2])
+        z_min -= 0.5
+        z_max += 0.5
+        z_bins = np.arange(z_min, z_max, bin_spacing)
 
     z_profile = []
     f_occ_profile = []
     # Need to pass lists of parameters for the mapping function
-    print("starting pooling")
     with Pool() as pool:
         occupied_profile = np.asarray(pool.starmap(_compute_occupied_profile_slice, 
                 zip(itertools.repeat(traj), itertools.repeat(topol), itertools.repeat(lipid_dict), z_bins)))
-    print("done pooling")
     return occupied_profile
 
 def _compute_occupied_profile_slice(traj, topol, lipid_dict, z_bin):
