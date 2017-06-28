@@ -12,49 +12,88 @@ Stage 1 to set up pulling simulations with moving references to move reference t
 Stage 2 to set up pulling simulations with fixed references to pull tracer to fixed reference at tracer window 
 '''
 class SystemSetup():
-    def __init__(self, z0 = 1.0, dz = 0.2, N_window = 40, N_tracer = 8):
-        self._z0 = z0
-        self._dz = dz
-        self._N_window = N_window
+    def __init__(self, z0 = 1.0, dz = 0.2, N_window = 40, N_tracer = 8, z_windows=None):
+        # If no z window file was provied
+            
         self._N_tracer = N_tracer
 
-        #Molecules [129,2688] correspond to the 2560 water molecules, but we want the water molecules in the bottom layer
-        #self._tracer_list = list()
-        #tracer_min = 128 * 11
-        #tracer_max = 128 * 21
-        #self._tracer_list = random.sample(range(tracer_min, tracer_max), self.N_tracer)
-        #self.write_tracerlist(self._tracer_list)
+        if z_windows is None:
+            self._z0 = z0
+            self._dz = dz
+            self._N_window = N_window
+            #Molecules [129,2688] correspond to the 2560 water molecules, but we want the water molecules in the bottom layer
+            #self._tracer_list = list()
+            #tracer_min = 128 * 11
+            #tracer_max = 128 * 21
+            #self._tracer_list = random.sample(range(tracer_min, tracer_max), self.N_tracer)
+            #self.write_tracerlist(self._tracer_list)
 
-        #Define the z-window list, starting at z0 and going up dz each time
-        self._zlist = list()
-        for i in range(self._N_window):
-               self._zlist.append(self._z0 + (i * self._dz)) 
-        self.write_zlist(self._zlist)
+            #Define the z-window list, starting at z0 and going up dz each time
+        
+            self._zlist = list()
+            for i in range(self._N_window):
+                   self._zlist.append(self._z0 + (i * self._dz)) 
+            self.write_zlist()
+        else:
+            # IF we have a z window file, just set it
+            self._set_from_file(z_windows)
+
+    def _set_from_file(self, z_windows):
+        with open(z_windows) as f:
+            z_lines = f.readlines()
+        self._zlist = [line.strip() for line in z_lines]
+        self._z0 = round(float(self._zlist[0]), 2)
+        self._dz = round(float(self._zlist[1]) - float(self._zlist[0]), 2)
+        self._N_window = len(self._zlist)
+
+
+    def write_zlist(self, zlog = 'z_windows.out'):
+        outfile = open(zlog, 'w')
+        for i, zwindow in enumerate(self._zlist):
+            outfile.write('{} \n'.format(np.round(zwindow,2)))
+        outfile.close()
 
     @property
-    def tracer_list(self):
-        return self._tracer_list
-
-    def get_Tracers(self):
-        return self.tracer_list
-
-    @property
-    def z_list(self):
-        return self._zlist
-
-    def get_zlist(self):
-        return self.zlist
+    def dz(self):
+        return self._dz
 
     @property
     def z0(self):
         return self._z0
 
+
+
+    @property
+    def tracer_list(self):
+        return self._tracer_list
+
+    @tracer_list.setter
+    def tracer_list(self, tracerfile):
+        with open(tracerfile) as f:
+            tracer_lines = f.readlines()
+        self._tracer_list = [line.strip() for line in tracer_lines]
+
+    def get_Tracers(self):
+        return self.tracer_list
+
+    @property
+    def zlist(self):
+        return self._zlist
+
+    def get_zlist(self):
+        return self._zlist
+
+    @zlist.setter
+    def zlist(self, window_file):
+        with open(window_file) as f:
+            z_lines = f.readlines()
+        self._zlist = [line.strip() for line in z_lines]
+
+    
     def get_z0(self):
         return self.z0
 
-    @property
-    def dz(self):
-        return self._dz
+    
 
     def get_dz(self):
         return self.dz
@@ -190,15 +229,14 @@ class SystemSetup():
         pull_coord_rate_list = pull_coord_rate*np.ones(len(tracerlist))
         #Determine t_pulling 
         if moving_sim:
-            print('This is a moving simulation')
-            t_pulling = 50e3
+            t_pulling = 1e3
             for i, tracer in enumerate(tracerlist):
                 pull_coord_rate_list[i] = self.calc_pulling_rate(grofile, tracer, z_window_list[i], t_pulling)
 
         if not t_pulling:
             if pull_coord_rate == 0:
                 #50e3ps = 50ns, this is if we have a fixed reference and we just want to pull the tracer in 
-                t_pulling = 50e3
+                t_pulling = 1e3
                 #so we just let the simulation run for a long time 
             else:
                 #In stage 2, we have a moving reference, need to determine the length of time necessary
@@ -458,12 +496,7 @@ class SystemSetup():
             outfile.write('{} \n'.format(tracer))
         outfile.close()
 
-    def write_zlist(self, z_list, zlog = 'z_windows.out'):
-        outfile = open(zlog, 'w')
-        for i, zwindow in enumerate(z_list):
-            outfile.write('{} \n'.format(np.round(zwindow,2)))
-        outfile.close()
-
+    
     def write_pbs(self, pbsname, grofile, topfile, directoryname1, mdpfile1, 
             directoryname2, mdpfile2):
         #Due to the nature of open MP and gpu threads, this pbs script will write a submission script
