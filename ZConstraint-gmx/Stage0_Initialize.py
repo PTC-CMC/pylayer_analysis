@@ -47,7 +47,7 @@ with open("{}_permeability.pbs".format(simulation),'w') as f:
 
         # Write all the mdrun lines
         for simnumber in range(5):
-            f.write("\t gmx mdrun -ntomp 8 -gpu_id 0 -deffnm ~/Trajectories/Data/{0}/{1}/sweep$i/Sim{3}/Stage{2}_Weak{3} > ~/Trajectories/Data/{0}/{1}/sweep$i/Stage{2}_Weak{3}.out 2>&1\n".format(composition, simulation, stagenumber, simnumber))
+            f.write("\t gmx mdrun -ntomp 8 -gpu_id 0 -deffnm ~/Trajectories/Data/{0}/{1}/sweep$i/Sim{2}/{3}{2} > ~/Trajectories/Data/{0}/{1}/sweep$i/{3}{2}.out 2>&1\n".format(composition, simulation, simnumber, prefix))
 
         f.write("\t \n")
     f.write("done\n")
