@@ -50,4 +50,5 @@ with open("{}_permeability.pbs".format(simulation),'w') as f:
             f.write("\t gmx mdrun -ntomp 8 -gpu_id 0 -deffnm ~/Trajectories/Data/{0}/{1}/sweep$i/Sim{3}/Stage{2}_Weak{3} > ~/Trajectories/Data/{0}/{1}/sweep$i/Stage{2}_Weak{3}.out 2>&1\n".format(composition, simulation, stagenumber, simnumber))
 
         f.write("\t \n")
+    f.write("done\n")
 print("Written to {}_permeability.pbs".format(simulation))
