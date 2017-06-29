@@ -59,8 +59,8 @@ print('{:10s} = {}'.format('k', pull_coord_k))
 #tracer_list = thing.get_Tracers()
 tracer_list = thing.tracer_list
 z_list = z0*np.ones(len(tracer_list))
-p = subprocess.Popen("cp {} sweep{}".format(zwindows_filename, options.sweep))
-p.wait()
+#p = subprocess.Popen("cp {} sweep{}".format(zwindows_filename, options.sweep))
+#p.wait()
 
 for i in range(N_sims):
     #print('Writing mdp and submit files for k = {} pulling to z = {}'.format(pull_coord_k, np.round(z_list[0],2)))

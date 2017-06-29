@@ -55,11 +55,11 @@ class SystemSetup():
 
     @property
     def dz(self):
-        return self._dz
+        return round(float(self._dz),2)
 
     @property
     def z0(self):
-        return self._z0
+        return round(float(self._z0),2)
 
 
 
