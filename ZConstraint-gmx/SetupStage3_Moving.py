@@ -57,7 +57,6 @@ print('{:10s} = {}'.format('N_tracer', N_tracer))
 print('{:10s} = {}'.format('Tracerfile', tracerlist_filename))
 print('{:10s} = {}'.format('Zwindows', zwindows_filename))
 print('{:10s} = {}'.format('k', pull_coord_k))
-print('{:10s} = {}'.format('rate', pull_coord_rate))
 
 
 #tracer_list = thing.get_Tracers()
