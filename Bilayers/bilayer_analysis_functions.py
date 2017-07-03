@@ -15,17 +15,21 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
-def calc_APL(traj, n_lipid):
+def calc_APL(traj, n_lipid,blocked=False):
     ''' 
     Input: Trajectory and number of lipids
     Compute areas by looking at x and y unit cell lengths
     Return: array of area per lipids (n_frame x 1) [Angstrom]
     '''
     area = 100 * traj.unitcell_lengths[:, 0] * traj.unitcell_lengths[:, 1] # This is n_frame x 1
-    area_blocked = area[:-1].reshape(int((traj.n_frames-1)/250), 250) # Reshape so that each row is a block of 250 frames (5ns)
-    area_block_avg = np.mean(area_blocked, axis=1)
-    areaavg = np.mean(area_block_avg)
-    areastd = np.std(area_block_avg)#/(len(area_block_avg)**0.5)
+    if blocked:
+        area_blocked = area[:-1].reshape(int((traj.n_frames-1)/250), 250) # Reshape so that each row is a block of 250 frames (5ns)
+        area_block_avg = np.mean(area_blocked, axis=1)
+        areaavg = np.mean(area_block_avg)
+        areastd = np.std(area_block_avg)#/(len(area_block_avg)**0.5)
+    else:
+        areaavg = np.mean(area)
+        areastd = np.std(area)
     apl_list = np.eye(traj.n_frames, 1)
     apl_list[:,0] = area[:]/(n_lipid/2)
     apl_avg = areaavg/(n_lipid/2)
@@ -496,7 +500,7 @@ def get_lipid_tails(topol, lipid_dict):
                 sys.exit()
     return lipid_tails, lipid_heads
 
-def calc_tilt_angle(traj, topol, lipid_tails):
+def calc_tilt_angle(traj, topol, lipid_tails, blocked=False):
     ''' 
     Input: Trajectory, topology, dictionary of lipid tails with atom index values
     Compute characteristic vector using eigenvector associated with
@@ -525,14 +529,18 @@ def calc_tilt_angle(traj, topol, lipid_tails):
         index += 1
 
     angle_frame_avg = np.mean(angle_list, axis = 1) # For each frame, average all tail tilt angles
-    angle_blocks = angle_frame_avg[:-1].reshape(int((traj.n_frames-1)/250),250) # Reshape into blocks of 5ns
-    angle_block_avgs = np.mean(angle_blocks, axis = 1)
-    angle_avg = np.mean(angle_block_avgs)
-    angle_std = np.std(angle_block_avgs)#/(len(angle_block_avgs)**0.5)
+    if blocked:
+        angle_blocks = angle_frame_avg[:-1].reshape(int((traj.n_frames-1)/250),250) # Reshape into blocks of 5ns
+        angle_block_avgs = np.mean(angle_blocks, axis = 1)
+        angle_avg = np.mean(angle_block_avgs)
+        angle_std = np.std(angle_block_avgs)#/(len(angle_block_avgs)**0.5)
+    else:
+        angle_avg = np.mean(angle_frame_avg)
+        angle_std = np.std(angle_frame_avg)
     return angle_avg, angle_std, angle_list
 
 
-def calc_APT(traj, apl_list, angle_list, n_tails_per_lipid):
+def calc_APT(traj, apl_list, angle_list, n_tails_per_lipid, blocked=False):
     ''' Input: a matrix of area per lipids (each row is a frame               
         a matrix of tilt angels (each row is a frame, each column is a lipid)
         Return matrix of area per tail (n_frame x n_lipid_tail)
@@ -542,10 +550,14 @@ def calc_APT(traj, apl_list, angle_list, n_tails_per_lipid):
     apt_list = angle_list
     apt_list = np.cos(np.deg2rad(angle_list[:,:]))*apl_list[:]/n_tails_per_lipid
     apt_frame_avg = np.mean(apt_list, axis = 1) # For each frame, averge all tail tilt angeles
-    apt_blocks = apt_frame_avg[:-1].reshape(int((traj.n_frames-1)/250),250)
-    apt_block_avgs = np.mean(apt_blocks, axis=1)
-    apt_avg = np.mean(apt_block_avgs)
-    apt_std = np.std(apt_block_avgs)#/(len(apt_block_avgs)**0.5)
+    if blocked:
+        apt_blocks = apt_frame_avg[:-1].reshape(int((traj.n_frames-1)/250),250)
+        apt_block_avgs = np.mean(apt_blocks, axis=1)
+        apt_avg = np.mean(apt_block_avgs)
+        apt_std = np.std(apt_block_avgs)#/(len(apt_block_avgs)**0.5)
+    else: 
+        apt_avg = np.mean(apt_list)
+        apt_std = np.mean(apt_list)
     return apt_avg, apt_std, apt_list
 
 def calc_mean(dataset):
@@ -675,7 +687,7 @@ def calc_bilayer_height(traj, headgroup_distance_dict):
         print ('No phosphate groups to compare')
 
     return (dist_avg, dist_std, dist_list)
-def calc_offsets(traj, headgroup_distance_dict):
+def calc_offsets(traj, headgroup_distance_dict, blocked=False):
     """ 
     Input: dictionary of molecule types and their headgroup distances
     Calculate the offsets with respect to the phosphate group
@@ -696,25 +708,33 @@ def calc_offsets(traj, headgroup_distance_dict):
         if use_DSPC:
             offset_list = (headgroup_distance_dict['DSPC'][2] - headgroup_distance_dict[key][2])/2
             #offset_frame_avg = np.mean(offset_list, axis = 1)
-            offset_blocks = offset_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-            offset_block_avgs = np.mean(offset_blocks, axis = 1)
-            offset_avg = np.mean(offset_block_avgs)
-            offset_std = np.std(offset_block_avgs)
+            if blocked:
+                offset_blocks = offset_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+                offset_block_avgs = np.mean(offset_blocks, axis = 1)
+                offset_avg = np.mean(offset_block_avgs)
+                offset_std = np.std(offset_block_avgs)
+            else:
+                offset_avg = np.mean(offset_list)
+                offset_std = np.std(offset_list)
             offset_dict[key] = (offset_avg, offset_std)
         elif use_DPPC:
             offset_list = (headgroup_distance_dict['DPPC'][2] - headgroup_distance_dict[key][2])/2
             #offset_frame_avg = np.mean(offset_list, axis = 1)
-            offset_blocks = offset_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-            offset_block_avgs = np.mean(offset_blocks, axis = 1)
-            offset_avg = np.mean(offset_block_avgs)
-            offset_std = np.std(offset_blocks_avgs)
+            if blocked:
+                offset_blocks = offset_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+                offset_block_avgs = np.mean(offset_blocks, axis = 1)
+                offset_avg = np.mean(offset_block_avgs)
+                offset_std = np.std(offset_blocks_avgs)
+            else:
+                offset_avg = np.mean(offset_list)
+                offset_std = np.std(offset_list)
             offset_dict[key] = (offset_avg, offset_std)
         else:
             print ('No phosphate groups to compare')
 
     return offset_dict
 
-def calc_nematic_order(traj, lipid_dict):
+def calc_nematic_order(traj, lipid_dict, blocked=False):
     top_chains = []
     bot_chains = []
     for i, key in enumerate(lipid_dict.keys()):
@@ -726,10 +746,14 @@ def calc_nematic_order(traj, lipid_dict):
     s2_top = mdtraj.compute_nematic_order(traj, indices=top_chains)
     s2_bot = mdtraj.compute_nematic_order(traj, indices=bot_chains)
     s2_list = (s2_top + s2_bot)/2
-    s2_blocks = s2_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-    s2_block_avgs = np.mean(s2_blocks, axis = 1)
-    s2_ave = np.mean(s2_block_avgs)
-    s2_std = np.std(s2_block_avgs)
+    if blocked:
+        s2_blocks = s2_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+        s2_block_avgs = np.mean(s2_blocks, axis = 1)
+        s2_ave = np.mean(s2_block_avgs)
+        s2_std = np.std(s2_block_avgs)
+    else:
+        s2_ave = np.mean(s2_list)
+        s2_std = np.std(s2_list)
     return s2_ave, s2_std, s2_list
 
 def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
@@ -840,7 +864,7 @@ def get_mass(topol, atom_i):
     mass_i = 1.66054e-24 * mass_dict[topol.atom(atom_i).name]
     return mass_i
 
-def calc_interdigitation(traj, density_profile_top, density_profile_bot, bins):
+def calc_interdigitation(traj, density_profile_top, density_profile_bot, bins, blocked=False):
     """
     Input: top and bottom density profile [kg/m3], but units irrelevant since this is dimensionless
     Compute interdigitation according to "Structural Properties.." by Hartkamp (2016)
@@ -849,10 +873,14 @@ def calc_interdigitation(traj, density_profile_top, density_profile_bot, bins):
     """
     interdig = integrate.simps( (4*density_profile_top*density_profile_bot)/
             ((density_profile_top + density_profile_bot)**2), x=bins)
-    interdig_blocks = interdig[:-1].reshape(int((traj.n_frames-1)/250), 250)
-    interdig_block_avgs = np.mean(interdig_blocks,axis=1)
-    interdig_avg = np.mean(interdig_block_avgs)
-    interdig_std = np.std(interdig_block_avgs)
+    if blocked:
+        interdig_blocks = interdig[:-1].reshape(int((traj.n_frames-1)/250), 250)
+        interdig_block_avgs = np.mean(interdig_blocks,axis=1)
+        interdig_avg = np.mean(interdig_block_avgs)
+        interdig_std = np.std(interdig_block_avgs)
+    else: 
+        interdig_avg = np.mean(interdig)
+        interdig_std = np.std(interdig)
     return interdig_avg, interdig_std, interdig
 
 def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict):
