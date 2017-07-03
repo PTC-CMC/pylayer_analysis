@@ -663,7 +663,7 @@ def compute_headgroup_distances(traj, topol, headgroup_dict):
         headgroup_distance_dict[key] = calc_head_distance(traj, topol, headgroup_dict[key])
     return headgroup_distance_dict
 
-def calc_bilayer_height(traj, headgroup_distance_dict):
+def calc_bilayer_height(traj, headgroup_distance_dict,blocked=False):
     """
     Input: Dictionary of molecule types and their headroup distances
     Calculate bilayer height by comparing DSPC or DPPC headgroup distances
@@ -672,17 +672,25 @@ def calc_bilayer_height(traj, headgroup_distance_dict):
     if headgroup_distance_dict['DSPC']:
         dist_list = headgroup_distance_dict['DSPC'][2]
         #dist_frame_avg = np.mean(dist_list, axis = 1)
-        dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-        dist_block_avgs = np.mean(dist_blocks,axis=1)
-        dist_avg = np.mean(dist_block_avgs)
-        dist_std = np.std(dist_block_avgs)
+        if blocked:
+            dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+            dist_block_avgs = np.mean(dist_blocks,axis=1)
+            dist_avg = np.mean(dist_block_avgs)
+            dist_std = np.std(dist_block_avgs)
+        else:
+            dist_avg = np.mean(dist_list)
+            dist_std = np.std(dist_list)
     elif headgroup_distance_dict['DPPC']:
         dist_list = headgroup_distance_dict['DPPC'][2]
         #dist_frame_avg = np.mean(dist_list, axis = 1)
-        dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-        dist_block_avgs = np.mean(dist_blocks, axis=1)
-        dist_avg = np.mean(dist_block_avgs)
-        dist_std = np.std(dist_block_avgs)
+        if blocked: 
+            dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+            dist_block_avgs = np.mean(dist_blocks, axis=1)
+            dist_avg = np.mean(dist_block_avgs)
+            dist_std = np.std(dist_block_avgs)
+        else:
+            dist_avg = np.mean(dist_list)
+            dist_std = np.std(dist_list)
     else:
         print ('No phosphate groups to compare')
 
@@ -883,7 +891,7 @@ def calc_interdigitation(traj, density_profile_top, density_profile_bot, bins, b
         interdig_std = np.std(interdig)
     return interdig_avg, interdig_std, interdig
 
-def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict):
+def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict,include_water_solute=False):
     """ Compute hydrogen bonding between lipids and water
     
     Parameters
@@ -926,7 +934,8 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict):
 
     # Actual mdtraj computation of hbonds
     #hbonds = mdtraj.baker_hubbard(traj_pdb, exclude_water = True)
-    hbonds = mdtraj.wernet_nilsson(traj_pdb, exclude_water = True, include_water_solute=False)
+    hbonds = mdtraj.wernet_nilsson(traj_pdb, exclude_water = True, 
+            include_water_solute=include_water_solute)
 
     # MDtraj generates a huge list of hyrogen bonds per frame
     for hbond_frame in hbonds:

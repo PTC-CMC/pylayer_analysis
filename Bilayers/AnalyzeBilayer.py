@@ -16,6 +16,7 @@ parser.add_option('-f', action="store", type="string", default = 'nopbc.xtc', de
 parser.add_option('-c', action="store", type="string", default = 'Stage5_ZCon0.gro', dest = 'grofile')
 parser.add_option('-p', action="store", type="string", default = 'Stage5_ZCon0.gro', dest = 'pdbfile')
 parser.add_option('-o', action='store', type='string', default = 'BilayerAnalysis', dest = 'outfilename')
+parser.add_option('-b', action='store_true', default = False, dest = 'blocked')
 
 (options, args) = parser.parse_args()
 trajfile = options.trajfile
@@ -43,24 +44,25 @@ n_tails_per_lipid = n_lipid_tails/n_lipid
 
 # Vectorized Calculations start here
 print('Calculating area per lipid...')
-apl_avg, apl_std, apl_list = bilayer_analysis_functions.calc_APL(traj,n_lipid)
+apl_avg, apl_std, apl_list = bilayer_analysis_functions.calc_APL(traj,n_lipid, blocked=options.blocked)
 print('Calculating tilt angles...')
-angle_avg, angle_std, angle_list = bilayer_analysis_functions.calc_tilt_angle(traj, topol, lipid_tails)
+angle_avg, angle_std, angle_list = bilayer_analysis_functions.calc_tilt_angle(traj, topol, lipid_tails, blocked=options.blocked)
 print('Calculating area per tail...')
-apt_avg, apt_std, apt_list = bilayer_analysis_functions.calc_APT(traj, apl_list, angle_list, n_tails_per_lipid)
+apt_avg, apt_std, apt_list = bilayer_analysis_functions.calc_APT(traj, apl_list, angle_list, n_tails_per_lipid, 
+        blocked=options.blocked)
 print('Calculating nematic order...')
-s2_ave, s2_std, s2_list = bilayer_analysis_functions.calc_nematic_order(traj, lipid_dict)
+s2_ave, s2_std, s2_list = bilayer_analysis_functions.calc_nematic_order(traj, lipid_dict, blocked=options.blocked)
 print('Calculating headgroup distances...')
 headgroup_distance_dict = bilayer_analysis_functions.compute_headgroup_distances(traj, topol, headgroup_dict)
 print('Calculating bilayer height...')
-Hpp_ave, Hpp_std, Hpp_list = bilayer_analysis_functions.calc_bilayer_height(traj, headgroup_distance_dict)
+Hpp_ave, Hpp_std, Hpp_list = bilayer_analysis_functions.calc_bilayer_height(traj, headgroup_distance_dict, blocked=options.blocked)
 print('Calculating component offsets...')
-offset_dict = bilayer_analysis_functions.calc_offsets(traj, headgroup_distance_dict)
+offset_dict = bilayer_analysis_functions.calc_offsets(traj, headgroup_distance_dict, blocked=options.blocked)
 print('Calculating density profile...')
 density_profile, density_profile_avg, density_profile_top, density_profile_bot, bins = \
     bilayer_analysis_functions.calc_density_profile(traj, topol, lipid_dict)
 print('Calculating interdigitation...')
-interdig_avg, interdig_std, interdig_list = bilayer_analysis_functions.calc_interdigitation(traj, density_profile_top, density_profile_bot, bins)
+interdig_avg, interdig_std, interdig_list = bilayer_analysis_functions.calc_interdigitation(traj, density_profile_top, density_profile_bot, bins, blocked=options.blocked)
 print('Calculating hydrogen bonds...')
 hbond_matrix_avg, hbond_matrix_std, hbond_matrix_list, labelmap = bilayer_analysis_functions.calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict)
 
