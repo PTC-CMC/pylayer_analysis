@@ -608,7 +608,7 @@ def read_xvg(filename):
             pass
     return data, legend
 
-def calc_head_distance(traj, topol, head_indices):
+def calc_head_distance(traj, topol, head_indices, blocked=False):
     """
     Input: Trajectory, topology, indices of headgroup atoms
     For each frame, compute the average z-coordinate of the headgroup in the top and bot leaflet
@@ -645,13 +645,17 @@ def calc_head_distance(traj, topol, head_indices):
     zcoord_top = zcoord_top / mass_top
     zcoord_bot = zcoord_bot / mass_bot
     head_dist_list = 10 * abs(zcoord_top - zcoord_bot)
-    head_dist_blocks = head_dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-    head_dist_block_avgs = np.mean(head_dist_blocks, axis = 1)
-    head_dist_avg = np.mean(head_dist_block_avgs)
-    head_dist_std = np.std(head_dist_block_avgs)
+    if blocked:
+        head_dist_blocks = head_dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+        head_dist_block_avgs = np.mean(head_dist_blocks, axis = 1)
+        head_dist_avg = np.mean(head_dist_block_avgs)
+        head_dist_std = np.std(head_dist_block_avgs)
+    else:
+        head_dist_avg = np.mean(head_dist_list)
+        head_dist_std = np.std(head_dist_list)
     return head_dist_avg, head_dist_std, head_dist_list
 
-def compute_headgroup_distances(traj, topol, headgroup_dict):
+def compute_headgroup_distances(traj, topol, headgroup_dict, blocked=False):
     """
     Input: trajectory, topology, dictionary mapping molecule types to their headgroup indices
     For each molecule type, compute the distance between headgroups
@@ -660,7 +664,7 @@ def compute_headgroup_distances(traj, topol, headgroup_dict):
     """
     headgroup_distance_dict = OrderedDict()
     for key in headgroup_dict.keys():
-        headgroup_distance_dict[key] = calc_head_distance(traj, topol, headgroup_dict[key])
+        headgroup_distance_dict[key] = calc_head_distance(traj, topol, headgroup_dict[key], blocked=False)
     return headgroup_distance_dict
 
 def calc_bilayer_height(traj, headgroup_distance_dict,blocked=False):
@@ -925,7 +929,7 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict,include_water_
         
 
     # Add waters
-    labelmap['SOL'] = label_to_number
+    labelmap['HOH'] = label_to_number
 
     
     # Calc hbonds within a particular lipid type
