@@ -13,16 +13,27 @@ import subprocess
 # Force files should be moved to sweep{}
 n_sweeps = len([filename for filename in os.listdir() if 'sweep' in filename and os.path.isdir(filename)])
 
+
 # Read in the forces files, splitting 
 # Them into different force files
 current_dir = os.getcwd()
 for sweep in range(n_sweeps):
+    os.chdir(os.path.join(current_dir, "sweep{}".format(sweep)))
+    N_sims = len([filename for filename in os.listdir() if 'Sim' in filename and os.path.isdir(filename)])
+    p = subprocess.Popen("rm forceout*.dat", shell=True, stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT)
+    p.wait()
+
+    with open('tracers.out', 'r') as f:
+        tracers = list(f)
+        N_tracer = len(tracers)
     for i in range(N_sims):
         filename = "Stage5_ZCon"+str(i)+"_pullf.xvg"
         os.chdir(os.path.join(current_dir, "sweep{}/Sim{}".format(sweep, i)))
+        print(os.getcwd())
         all_forces = np.loadtxt(filename, skiprows=30)
         for j in range(N_tracer):
-            force_index = (N_tracer * j) + i
+            force_index = (j* N_sims) + i
             np.savetxt(os.path.join(current_dir, "sweep{}/forceout{}.dat".format(sweep, force_index)), 
                     np.column_stack((all_forces[:, 0], all_forces[:, j+1])))
 
