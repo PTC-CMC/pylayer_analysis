@@ -177,6 +177,7 @@ class SystemSetup():
         #Run MDP parameters
         integrator = 'md'
         dt = 0.002 #ps
+        t_pulling = 1e3
         nsteps = int(t_pulling/dt) #nsteps is the time (converted to ps) divided by the step size
         comm_mode = 'Linear' # Remove center of mass translation
         nstcomm = 1 # Remove center of mass motion every step
