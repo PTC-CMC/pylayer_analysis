@@ -55,11 +55,11 @@ class SystemSetup():
 
     @property
     def dz(self):
-        return round(float(self._dz),2)
+        return round(float(self._dz), 2)
 
     @property
     def z0(self):
-        return round(float(self._z0),2)
+        return round(float(self._z0), 2)
 
 
 
@@ -173,6 +173,14 @@ class SystemSetup():
         #pull_coord1_k = 1000 # kJ/mol/nm^2, spring constant between referencea nd tracer
         #Mainly just need to specify the pull filename, the coordinates of the reference, 
         #rate of reference moving, and the index groups
+
+        #Run MDP parameters
+        integrator = 'md'
+        dt = 0.002 #ps
+        nsteps = int(t_pulling/dt) #nsteps is the time (converted to ps) divided by the step size
+        comm_mode = 'Linear' # Remove center of mass translation
+        nstcomm = 1 # Remove center of mass motion every step
+        comm_grps = 'non-water water'
          
         #Pulling parameters
         if not os.path.isfile(grofile):
@@ -181,8 +189,12 @@ class SystemSetup():
             print('****************')
             sys.exit()
         pull = 'yes'
-        pull_nstxout = '5000'
-        pull_nstfout = '5000'
+        if stagefive:
+            pull_nstxout = 0.01/dt # log forces every 0.01 ps
+            pull_nstfout = 0.01/dt # log forces every 0.01 ps
+        else:
+            pull_nstxout = '5000'
+            pull_nstfout = '5000'
         pull_ncoords = len(tracerlist) #number of coordinates is number of tracers
         pull_ngroups = len(tracerlist) #number of pulling groups is number of tracers
 
@@ -258,13 +270,7 @@ class SystemSetup():
         #We know the pull rate (nm/ps), or the rate the dummy particle moves
         #Get the coordinate of the dummy particle
         
-        #Run MDP parameters
-        integrator = 'md'
-        dt = 0.002 #ps
-        nsteps = int(t_pulling/dt) #nsteps is the time (converted to ps) divided by the step size
-        comm_mode = 'Linear' # Remove center of mass translation
-        nstcomm = 1 # Remove center of mass motion every step
-        comm_grps = 'non-water water'
+        
         
         #Output MDP parameters
         nstxout = 0 #Don't save coordinates
@@ -273,10 +279,7 @@ class SystemSetup():
         nstenergy = int(10/dt) #Energy every 10ps
         nstlog = int(10/dt) #Log every 10ps
         nstcalcenergy = 1
-        if stagefive:
-            nstfout = int(1/dt) # Log force every 1 ps
-        else: 
-            nstfout = 0 #int(1/dt) #Force every 1ps
+        nstfout = 0  # No force logging
         
         #Bond parameters 
         continuation = 'yes'
