@@ -3,10 +3,20 @@ import numpy as np
 from optparse import OptionParser
 import os
 import subprocess
+import itertools
+from multiprocessing import Pool
 
 # Run this after the permeability simulations have finished
 # This means after stage 5 has finisehd running
 # And all force files are still in xvg form
+
+
+def _split_single_file(current_dir, sweep, i, j, all_forces):
+    force_index = (j * N_sims) + i
+    np.savetxt(os.path.join(current_dir, "sweep{}/forceout{}.dat".format(sweep, force_index)), np.column_stack((all_forces[:,0], all_forces[:,j+1])))
+    return 1
+
+
 
 
 # sim_folder/sweep{}/sim{}
@@ -30,12 +40,18 @@ for sweep in range(n_sweeps):
     for i in range(N_sims):
         filename = "Stage5_ZCon"+str(i)+"_pullf.xvg"
         os.chdir(os.path.join(current_dir, "sweep{}/Sim{}".format(sweep, i)))
-        print(os.getcwd())
         all_forces = np.loadtxt(filename, skiprows=30)
-        for j in range(N_tracer):
-            force_index = (j* N_sims) + i
-            np.savetxt(os.path.join(current_dir, "sweep{}/forceout{}.dat".format(sweep, force_index)), 
-                    np.column_stack((all_forces[:, 0], all_forces[:, j+1])))
+        print(os.getcwd())
+        # Parallel version
+        with Pool() as pool:
+               pool.starmap(_split_single_file, zip(itertools.repeat(current_dir), itertools.repeat(sweep), itertools.repeat(i), range(N_tracer), itertools.repeat(all_forces) )) 
+        # Serial version
+        #for j in range(N_tracer):
+        #    force_index = (j* N_sims) + i
+        #    np.savetxt(os.path.join(current_dir, "sweep{}/forceout{}.dat".format(sweep, force_index)), 
+        #            np.column_stack((all_forces[:, 0], all_forces[:, j+1])))
+
+
 
 
 
