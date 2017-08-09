@@ -14,7 +14,7 @@ import subprocess
 
 
 """ Compute hydrogen bonds for a Z-constrained MD trajectory
-Uses mdanalysis, so requires python 2.7
+
 
 
 """
@@ -22,6 +22,7 @@ Uses mdanalysis, so requires python 2.7
 curr_dir = os.getcwd()
 directory_prefix = 'sweep'
 sweep_dirs = [f for f in os.listdir(os.getcwd()) if directory_prefix in f and os.path.isdir(f)]
+all_hbond_profiles = []
 # In the sweep directory
 for sweep_folder in sweep_dirs:
     print("Sweep: {0}".format(sweep_folder))
@@ -36,6 +37,9 @@ for sweep_folder in sweep_dirs:
 
     sim_folders = [sim for sim in os.listdir(os.getcwd()) if 'Sim' in sim and os.path.isdir(sim)]
     n_sims = len(sim_folders)
+    #hbond_profile = (n_tracer * n_sims) * [[0]]
+    hbond_profile = np.zeros(n_tracer * n_sims)
+    all_indices = []
 
     # Need to identify the tracer
     # In the Sim folder
@@ -69,8 +73,36 @@ for sweep_folder in sweep_dirs:
                     hbond_dict[key] = 1
 
             file_index = (tracer_index * n_sims) + sim_index
-            with open('hbonds_mda_{0}.dat'.format(file_index), 'w') as f:
-               for key,value in hbond_dict.iteritems():
+            all_indices.append(file_index)
+            with open(os.path.join(sweepdir,'hbonds_mda_{0}.dat'.format(file_index)), 'w') as f:
+                for key,value in hbond_dict.iteritems():
                    f.write('{:<20s}: {} \n'. format(key, value))
+                   #hbond_profile[file_index].append(value)
+                   hbond_profile[file_index] = value
+    np.savetxt(os.path.join(sweepdir, 'hbond_profile_mda.dat'), hbond_profile)
+    all_hbond_profiles.append(hbond_profile)
+#    with open(os.path.join(sweepdir,'hbond_profile.dat'), 'w') as f:
+#        print(sorted(all_indices))
+#        for line in hbond_profile:
+#            f.write("{4.4f}{4.4f}".format(np.mean(line), np.std(line)))
+#            f.write("\n")
     os.chdir(curr_dir)
 
+average_hbond_profile = np.mean(all_hbond_profiles, axis=0)
+std_hbond_profile = np.std(all_hbond_profiles, axis=0)
+whole_hbond_profile = np.column_stack((average_hbond_profile, std_hbond_profile))
+np.savetxt('hbond_profile.dat', whole_hbond_profile)
+z_windows = np.loadtxt('z_windows.out')
+
+fig, ax = plt.subplots(1,1)
+path = os.getcwd()
+simulation = path.split('/')[-1]
+composition = path.split('/')[-2]
+l, = ax.plot(z_windows, whole_hbond_profile[:,0], label=composition)
+ax.fill_between(z_windows, whole_hbond_profile[:,0] - whole_hbond_profile[:,1],
+        whole_hbond_profile[:,0] + whole_hbond_profile[:,1], color = l.get_color(), alpha=0.25)
+ax.set_ylabel("H-bonds")
+ax.set_xlabel("Z coordinate (nm)")
+ax.legend()
+plt.tight_layout()
+plt.savefig('hbond_profile.jpg', transparent=True)
