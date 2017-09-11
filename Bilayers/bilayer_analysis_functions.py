@@ -14,6 +14,7 @@ from collections import OrderedDict
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
+import time
 
 def calc_APL(traj, n_lipid,blocked=False):
     ''' 
@@ -1044,7 +1045,7 @@ def _compute_rotational_correlation(traj, atom_1, atom_2, interval_max=500,
     correlation = np.mean(rot_acfs,axis=1)
     return correlation
 
-def compute_rotational_correlation(traj, atom_1, atom_2, interval_max=500,
+def compute_rotational_correlation(traj, interval_max=500,
         dt = 10, n_time_origins=5):   
     """ Compute rotatoinal correlation over various time intervals
     For two atoms with respect to distance vector at a time origin
@@ -1083,15 +1084,22 @@ def compute_rotational_correlation(traj, atom_1, atom_2, interval_max=500,
             correlation = _compute_rotational_correlation(traj, global_1, global_2,
                     n_time_origins=n_time_origins, dt=dt, interval_max=interval_max)
             all_correlations.append(correlation)
+        elif 'DPPC' in residue.name:
+            local_atoms = [atom for atom in residue.atoms]
+            atom_1 = np.random.randint(16,30)
+            atom_2 = np.random.randint(35,49)
     
+            global_1 = local_atoms[atom_1].index
+            global_2 = local_atoms[atom_2].index
+    
+            correlation = _compute_rotational_correlation(traj, global_1, global_2,
+                    n_time_origins=n_time_origins, dt=dt, interval_max=interval_max)
+            all_correlations.append(correlation)
+
     average_correlations = np.mean(all_correlations,axis=0)
-    fig, ax = plt.subplots(1,1)
-    times = np.linspace(0, interval_max, num=len(average_correlations))
-    ax.plot(times, average_correlations)
-    ax.set_xlabel("Time Interval, t (ps)")
-    ax.set_ylabel("C(t)")
-    plt.savefig("rotational_correlations.jpg")
-    plt.close()
+
+    times = np.arange(0, interval_max, dt)
+    return times, average_correlations
 
 
 def compute_lateral_diffusion(traj, interval_max=2000, dt=20, n_time_origins=20):
@@ -1175,7 +1183,6 @@ def compute_lateral_diffusion(traj, interval_max=2000, dt=20, n_time_origins=20)
     # Each element is a list of squared deviations at that time interval
     all_sqdevs = [[] for i in range(interval_max)]
     
-    fig, ax = plt.subplots(1,1)
     # Iterate through all time origins
     for time_origin in time_origins:
         
@@ -1197,7 +1204,7 @@ def compute_lateral_diffusion(traj, interval_max=2000, dt=20, n_time_origins=20)
     all_msds = np.mean(all_sqdevs,axis=1)
     end=time.time()
     print("multiple origins msd: {}".format(end-start))
-    ax.plot(times, all_msds, label="multiple origins")
+    #ax.plot(times, all_msds, label="multiple origins")
     np.savetxt('msd.dat', np.column_stack((times,all_msds)))
     
     all_sqdevs = [[] for i in range(interval_max)]
@@ -1221,10 +1228,5 @@ def compute_lateral_diffusion(traj, interval_max=2000, dt=20, n_time_origins=20)
     end=time.time()
     print("single origin mss: {}".format(end-start))
     
-    ax.plot(times, all_msds, label="one origin")
-    ax.set_xlabel("Time interval, t (ps)")
-    ax.set_ylabel("MSD (nm$^2$)")
-    ax.legend()
-    plt.savefig("msds.jpg")
-    plt.close()
+    return times, all_msds
 
