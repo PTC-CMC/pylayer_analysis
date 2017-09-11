@@ -557,7 +557,7 @@ def calc_APT(traj, apl_list, angle_list, n_tails_per_lipid, blocked=False):
         apt_std = np.std(apt_block_avgs)#/(len(apt_block_avgs)**0.5)
     else: 
         apt_avg = np.mean(apt_list)
-        apt_std = np.mean(apt_list)
+        apt_std = np.std(apt_list)
     return apt_avg, apt_std, apt_list
 
 def calc_mean(dataset):
@@ -673,30 +673,35 @@ def calc_bilayer_height(traj, headgroup_distance_dict,blocked=False):
     Calculate bilayer height by comparing DSPC or DPPC headgroup distances
     Return: bilayer height average, bilayer height std, bilayer heigh per frame list
     """
-    if headgroup_distance_dict['DSPC']:
-        dist_list = headgroup_distance_dict['DSPC'][2]
-        #dist_frame_avg = np.mean(dist_list, axis = 1)
-        if blocked:
-            dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-            dist_block_avgs = np.mean(dist_blocks,axis=1)
-            dist_avg = np.mean(dist_block_avgs)
-            dist_std = np.std(dist_block_avgs)
-        else:
-            dist_avg = np.mean(dist_list)
-            dist_std = np.std(dist_list)
-    elif headgroup_distance_dict['DPPC']:
-        dist_list = headgroup_distance_dict['DPPC'][2]
-        #dist_frame_avg = np.mean(dist_list, axis = 1)
-        if blocked: 
-            dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-            dist_block_avgs = np.mean(dist_blocks, axis=1)
-            dist_avg = np.mean(dist_block_avgs)
-            dist_std = np.std(dist_block_avgs)
-        else:
-            dist_avg = np.mean(dist_list)
-            dist_std = np.std(dist_list)
-    else:
-        print ('No phosphate groups to compare')
+    try:
+        if headgroup_distance_dict['DSPC']:
+            dist_list = headgroup_distance_dict['DSPC'][2]
+            #dist_frame_avg = np.mean(dist_list, axis = 1)
+            if blocked:
+                dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+                dist_block_avgs = np.mean(dist_blocks,axis=1)
+                dist_avg = np.mean(dist_block_avgs)
+                dist_std = np.std(dist_block_avgs)
+            else:
+                dist_avg = np.mean(dist_list)
+                dist_std = np.std(dist_list)
+    except KeyError:
+        try:
+    #elif headgroup_distance_dict['DPPC']:
+
+            dist_list = headgroup_distance_dict['DPPC'][2]
+            #dist_frame_avg = np.mean(dist_list, axis = 1)
+            if blocked: 
+                dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+                dist_block_avgs = np.mean(dist_blocks, axis=1)
+                dist_avg = np.mean(dist_block_avgs)
+                dist_std = np.std(dist_block_avgs)
+            else:
+                dist_avg = np.mean(dist_list)
+                dist_std = np.std(dist_list)
+        except KeyError:
+    #else:
+            print ('No phosphate groups to compare')
 
     return (dist_avg, dist_std, dist_list)
 def calc_offsets(traj, headgroup_distance_dict, blocked=False):
@@ -707,14 +712,19 @@ def calc_offsets(traj, headgroup_distance_dict, blocked=False):
     Values are (distance averaged over n_Frames, distance std over n_frame)
     """
     offset_dict = OrderedDict()
-    if headgroup_distance_dict['DSPC']:
-        use_DSPC = True
-        use_DPPC = False
-    elif headgroup_distance_dict['DPPC']:
-        use_DSPC = False
-        use_DPPC = True
-    else:
-        print('No phosphate groups to compare to')
+    try:
+        if headgroup_distance_dict['DSPC']:
+            use_DSPC = True
+            use_DPPC = False
+    except KeyError:
+    #elif headgroup_distance_dict['DPPC']:
+        try:
+            headgroup_distance_dict['DPPC']
+            use_DSPC = False
+            use_DPPC = True
+        except KeyError:
+    #else:
+            print('No phosphate groups to compare to')
     for key in headgroup_distance_dict.keys():
         # Determine if reference is DSPC or DPPC
         if use_DSPC:
@@ -962,9 +972,259 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict,include_water_
         # Add the frame's hbond matrix to the overall hbond matrix list
         hbond_matrix_list.append(hbond_frame_matrix)
     # Compute avgs and stds
-    hbond_matrix_avg = np.mean(hbond_matrix_list, axis = 0)
-    hbond_matrix_std = np.std(hbond_matrix_list, axis = 0)
+    hbond_matrix_avg = np.mean(hbond_matrix_list, axis=0)
+    hbond_matrix_std = np.std(hbond_matrix_list, axis=0)
 
     return (hbond_matrix_avg, hbond_matrix_std, hbond_matrix_list, labelmap)
 
+
+def _compute_rotational_correlation(traj, atom_1, atom_2, interval_max=500,
+        dt = 10, n_time_origins=5):
+    """ Compute rotatoinal correlation over various time intervals
+    For two atoms with respect to distance vector at a time origin
+
+    Parameters
+    ---------
+    traj : mdtraj Trajectory
+    atom_1 : int
+        First atom index
+    atom_2 : int
+        Second atom index
+    interval_max : int
+        Max time interval in picoseconds
+    dt : int
+        Time step (1 frame is dt ps)
+    n_time_origins ; int
+
+    Returns
+    -------
+    rotational_correlations = list()
+        List of rotational correlations over each time interval
+        """
+    # Rot _acfs is a list of lists
+    # The first element is a list corresponding to rot acfs for time interval 0
+    # The sec element is a list corresponding to rot acfs  for time interval 1
+
+    #dt = 10 # 1 frame is 10ps
+    #interval_max = 25000 # this is in ps
+    #n_time_origins = 50
+    interval_max = int(np.floor(interval_max / dt)) # this is in number of frames
+    rot_acfs = [[] for i in range(interval_max)]
+
+    # Reference vector is positive x 
+    #reference_vector = [1, 0, 0]
+
+    # 50 time origins spaced evenly throughout trajectory
+    time_origins = np.linspace(0, traj.n_frames-interval_max, num=n_time_origins)
+    #time_origins = [0, 100, 200]
+    # Make sure these are integers though
+    time_origins = [int(time_origin) for time_origin in time_origins]
+
+    # For every time origin
+    for time_origin in time_origins:
+        # Compute the distance vector at time origin
+        dist_vector_0 = [traj.xyz[time_origin, atom_1, 0] - traj.xyz[time_origin, atom_2, 0],
+                        traj.xyz[time_origin, atom_1, 1] - traj.xyz[time_origin, atom_2, 1],
+                        traj.xyz[time_origin, atom_1, 2] - traj.xyz[time_origin, atom_2,2]]
+        reference_vector = [dist_vector_0[0], dist_vector_0[1], 0]
+        # Compute the cos(angle) at time origin
+        cos_angle_0 = np.dot(reference_vector, dist_vector_0)/(np.dot(dist_vector_0, dist_vector_0)**0.5)
+        # For every frame between now and the interval_max
+        for i in range(interval_max):
+    
+            dist_vector_i = [traj.xyz[time_origin+i, atom_1, 0]-traj.xyz[time_origin+i, atom_2, 0],
+                        traj.xyz[time_origin+i, atom_1, 1] - traj.xyz[time_origin+i, atom_2, 1],
+                        traj.xyz[time_origin+i, atom_1, 2] - traj.xyz[time_origin+i, atom_2,2]]
+            cos_angle_i = np.dot(reference_vector, dist_vector_i)/(np.dot(dist_vector_i, dist_vector_i)**0.5)
+            # Calculate the autocorrelation and add to rot_acfs
+            auto_corr = cos_angle_i * cos_angle_0 / (cos_angle_0**2)
+            rot_acfs[i].append(auto_corr)
+    
+    # Average rot_acfs so each time interval has a single rot_acf
+    correlation = np.mean(rot_acfs,axis=1)
+    return correlation
+
+def compute_rotational_correlation(traj, atom_1, atom_2, interval_max=500,
+        dt = 10, n_time_origins=5):   
+    """ Compute rotatoinal correlation over various time intervals
+    For two atoms with respect to distance vector at a time origin
+
+    Parameters
+    ---------
+    traj : mdtraj Trajectory
+    atom_1 : int
+        First atom index
+    atom_2 : int
+        Second atom index
+    interval_max : int
+        Max time interval in picoseconds
+    dt : int
+        Time step (1 frame is dt ps)
+    n_time_origins ; int
+
+    Returns
+    -------
+    rotational_correlations = list()
+        List of rotational correlations over each time interval
+        """
+
+    # Need to figure out which moleucles are DSPC
+    # [16,32] and [37,53] correspond to each tail (zero-index)
+    all_correlations = []
+    for resid, residue in enumerate(traj.topology.residues):
+        if 'DSPC' in residue.name:
+            local_atoms = [atom for atom in residue.atoms]
+            atom_1 = np.random.randint(16,33)
+            atom_2 = np.random.randint(37,54)
+    
+            global_1 = local_atoms[atom_1].index
+            global_2 = local_atoms[atom_2].index
+    
+            correlation = _compute_rotational_correlation(traj, global_1, global_2,
+                    n_time_origins=n_time_origins, dt=dt, interval_max=interval_max)
+            all_correlations.append(correlation)
+    
+    average_correlations = np.mean(all_correlations,axis=0)
+    fig, ax = plt.subplots(1,1)
+    times = np.linspace(0, interval_max, num=len(average_correlations))
+    ax.plot(times, average_correlations)
+    ax.set_xlabel("Time Interval, t (ps)")
+    ax.set_ylabel("C(t)")
+    plt.savefig("rotational_correlations.jpg")
+    plt.close()
+
+
+def compute_lateral_diffusion(traj, interval_max=2000, dt=20, n_time_origins=20):
+    """ Compute xy diffusion
+    Unwrap coordinates
+    Compute MSDs
+    Fit to diffusion
+
+    Parameters
+    ---------
+    traj : mdtraj Trajecotry
+    interval_max : int
+        Max time intterval to look for (ps)
+    dt : int
+        Timestep (ps)
+    n_time_origins : int
+
+    """
+    # Frame-time conversions
+    times = np.arange(0, interval_max, dt)
+    interval_max = int(np.floor(interval_max / dt)) # this is in number of frames
+    # Space time origins evenly throughout trajectory
+    # But make sure the last time origin still has space to calculate all time intervals
+    time_origins = np.linspace(0, traj.n_frames-interval_max, num=n_time_origins)
+    time_origins = [int(time_origin) for time_origin in time_origins]
+    
+    ### First step is unfolding the trajectory
+    n_frames = traj.n_frames
+    n_atoms = traj.topology.n_atoms
+    non_water_residues = [res for res in traj.topology.residues if not res.is_water]
+    n_residues = len(non_water_residues)
+    unfolded_xyz = np.zeros((traj.n_frames, n_residues, 3))
+    # Frame-by-frame set unfolded_xyz to be each residue's center of mass
+    for resid, res in enumerate(non_water_residues):
+        atom_indices = [atom.index for atom in res.atoms]
+        unfolded_xyz[:, resid, :] = mdtraj.compute_center_of_mass(traj.atom_slice(atom_indices))
+    
+            
+    # Iterate through each frame, take frame 0 as reference
+    # We start at frame 1 and look at the i+1 frame
+    # This means the last frame has to be the second to last frame
+    # Or n_frames-2. For ranges, this means [0, n_frames-1)
+    start=time.time()
+    for frame_index in np.arange(1, n_frames-1):
+    
+        # Look at each residue
+        for resid, res_i in enumerate(non_water_residues):
+    
+            # Compare res_i.xyz @ frame_index and frame_index-1
+            (dx, dy, dz) = unfolded_xyz[frame_index,resid,:] - unfolded_xyz[frame_index-1,resid,:]
+    
+            # Compute an average box between frame_index and frame_index-1
+            avg_box_lengths = np.mean((traj.unitcell_lengths[frame_index],
+                                        traj.unitcell_lengths[frame_index-1]),axis=0)
+            
+            # Scenario 1, big coordinate -> small coordinate (dx very negative)
+            # Shift all subsequent coordinates up by box length
+            if dx < -avg_box_lengths[0]/2:
+                unfolded_xyz[frame_index:, resid,0] = [coord + avg_box_lengths[0] for coord in unfolded_xyz[frame_index:, resid, 0]]
+            if dy < -avg_box_lengths[1]/2:
+                unfolded_xyz[frame_index:, resid,1] = [coord + avg_box_lengths[1] for coord in unfolded_xyz[frame_index:, resid, 1]]
+            if dz < -avg_box_lengths[2]/2:
+                unfolded_xyz[frame_index:, resid,2] = [coord + avg_box_lengths[2] for coord in unfolded_xyz[frame_index:, resid, 2]]
+            
+            # Scenario 2, small coordinate -> big coordinate (dx very positive)
+            # Shift all subsequent coordinates down by a box length
+            if dx > avg_box_lengths[0]/2:
+                unfolded_xyz[frame_index:, resid,0] = [coord - avg_box_lengths[0] for coord in unfolded_xyz[frame_index:, resid, 0]]
+            if dy > avg_box_lengths[1]/2:
+                unfolded_xyz[frame_index:, resid,1] = [coord - avg_box_lengths[1] for coord in unfolded_xyz[frame_index:, resid, 1]]
+            if dz > avg_box_lengths[2]/2:
+                unfolded_xyz[frame_index:, resid,2] = [coord - avg_box_lengths[2] for coord in unfolded_xyz[frame_index:, resid, 2]]
+    end=time.time()
+    print("Unfolding: {}".format(end-start))
+    
+    
+    # Now compute MSDs
+    start=time.time()
+    
+    # Create a list
+    # Each element is a list of squared deviations at that time interval
+    all_sqdevs = [[] for i in range(interval_max)]
+    
+    fig, ax = plt.subplots(1,1)
+    # Iterate through all time origins
+    for time_origin in time_origins:
+        
+        # Get the unfolded coordinates at this time origin
+        ref_xyz = unfolded_xyz[time_origin, :, :]
+    
+        # Iterate through all time intervals
+        for dt in range(interval_max):
+            
+            # Look at a particular residue within this interval
+            for resid, res_i in enumerate(non_water_residues):
+    
+                # Gather the xy MSD for this one residue
+                deviation = [unfolded_xyz[time_origin+dt, resid, i] -
+                        ref_xyz[resid, i] for i in range(2)]
+    
+                sq_dev = np.sum([dev**2 for dev in deviation])
+                all_sqdevs[dt].append(sq_dev)
+    all_msds = np.mean(all_sqdevs,axis=1)
+    end=time.time()
+    print("multiple origins msd: {}".format(end-start))
+    ax.plot(times, all_msds, label="multiple origins")
+    np.savetxt('msd.dat', np.column_stack((times,all_msds)))
+    
+    all_sqdevs = [[] for i in range(interval_max)]
+    start = time.time()
+    for frame_index in range(interval_max):
+    
+        # Look at a particular residue within this frame
+        for resid, res_i in enumerate(non_water_residues):
+            
+            # Gather the X,Y MSD for this one residue
+            deviation = [unfolded_xyz[frame_index, resid, i] -
+                        unfolded_xyz[0, resid, i] for i in range(2)]
+    
+            # Square these deviations
+            sq_dev = np.sum([dev**2 for dev in deviation])
+    
+            # Add them to the squared deviations list
+            all_sqdevs[frame_index].append(sq_dev)
+    
+    all_msds = np.mean(all_sqdevs,axis=1)
+    end=time.time()
+    print("single origin mss: {}".format(end-start))
+    
+    ax.plot(times, all_msds, label="one origin")
+    ax.set_xlabel("Time interval, t (ps)")
+    ax.set_ylabel("MSD (nm$^2$)")
+    ax.legend()
+    plt.savefig("msds.jpg")
+    plt.close()
 
