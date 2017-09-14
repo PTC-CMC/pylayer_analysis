@@ -979,9 +979,9 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict,include_water_
     return (hbond_matrix_avg, hbond_matrix_std, hbond_matrix_list, labelmap)
 
 
-def _compute_rotational_correlation(traj, atom_1, atom_2, interval_max=500,
+def _compute_rotational_correlation(traj, atom_1, atom_2, 
         dt = 10, n_time_origins=5):
-    """ Compute rotatoinal correlation over various time intervals
+    """ Compute rotational correlation over various time intervals
     For two atoms with respect to distance vector at a time origin
 
     Parameters
@@ -991,8 +991,6 @@ def _compute_rotational_correlation(traj, atom_1, atom_2, interval_max=500,
         First atom index
     atom_2 : int
         Second atom index
-    interval_max : int
-        Max time interval in picoseconds
     dt : int
         Time step (1 frame is dt ps)
     n_time_origins ; int
@@ -1002,22 +1000,15 @@ def _compute_rotational_correlation(traj, atom_1, atom_2, interval_max=500,
     rotational_correlations = list()
         List of rotational correlations over each time interval
         """
-    # Rot _acfs is a list of lists
+    # Rot acfs is a list of lists
     # The first element is a list corresponding to rot acfs for time interval 0
     # The sec element is a list corresponding to rot acfs  for time interval 1
 
-    #dt = 10 # 1 frame is 10ps
-    #interval_max = 25000 # this is in ps
-    #n_time_origins = 50
-    interval_max = int(np.floor(interval_max / dt)) # this is in number of frames
-    rot_acfs = [[] for i in range(interval_max)]
+    rot_acfs = [[] for i in range(traj.n_frames)]
 
-    # Reference vector is positive x 
-    #reference_vector = [1, 0, 0]
 
     # 50 time origins spaced evenly throughout trajectory
-    time_origins = np.linspace(0, traj.n_frames-interval_max, num=n_time_origins)
-    #time_origins = [0, 100, 200]
+    time_origins = np.linspace(0, traj.n_frames-n_time_origins, num=n_time_origins)
     # Make sure these are integers though
     time_origins = [int(time_origin) for time_origin in time_origins]
 
@@ -1027,25 +1018,28 @@ def _compute_rotational_correlation(traj, atom_1, atom_2, interval_max=500,
         dist_vector_0 = [traj.xyz[time_origin, atom_1, 0] - traj.xyz[time_origin, atom_2, 0],
                         traj.xyz[time_origin, atom_1, 1] - traj.xyz[time_origin, atom_2, 1],
                         traj.xyz[time_origin, atom_1, 2] - traj.xyz[time_origin, atom_2,2]]
+        # Reference vector is the vector at the time origin
         reference_vector = [dist_vector_0[0], dist_vector_0[1], 0]
         # Compute the cos(angle) at time origin
         cos_angle_0 = np.dot(reference_vector, dist_vector_0)/(np.dot(dist_vector_0, dist_vector_0)**0.5)
-        # For every frame between now and the interval_max
-        for i in range(interval_max):
+        # For every frame between origin and last frame
+        for i in range(traj.n_frames):
     
-            dist_vector_i = [traj.xyz[time_origin+i, atom_1, 0]-traj.xyz[time_origin+i, atom_2, 0],
-                        traj.xyz[time_origin+i, atom_1, 1] - traj.xyz[time_origin+i, atom_2, 1],
-                        traj.xyz[time_origin+i, atom_1, 2] - traj.xyz[time_origin+i, atom_2,2]]
-            cos_angle_i = np.dot(reference_vector, dist_vector_i)/(np.dot(dist_vector_i, dist_vector_i)**0.5)
-            # Calculate the autocorrelation and add to rot_acfs
-            auto_corr = cos_angle_i * cos_angle_0 / (cos_angle_0**2)
-            rot_acfs[i].append(auto_corr)
+            if i+time_origin < traj.n_frames-1:
+                dist_vector_i = [traj.xyz[time_origin+i, atom_1, 0]-traj.xyz[time_origin+i, atom_2, 0],
+                            traj.xyz[time_origin+i, atom_1, 1] - traj.xyz[time_origin+i, atom_2, 1],
+                            traj.xyz[time_origin+i, atom_1, 2] - traj.xyz[time_origin+i, atom_2,2]]
+                cos_angle_i = np.dot(reference_vector, dist_vector_i)/(np.dot(dist_vector_i, dist_vector_i)**0.5)
+                # Calculate the autocorrelation and add to rot_acfs
+                auto_corr = cos_angle_i * cos_angle_0 / (cos_angle_0**2)
+                rot_acfs[i].append(auto_corr)
     
     # Average rot_acfs so each time interval has a single rot_acf
-    correlation = np.mean(rot_acfs,axis=1)
+    correlation = [np.mean(rot_acf) for rot_acf in rot_acfs]
+
     return correlation
 
-def compute_rotational_correlation(traj, interval_max=500,
+def compute_rotational_correlation(traj,
         dt = 10, n_time_origins=5):   
     """ Compute rotatoinal correlation over various time intervals
     For two atoms with respect to distance vector at a time origin
@@ -1057,8 +1051,6 @@ def compute_rotational_correlation(traj, interval_max=500,
         First atom index
     atom_2 : int
         Second atom index
-    interval_max : int
-        Max time interval in picoseconds
     dt : int
         Time step (1 frame is dt ps)
     n_time_origins ; int
@@ -1082,7 +1074,7 @@ def compute_rotational_correlation(traj, interval_max=500,
             global_2 = local_atoms[atom_2].index
     
             correlation = _compute_rotational_correlation(traj, global_1, global_2,
-                    n_time_origins=n_time_origins, dt=dt, interval_max=interval_max)
+                    n_time_origins=n_time_origins, dt=dt)
             all_correlations.append(correlation)
         elif 'DPPC' in residue.name:
             local_atoms = [atom for atom in residue.atoms]
@@ -1093,16 +1085,16 @@ def compute_rotational_correlation(traj, interval_max=500,
             global_2 = local_atoms[atom_2].index
     
             correlation = _compute_rotational_correlation(traj, global_1, global_2,
-                    n_time_origins=n_time_origins, dt=dt, interval_max=interval_max)
+                    n_time_origins=n_time_origins, dt=dt)
             all_correlations.append(correlation)
 
     average_correlations = np.mean(all_correlations,axis=0)
 
-    times = np.arange(0, interval_max, dt)
+    times = np.arange(0, traj.n_frames*dt, dt)
     return times, average_correlations
 
 
-def compute_lateral_diffusion(traj, interval_max=2000, dt=20, n_time_origins=20):
+def compute_lateral_diffusion(traj, dt=20, n_time_origins=20):
     """ Compute xy diffusion
     Unwrap coordinates
     Compute MSDs
@@ -1111,19 +1103,17 @@ def compute_lateral_diffusion(traj, interval_max=2000, dt=20, n_time_origins=20)
     Parameters
     ---------
     traj : mdtraj Trajecotry
-    interval_max : int
-        Max time intterval to look for (ps)
     dt : int
         Timestep (ps)
     n_time_origins : int
 
     """
     # Frame-time conversions
-    times = np.arange(0, interval_max, dt)
-    interval_max = int(np.floor(interval_max / dt)) # this is in number of frames
+    #times = np.arange(0, interval_max, dt)
+    times = np.arange(0, traj.n_frames*dt, dt)
     # Space time origins evenly throughout trajectory
     # But make sure the last time origin still has space to calculate all time intervals
-    time_origins = np.linspace(0, traj.n_frames-interval_max, num=n_time_origins)
+    time_origins = np.linspace(0, traj.n_frames-n_time_origins, num=n_time_origins)
     time_origins = [int(time_origin) for time_origin in time_origins]
     
     ### First step is unfolding the trajectory
@@ -1139,11 +1129,11 @@ def compute_lateral_diffusion(traj, interval_max=2000, dt=20, n_time_origins=20)
     
             
     # Iterate through each frame, take frame 0 as reference
-    # We start at frame 1 and look at the i+1 frame
-    # This means the last frame has to be the second to last frame
-    # Or n_frames-2. For ranges, this means [0, n_frames-1)
+    # We start at frame 1 and look at the i-1 frame
+    # This means the last frame has to be the last frame
+    # Or n_frames-1. For ranges, this means [0, n_frames)
     start=time.time()
-    for frame_index in np.arange(1, n_frames-1):
+    for frame_index in np.arange(1, n_frames):
     
         # Look at each residue
         for resid, res_i in enumerate(non_water_residues):
@@ -1181,7 +1171,7 @@ def compute_lateral_diffusion(traj, interval_max=2000, dt=20, n_time_origins=20)
     
     # Create a list
     # Each element is a list of squared deviations at that time interval
-    all_sqdevs = [[] for i in range(interval_max)]
+    all_sqdevs = [[] for i in range(traj.n_frames)]
     
     # Iterate through all time origins
     for time_origin in time_origins:
@@ -1190,43 +1180,23 @@ def compute_lateral_diffusion(traj, interval_max=2000, dt=20, n_time_origins=20)
         ref_xyz = unfolded_xyz[time_origin, :, :]
     
         # Iterate through all time intervals
-        for dt in range(interval_max):
+        for dt in range(traj.n_frames):
+            if dt + time_origin < traj.n_frames-1:
             
-            # Look at a particular residue within this interval
-            for resid, res_i in enumerate(non_water_residues):
+                # Look at a particular residue within this interval
+                for resid, res_i in enumerate(non_water_residues):
     
-                # Gather the xy MSD for this one residue
-                deviation = [unfolded_xyz[time_origin+dt, resid, i] -
-                        ref_xyz[resid, i] for i in range(2)]
+                    # Gather the xy MSD for this one residue
+                    deviation = [unfolded_xyz[time_origin+dt, resid, i] -
+                            ref_xyz[resid, i] for i in range(2)]
     
-                sq_dev = np.sum([dev**2 for dev in deviation])
-                all_sqdevs[dt].append(sq_dev)
-    all_msds = np.mean(all_sqdevs,axis=1)
+                    sq_dev = np.sum([dev**2 for dev in deviation])
+                    all_sqdevs[dt].append(sq_dev)
+    all_msds = [np.mean(sqdev) for sqdev in all_sqdevs]
+    pdb.set_trace()
     end=time.time()
     print("multiple origins msd: {}".format(end-start))
-    #ax.plot(times, all_msds, label="multiple origins")
     np.savetxt('msd.dat', np.column_stack((times,all_msds)))
-    
-    all_sqdevs = [[] for i in range(interval_max)]
-    start = time.time()
-    for frame_index in range(interval_max):
-    
-        # Look at a particular residue within this frame
-        for resid, res_i in enumerate(non_water_residues):
-            
-            # Gather the X,Y MSD for this one residue
-            deviation = [unfolded_xyz[frame_index, resid, i] -
-                        unfolded_xyz[0, resid, i] for i in range(2)]
-    
-            # Square these deviations
-            sq_dev = np.sum([dev**2 for dev in deviation])
-    
-            # Add them to the squared deviations list
-            all_sqdevs[frame_index].append(sq_dev)
-    
-    all_msds = np.mean(all_sqdevs,axis=1)
-    end=time.time()
-    print("single origin mss: {}".format(end-start))
     
     return times, all_msds
 
