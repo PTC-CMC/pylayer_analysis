@@ -1193,7 +1193,6 @@ def compute_lateral_diffusion(traj, dt=20, n_time_origins=20):
                     sq_dev = np.sum([dev**2 for dev in deviation])
                     all_sqdevs[dt].append(sq_dev)
     all_msds = [np.mean(sqdev) for sqdev in all_sqdevs]
-    pdb.set_trace()
     end=time.time()
     print("multiple origins msd: {}".format(end-start))
     np.savetxt('msd.dat', np.column_stack((times,all_msds)))
