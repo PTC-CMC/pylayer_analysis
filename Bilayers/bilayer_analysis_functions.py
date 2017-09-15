@@ -2,6 +2,7 @@ from __future__ import print_function
 import mdtraj as mdtraj
 import sys
 import scipy.integrate as integrate
+from scipy.optimize import curve_fit
 import pandas as pd
 import os
 from optparse import OptionParser
@@ -1025,7 +1026,7 @@ def _compute_rotational_correlation(traj, atom_1, atom_2,
         # For every frame between origin and last frame
         for i in range(traj.n_frames):
     
-            if i+time_origin < traj.n_frames-1:
+            if i+time_origin < traj.n_frames:
                 dist_vector_i = [traj.xyz[time_origin+i, atom_1, 0]-traj.xyz[time_origin+i, atom_2, 0],
                             traj.xyz[time_origin+i, atom_1, 1] - traj.xyz[time_origin+i, atom_2, 1],
                             traj.xyz[time_origin+i, atom_1, 2] - traj.xyz[time_origin+i, atom_2,2]]
@@ -1090,7 +1091,7 @@ def compute_rotational_correlation(traj,
 
     average_correlations = np.mean(all_correlations,axis=0)
 
-    times = np.arange(0, traj.n_frames*dt, dt)
+    times = np.arange(0, (traj.n_frames)*dt, dt)
     return times, average_correlations
 
 
@@ -1110,7 +1111,7 @@ def compute_lateral_diffusion(traj, dt=20, n_time_origins=20):
     """
     # Frame-time conversions
     #times = np.arange(0, interval_max, dt)
-    times = np.arange(0, traj.n_frames*dt, dt)
+    times = np.arange(0, (traj.n_frames)*dt, dt)
     # Space time origins evenly throughout trajectory
     # But make sure the last time origin still has space to calculate all time intervals
     time_origins = np.linspace(0, traj.n_frames-n_time_origins, num=n_time_origins)
@@ -1122,18 +1123,20 @@ def compute_lateral_diffusion(traj, dt=20, n_time_origins=20):
     non_water_residues = [res for res in traj.topology.residues if not res.is_water]
     n_residues = len(non_water_residues)
     unfolded_xyz = np.zeros((traj.n_frames, n_residues, 3))
+    #unfolded_xyz_nocom = np.zeros((traj.n_frames, n_residues, 3))
     # Frame-by-frame set unfolded_xyz to be each residue's center of mass
     for resid, res in enumerate(non_water_residues):
         atom_indices = [atom.index for atom in res.atoms]
         unfolded_xyz[:, resid, :] = mdtraj.compute_center_of_mass(traj.atom_slice(atom_indices))
     
-            
+    ref_com = mdtraj.compute_center_of_mass(traj.atom_slice(atom_indices)[0])
     # Iterate through each frame, take frame 0 as reference
     # We start at frame 1 and look at the i-1 frame
     # This means the last frame has to be the last frame
     # Or n_frames-1. For ranges, this means [0, n_frames)
     start=time.time()
     for frame_index in np.arange(1, n_frames):
+        frame_com = mdtraj.compute_center_of_mass(traj.atom_slice(atom_indices)[frame_index])
     
         # Look at each residue
         for resid, res_i in enumerate(non_water_residues):
@@ -1162,6 +1165,10 @@ def compute_lateral_diffusion(traj, dt=20, n_time_origins=20):
                 unfolded_xyz[frame_index:, resid,1] = [coord - avg_box_lengths[1] for coord in unfolded_xyz[frame_index:, resid, 1]]
             if dz > avg_box_lengths[2]/2:
                 unfolded_xyz[frame_index:, resid,2] = [coord - avg_box_lengths[2] for coord in unfolded_xyz[frame_index:, resid, 2]]
+
+            # Also, shift the center of mass to the reference center of mass
+            #unfolded_xyz_nocom[frame_index,resid,:] = unfolded_xyz[frame_index,resid,:] - frame_com + ref_com
+
     end=time.time()
     print("Unfolding: {}".format(end-start))
     
@@ -1181,7 +1188,7 @@ def compute_lateral_diffusion(traj, dt=20, n_time_origins=20):
     
         # Iterate through all time intervals
         for dt in range(traj.n_frames):
-            if dt + time_origin < traj.n_frames-1:
+            if dt + time_origin < traj.n_frames:
             
                 # Look at a particular residue within this interval
                 for resid, res_i in enumerate(non_water_residues):
@@ -1199,3 +1206,20 @@ def compute_lateral_diffusion(traj, dt=20, n_time_origins=20):
     
     return times, all_msds
 
+def fit_to_diffusion(independent_vars, dependent_vars, nd=3):
+    """ Take a dataset and fit a line through it
+
+    Parameters
+    ---------
+    independent_vars : list()
+    dependent_vars: list()
+    nd : int
+        Number of dimensions (3 for 3d, 2 for 2d)
+
+    """
+    params, covar = curve_fit(line_func, independent_vars, dependent_vars) 
+    return params[0]/(2*nd), params[1]
+
+def line_func(x, slope, constant):
+    """ Simple slope-intercept equation for line"""
+    return (slope*x) + constant
