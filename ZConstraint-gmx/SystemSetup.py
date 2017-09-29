@@ -515,8 +515,6 @@ class SystemSetup():
 #        #If building a grompp mdp from scratch
 #        elif topfile:
         outfile.write('gmx grompp -f {} -c {} -p {} -n {} -o {} -maxwarn 2 > grompp_{}.log 2>&1'.format((mdpfile), (grofile),
-        outfile.write('gmx_mpi grompp -f {} -c {} -p {} -n {} -o {} -maxwarn 2 > grompp_{}.log 2>&1'.format((mdpfile), (grofile),
-              topfile, (indexfile), (filename+'.tpr'), filename))
           topfile, (indexfile), (filename+'.tpr'), filename))
 
 
