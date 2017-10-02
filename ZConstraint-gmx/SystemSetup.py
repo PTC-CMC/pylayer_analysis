@@ -1,4 +1,5 @@
 import numpy as np
+import mdtraj
 import os
 import pdb
 import random
@@ -12,7 +13,24 @@ Stage 1 to set up pulling simulations with moving references to move reference t
 Stage 2 to set up pulling simulations with fixed references to pull tracer to fixed reference at tracer window 
 '''
 class SystemSetup():
-    def __init__(self, z0 = 1.0, dz = 0.2, N_window = 40, N_tracer = 8, z_windows=None):
+    def __init__(self, z0=1.0, dz=0.2, N_window=40, N_tracer=8, z_windows=None, auto=False):
+        """
+
+        Parameters
+        ----------
+        z0 : float
+            Initial z coordinate
+        dz : float
+            window spacing
+        N_window : int
+            Number of z-windows
+        N_tracer : int 
+            Number of tracer molecules
+        Z_windows : str
+            Filename of z-windows if specified
+        auto : Boolean
+            If true, automatically generate z windows based on bilayer CoM
+            """
         # If no z window file was provied
             
         self._N_tracer = N_tracer

@@ -19,6 +19,7 @@ parser.add_option('--gro', action = 'store', type = 'string', dest = 'grofile')
 parser.add_option('--k', action = 'store', type = 'float', dest = 'pull_coord_k', default = '40')
 parser.add_option('--top', action = 'store', type = 'string', dest = 'topfile')
 parser.add_option('--sweep', action='store', type='int', dest='sweep', default=0)
+parser.add_option('--auto', action='store_true', dest='auto', default=False)
 (options, args) = parser.parse_args()
 
 dz = options.dz
@@ -43,7 +44,10 @@ print('{:10s} = {}'.format('k', pull_coord_k))
 
 #For N_windows and N_tracers, need to set up N_windows/N_tracer simulations that pull 
 # each tracer to the same z_window at dz intervals
-thing = SystemSetup(z0 = z0, dz = dz, N_window = N_window, N_tracer = N_tracer)
+if not options.auto:
+    thing = SystemSetup(z0=z0, dz=dz, N_window=N_window, N_tracer=N_tracer)
+else:
+    thing = SystemSetup
 thing.gather_tracer(grofile = grofile)
 #tracer_list = thing.get_Tracers()
 tracer_list = thing.tracer_list
