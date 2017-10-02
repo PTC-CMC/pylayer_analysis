@@ -13,7 +13,8 @@ Stage 1 to set up pulling simulations with moving references to move reference t
 Stage 2 to set up pulling simulations with fixed references to pull tracer to fixed reference at tracer window 
 '''
 class SystemSetup():
-    def __init__(self, z0=1.0, dz=0.2, N_window=40, N_tracer=8, z_windows=None, auto=False):
+    def __init__(self, z0=1.0, dz=0.2, N_window=40, N_tracer=8, 
+            z_windows=None, auto_detect=False, grofile=None):
         """
 
         Parameters
@@ -28,33 +29,58 @@ class SystemSetup():
             Number of tracer molecules
         Z_windows : str
             Filename of z-windows if specified
-        auto : Boolean
+        auto_detect : Boolean
             If true, automatically generate z windows based on bilayer CoM
             """
         # If no z window file was provied
             
         self._N_tracer = N_tracer
+        
+        if auto_detect:
+            print("Generating windows from center of mass")
+            self._generate_z_windows(grofile=grofile, dz=dz, N_window=N_window)
+            self.write_zlist()
 
-        if z_windows is None:
+        elif z_windows is None:
+            print("Generating windows from window specifications")
             self._z0 = z0
             self._dz = dz
             self._N_window = N_window
-            #Molecules [129,2688] correspond to the 2560 water molecules, but we want the water molecules in the bottom layer
-            #self._tracer_list = list()
-            #tracer_min = 128 * 11
-            #tracer_max = 128 * 21
-            #self._tracer_list = random.sample(range(tracer_min, tracer_max), self.N_tracer)
-            #self.write_tracerlist(self._tracer_list)
-
+       
             #Define the z-window list, starting at z0 and going up dz each time
         
             self._zlist = list()
             for i in range(self._N_window):
                    self._zlist.append(self._z0 + (i * self._dz)) 
             self.write_zlist()
-        else:
+        elif z_windows:
+            print("Loading window from file")
             # IF we have a z window file, just set it
             self._set_from_file(z_windows)
+        else:
+            sys.exit("Specify SystemSetup initializaion parameters!")
+
+    def _generate_z_windows(self, grofile=None, dz=0.2, N_window=40):
+        """ Build zwindows out from the center of mass"""
+
+        traj = mdtraj.load(grofile)
+        non_water = traj.topology.select('not water')
+        sub_traj = traj.atom_slice(non_water)
+        com = mdtraj.compute_center_of_mass(sub_traj)
+        center_z = round(com[0,2], 2)
+        self._zlist = np.zeros(N_window)
+        midpoint = int(len(self._zlist)/2)
+        self._zlist[midpoint] = center_z
+        # Fill in lower half from high to low
+        for i in range(1, midpoint+1):
+            self._zlist[midpoint-i] = center_z - i*dz
+        # Fill in top half from low to high
+        for i in range(midpoint+1, len(self._zlist)):
+            self._zlist[i] = self._zlist[0] + i*dz
+        
+
+
+
 
     def _set_from_file(self, z_windows):
         with open(z_windows) as f:
@@ -65,7 +91,7 @@ class SystemSetup():
         self._N_window = len(self._zlist)
 
 
-    def write_zlist(self, zlog = 'z_windows.out'):
+    def write_zlist(self, zlog='z_windows.out'):
         outfile = open(zlog, 'w')
         for i, zwindow in enumerate(self._zlist):
             outfile.write('{} \n'.format(np.round(zwindow,2)))

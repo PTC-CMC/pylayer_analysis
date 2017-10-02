@@ -44,10 +44,7 @@ print('{:10s} = {}'.format('k', pull_coord_k))
 
 #For N_windows and N_tracers, need to set up N_windows/N_tracer simulations that pull 
 # each tracer to the same z_window at dz intervals
-if not options.auto:
-    thing = SystemSetup(z0=z0, dz=dz, N_window=N_window, N_tracer=N_tracer)
-else:
-    thing = SystemSetup
+thing = SystemSetup(z0=z0, dz=dz, N_window=N_window, N_tracer=N_tracer,auto_detect=options.auto, grofile=grofile)
 thing.gather_tracer(grofile = grofile)
 #tracer_list = thing.get_Tracers()
 tracer_list = thing.tracer_list
