@@ -4,13 +4,18 @@
 from optparse import OptionParser
 import os
 parser = OptionParser()
-parser.add_option('-n', action = 'store', type = 'int', dest = 'n_sweeps', default = '1')
-parser.add_option('--dz', action = 'store', type = 'float', dest = 'dz', default = 0.2)
-parser.add_option('--z0', action = 'store', type = 'float', dest = 'z0', default = 1.0)
-parser.add_option('--Nwin', action = 'store', type = 'int', dest = 'N_window', default = 40)
-parser.add_option('--Ntracer', action = 'store', type = 'int', dest = 'N_tracer', default = 8)
+parser.add_option('-n', action='store', type='int', dest='n_sweeps', default='1')
+parser.add_option('--dz', action='store', type='float', dest='dz', default=0.2)
+parser.add_option('--z0', action='store', type='float', dest='z0', default= 1.0)
+parser.add_option('--Nwin', action='store', type='int', dest='N_window', default=40)
+parser.add_option('--Ntracer', action='store', type='int', dest='N_tracer', default=8)
+parser.add_option('--auto', action='store_true', dest='auto', default=False)
 
 (options, args) = parser.parse_args()
+if options.auto:
+    auto_flag = "--auto"
+else:
+    auto_flag = ""
 
 curr_dir = os.getcwd()
 simulation = curr_dir.split('/')[-1]
@@ -44,7 +49,7 @@ with open("{}_permeability.pbs".format(simulation),'w') as f:
 
         # Write the setup lines
         if stagenumber == 1:
-            f.write("\t python Setup{0}.py --gro md_{1}.gro --top {1}.top --sweep $i --dz {2} --z0 {3} --Nwin {4} --Ntracer {5} \n".format(prefix, simulation, options.dz, options.z0, options.N_window, options.N_tracer))
+            f.write("\t python Setup{0}.py --gro md_{1}.gro --top {1}.top --sweep $i --dz {2} --z0 {3} --Nwin {4} --Ntracer {5} {6}\n".format(prefix, simulation, options.dz, options.z0, options.N_window, options.N_tracer, auto_flag))
         else:
             f.write("\t python Setup{0}.py --top {1}.top --sweep $i --t sweep$i/tracers.out --z sweep$i/z_windows.out\n".format(prefix,simulation))
 
