@@ -71,10 +71,11 @@ class SystemSetup():
         self._zlist = np.zeros(N_window)
         midpoint = int(len(self._zlist)/2)
         self._zlist[midpoint] = center_z
-        # Fill in lower half from high to low
+
+        # Fill in lower half from centerpoint outward
         for i in range(1, midpoint+1):
             self._zlist[midpoint-i] = center_z - i*dz
-        # Fill in top half from low to high
+        # Fill in top half from centerpoint outward
         for i in range(midpoint+1, len(self._zlist)):
             self._zlist[i] = self._zlist[0] + i*dz
         
@@ -325,6 +326,10 @@ class SystemSetup():
         nstlog = int(10/dt) #Log every 10ps
         nstcalcenergy = 1
         nstfout = 0  # No force logging
+        if stagefive:
+            nstxout = int(10/dt)
+            nstvout = int(10/dt)
+            nstfout = int(10/dt)
         
         #Bond parameters 
         continuation = 'yes'

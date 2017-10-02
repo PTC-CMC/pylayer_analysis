@@ -48,7 +48,7 @@ thing = SystemSetup(z0=z0, dz=dz, N_window=N_window, N_tracer=N_tracer,auto_dete
 thing.gather_tracer(grofile = grofile)
 #tracer_list = thing.get_Tracers()
 tracer_list = thing.tracer_list
-z_list = z0*np.ones(len(tracer_list))
+z_list = thing.zlist[0]*np.ones(len(tracer_list))
 os.system('mkdir -p sweep{}'.format(options.sweep))
 thing.write_zlist("sweep{0}/z_windows.out".format(options.sweep))
 thing.write_tracerlist(thing._tracer_list, tracerlog="sweep{0}/tracers.out".format(options.sweep))
