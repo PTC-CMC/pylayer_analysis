@@ -2,25 +2,56 @@
 # This pbs script executs the 5 stages of the permeability simulations
 
 from optparse import OptionParser
+import mdtraj
 import os
 parser = OptionParser()
 parser.add_option('-n', action='store', type='int', dest='n_sweeps', default='1')
 parser.add_option('--dz', action='store', type='float', dest='dz', default=0.2)
 parser.add_option('--z0', action='store', type='float', dest='z0', default= 1.0)
+parser.add_option('--gro', action = 'store', type = 'string', dest = 'grofile')
 parser.add_option('--Nwin', action='store', type='int', dest='N_window', default=40)
 parser.add_option('--Ntracer', action='store', type='int', dest='N_tracer', default=8)
 parser.add_option('--auto', action='store_true', dest='auto', default=False)
-
+parser.add_option('--nocenter', action='store_true', dest='center', default=False)
 (options, args) = parser.parse_args()
-if options.auto:
-    auto_flag = "--auto"
-else:
-    auto_flag = ""
+
 
 curr_dir = os.getcwd()
 simulation = curr_dir.split('/')[-1]
 composition = curr_dir.split('/')[-2]
 N_sims = int(options.N_window/options.N_tracer)
+initial_configuration = 'md_{}.gro'.format(simulation)
+# Center gro file
+if not nocenter:
+    traj = mdtraj.load(grofile)
+    perma_traj = mdtraj.load(grofile)
+    non_water = traj.topology.select('not water')
+    sub_traj = traj.atom_slice(non_water)
+    # Get center of mass of the bilayer 
+    com = mdtraj.compute_center_of_mass(sub_traj)
+    box = [traj.unitcell_lengths[0,0], traj.unitcell_lengths[0,1], traj.unitcell_lengths[0,2]]
+
+    # Shift all coordinates so bilayer is at center of box
+    for i, val in enumerate(traj.xyz):
+        traj.xyz[i] = [[x, y, z-com[0,2]+(box[2]/2)] for x,y,z in traj.xyz[i][:]]
+
+    # Go back and fix for pbc
+    for i, val in enumerate(traj.xyz):
+        for j,atom in enumerate(traj.xyz[i]):
+            for k, coord in enumerate(traj.xyz[i,j]):
+                if coord < 0:
+                    traj.xyz[i,j,k] += box[k]
+                elif coord > box[k]:
+                    traj.xyz[i,j,k] -= box[k]
+    traj.save('centered.gro')
+    initial_configuration = 'centered.gro'
+
+
+if options.auto:
+    auto_flag = "--auto"
+else:
+    auto_flag = ""
+
 with open("{}_permeability.pbs".format(simulation),'w') as f:
 
     # Simple pbs header
@@ -49,7 +80,9 @@ with open("{}_permeability.pbs".format(simulation),'w') as f:
 
         # Write the setup lines
         if stagenumber == 1:
-            f.write("\t python Setup{0}.py --gro md_{1}.gro --top {1}.top --sweep $i --dz {2} --z0 {3} --Nwin {4} --Ntracer {5} {6}\n".format(prefix, simulation, options.dz, options.z0, options.N_window, options.N_tracer, auto_flag))
+            f.write("\t python Setup{0}.py --gro {7}.gro --top {1}.top --sweep $i --dz {2} --z0 {3} --Nwin {4} --Ntracer {5} {6}\n".format(prefix, simulation, 
+                options.dz, options.z0, options.N_window, options.N_tracer, 
+                auto_flag, initial_configuration))
         else:
             f.write("\t python Setup{0}.py --top {1}.top --sweep $i --t sweep$i/tracers.out --z sweep$i/z_windows.out\n".format(prefix,simulation))
 
