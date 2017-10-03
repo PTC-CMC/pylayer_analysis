@@ -195,14 +195,28 @@ class SystemSetup():
         self.write_tracerlist(tracer_list)
 
     def read_tracers(self, tracer_list):
-        self._tracer_list = list()
-        for i, tracer in enumerate(tracer_list):
-            self._tracer_list.append(tracer.split()[0])
+        """
+        Parameters
+        ---------
+        tracer_list : str
+            filename of tracers
+            """
+        #self._tracer_list = list()
+        #for i, tracer in enumerate(tracer_list):
+            #self._tracer_list.append(tracer.split()[0])
+        self._tracer_list = np.loadtxt(tracer_list)
 
     def read_zlist(self, z_list):
+        """
+        Parameters
+        ---------
+        z_list : str
+            filename of zwindows
+            """
         #self.zlist = list()
-        for i, zwindow in enumerate(z_list):
-            self._zlist.append(zwindow.split()[0])
+        self._zlist = np.loadtxt(z_list)
+        #for i, zwindow in enumerate(z_list):
+            #self._zlist.append(zwindow.split()[0])
         self._dz = np.absolute(float(self._zlist[0]) - float(self._zlist[1]))
         self._z0 = self._zlist[0]
 

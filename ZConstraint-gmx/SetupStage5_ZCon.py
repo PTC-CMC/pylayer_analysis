@@ -33,17 +33,19 @@ indexfile = 'FullIndex.ndx'
 duration = 2e3 # Run z-constraining and record forces for 2 ns
 
 #Read tracers
-tracerlist = open(tracerlist_filename, 'r')
-tracerlistlines = tracerlist.readlines()
-thing.read_tracers(tracerlistlines)
-N_tracer = len(tracerlistlines)
+#tracerlist = open(tracerlist_filename, 'r')
+#tracerlistlines = tracerlist.readlines()
+thing.read_tracers(tracerlist_filename)
+#N_tracer = len(tracerlistlines)
+N_tracer = len(thing.tracer_list)
 
 
 #Read zwindows
-zwindows = open(zwindows_filename, 'r')
-zwindowslines = zwindows.readlines()
-thing.read_zlist(zwindowslines)
-N_window = len(zwindowslines)
+#zwindows = open(zwindows_filename, 'r')
+#zwindowslines = zwindows.readlines()
+thing.read_zlist(zwindows_filename)
+#N_window = len(zwindowslines)
+N_window = len(thing.zlist)
 
 N_sims = int(N_window / N_tracer)
 #dz = np.round(float(thing.get_dz()), 3)
