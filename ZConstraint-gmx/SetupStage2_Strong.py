@@ -29,17 +29,20 @@ pull_coord_k = options.pull_coord_k
 topfile = options.topfile
 indexfile = 'FullIndex.ndx'
 #Read tracers
-tracerlist = open(tracerlist_filename, 'r')
-tracerlistlines = tracerlist.readlines()
-thing.read_tracers(tracerlistlines)
-N_tracer = len(tracerlistlines)
+#tracerlist = open(tracerlist_filename, 'r')
+#tracerlistlines = tracerlist.readlines()
+thing.read_tracers(tracerlist_filename)
+#N_tracer = len(tracerlistlines)
+N_tracer=len(thing.tracer_list)
 
 
 #Read zwindows
-zwindows = open(zwindows_filename, 'r')
-zwindowslines = zwindows.readlines()
-thing.read_zlist(zwindowslines)
-N_window = len(zwindowslines)
+#zwindows = open(zwindows_filename, 'r')
+#zwindowslines = zwindows.readlines()
+#thing.read_zlist(zwindowslines)
+thing.read_zlist(zwindows_filename)
+#N_window = len(zwindowslines)
+N_window = len(thing.zlist)
 
 N_sims = int(N_window / N_tracer)
 #dz = np.round(float(thing.get_dz()), 3)
@@ -58,7 +61,7 @@ print('{:10s} = {}'.format('k', pull_coord_k))
 
 #tracer_list = thing.get_Tracers()
 tracer_list = thing.tracer_list
-z_list = z0*np.ones(len(tracer_list))
+z_list = thing.zlist[0]*np.ones(len(tracer_list))
 #p = subprocess.Popen("cp {} sweep{}".format(zwindows_filename, options.sweep))
 #p.wait()
 
@@ -73,9 +76,13 @@ for i in range(N_sims):
     oldtpr = (oldfilename + '.tpr')
     grofile = (directoryname+'/'+oldfilename+'.gro')
     oldgrofile = (oldfilename + '.gro')
-    thing.write_pulling_mdp(directoryname + '/' + 'Stage2_Strong'+str(i)+'.mdp', tracer_list, z_list, grofile, pull_coord_rate = 0,
-            pull_coord_k = pull_coord_k)
-    thing.write_grompp_file(directoryname, filename, oldgrofile, mdpfile, indexfile, oldtpr=oldtpr, cptfile=cptfile, topfile = topfile) 
+    thing.write_pulling_mdp(pull_filename=(directoryname + '/' + 'Stage2_Strong'+str(i)+'.mdp'), 
+            tracerlist=tracer_list, z_window_list=z_list, 
+            grofile=grofile, pull_coord_rate=0,
+            pull_coord_k=pull_coord_k)
+    thing.write_grompp_file(directoryname=directoryname, filename=filename, 
+            grofile=oldgrofile, mdpfile=mdpfile, 
+            indexfile=indexfile, topfile=topfile) 
 
     z_list += dz
 

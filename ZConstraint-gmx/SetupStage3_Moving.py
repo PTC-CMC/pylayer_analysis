@@ -31,17 +31,19 @@ topfile = options.topfile
 indexfile = 'FullIndex.ndx'
 
 #Read tracers
-tracerlist = open(tracerlist_filename, 'r')
-tracerlistlines = tracerlist.readlines()
-thing.read_tracers(tracerlistlines)
-N_tracer = len(tracerlistlines)
+#tracerlist = open(tracerlist_filename, 'r')
+#tracerlistlines = tracerlist.readlines()
+thing.read_tracers(tracerlist_filename)
+#N_tracer = len(tracerlistlines)
+N_tracer = len(thing.tracer_list)
 
 
 #Read zwindows
-zwindows = open(zwindows_filename, 'r')
-zwindowslines = zwindows.readlines()
-thing.read_zlist(zwindowslines)
-N_window = len(zwindowslines)
+#zwindows = open(zwindows_filename, 'r')
+#zwindowslines = zwindows.readlines()
+thing.read_zlist(zwindow_filename)
+#N_window = len(zwindowslines)
+N_window = len(thing.zlist)
 
 N_sims = int(N_window / N_tracer)
 #dz = np.round(float(thing.get_dz()), 3)
@@ -81,9 +83,12 @@ for i in range(N_sims):
     oldtpr = (oldfilename + '.tpr')
     grofile = (directoryname+'/'+oldfilename+'.gro')
     oldgrofile = (oldfilename + '.gro')
-    thing.write_pulling_mdp(directoryname + '/' + 'Stage3_Moving'+str(i)+'.mdp', tracer_list, z_list, grofile,
-            moving_sim = True, pull_coord_k = pull_coord_k, stagethree = True)
-    thing.write_grompp_file(directoryname, filename, oldgrofile, mdpfile, indexfile, oldtpr=oldtpr, cptfile=cptfile, topfile=topfile) 
+    thing.write_pulling_mdp(pull_filename=(directoryname + '/' + 'Stage3_Moving'+str(i)+'.mdp'), 
+            tracerlist=tracer_list, z_window_list=z_list, 
+            grofile=grofile, moving_sim=True, pull_coord_k=pull_coord_k, 
+            stagethree=True)
+    thing.write_grompp_file(directoryname=directoryname, filename=filename, 
+            grofile=oldgrofile, mdpfile=mdpfile, indexfile=indexfile, topfile=topfile) 
 
     z_list += dz
 
