@@ -61,8 +61,6 @@ print('{:10s} = {}'.format('k', pull_coord_k))
 
 #tracer_list = thing.get_Tracers()
 tracer_list = thing.tracer_list
-import pdb
-pdb.set_trace()
 z_list = thing.zlist[0]*np.ones(len(tracer_list))
 #p = subprocess.Popen("cp {} sweep{}".format(zwindows_filename, options.sweep))
 #p.wait()
@@ -78,9 +76,13 @@ for i in range(N_sims):
     oldtpr = (oldfilename + '.tpr')
     grofile = (directoryname+'/'+oldfilename+'.gro')
     oldgrofile = (oldfilename + '.gro')
-    thing.write_pulling_mdp(directoryname + '/' + 'Stage2_Strong'+str(i)+'.mdp', tracer_list, z_list, grofile, pull_coord_rate = 0,
-            pull_coord_k = pull_coord_k)
-    thing.write_grompp_file(directoryname, filename, oldgrofile, mdpfile, indexfile, oldtpr=oldtpr, cptfile=cptfile, topfile = topfile) 
+    thing.write_pulling_mdp(pull_filename=(directoryname + '/' + 'Stage2_Strong'+str(i)+'.mdp'), 
+            tracerlist=tracer_list, z_window_list=z_list, 
+            grofile=grofile, pull_coord_rate=0,
+            pull_coord_k=pull_coord_k)
+    thing.write_grompp_file(directoryname=directoryname, filename=filename, 
+            grofile=oldgrofile, mdpfile=mdpfile, 
+            indexfile=indexfile, topfile=topfile) 
 
     z_list += dz
 

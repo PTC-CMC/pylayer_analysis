@@ -44,7 +44,7 @@ print('{:10s} = {}'.format('k', pull_coord_k))
 
 #For N_windows and N_tracers, need to set up N_windows/N_tracer simulations that pull 
 # each tracer to the same z_window at dz intervals
-thing = SystemSetup(z0=z0, dz=dz, N_window=N_window, N_tracer=N_tracer,auto_detect=options.auto, grofile=grofile)
+thing = SystemSetup(z0=z0, dz=dz, N_window=N_window, N_tracer=N_tracer,auto_detect=options.auto)
 thing.gather_tracer(grofile = grofile)
 #tracer_list = thing.get_Tracers()
 tracer_list = thing.tracer_list
@@ -59,11 +59,13 @@ for i in range(N_sims):
     print('Z_windows: {}'.format(z_list))
     directoryname = 'sweep{}/Sim{}'.format(str(options.sweep), str(i))
     os.system('mkdir -p {}'.format(directoryname)) 
-    thing.write_pulling_mdp(directoryname + '/' + 'Stage1_Weak'+str(i)+'.mdp', tracer_list, z_list, 
-                            grofile, pull_coord_rate=0, pull_coord_k=pull_coord_k)
+    thing.write_pulling_mdp(pull_filename=(directoryname + '/' + 'Stage1_Weak'+str(i)+'.mdp'), 
+            tracerlist=tracer_list, z_window_list=z_list, 
+            grofile=grofile, pull_coord_rate=0, pull_coord_k=pull_coord_k)
     mdpfile = str('Stage1_Weak' + str(i) + '.mdp')
     filename = str('Stage1_Weak' + str(i))
-    thing.write_grompp_file(directoryname, filename, grofile, mdpfile, indexfile, topfile = topfile)
+    thing.write_grompp_file(directoryname=directoryname, filename=filename, 
+            grofile=grofile, mdpfile=mdpfile, indexfile=indexfile, topfile=topfile)
 
     os.system('cat {} {} > {}'.format('index.ndx', str(directoryname) + '/' + str('Stage1_Weak' + str(i) + '.ndx'), 'FullIndex.ndx'))
     os.system('cp {} {}'.format(indexfile, directoryname))

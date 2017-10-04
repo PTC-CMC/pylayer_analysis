@@ -84,10 +84,13 @@ for i in range(N_sims):
     grofile = (directoryname + '/' + oldfilename+'.gro')
     oldgrofile = (oldfilename + '.gro')
     curr_dir_grofile = (oldfilename+'.gro')
-    thing.write_pulling_mdp(directoryname + '/' + 'Stage5_ZCon'+str(i)+'.mdp', tracer_list, z_list, grofile, pull_coord_rate =
-            pull_coord_rate, pull_coord_k = pull_coord_k, t_pulling = duration, stagefive = True)
+    thing.write_pulling_mdp(pull_filename=(directoryname + '/' + 'Stage5_ZCon'+str(i)+'.mdp'), 
+            tracerlist=tracer_list, z_window_list=z_list, grofile=grofile, 
+            pull_coord_rate=pull_coord_rate, pull_coord_k=pull_coord_k, 
+            t_pulling=duration, stagefive=True)
 
-    thing.write_grompp_file(directoryname, filename, oldgrofile, mdpfile, indexfile, oldtpr=oldtpr, cptfile=cptfile, topfile=topfile)
+    thing.write_grompp_file(directoryname=directoryname, filename=filename, 
+            grofile=oldgrofile, mdpfile=mdpfile, indexfile=indexfile, topfile=topfile)
 
     z_list += dz
 

@@ -31,10 +31,13 @@ class SystemSetup():
             Filename of z-windows if specified
         auto_detect : Boolean
             If true, automatically generate z windows based on bilayer CoM
+        grofile : string
+            Filename of gmx structure file
             """
         # If no z window file was provied
             
         self._N_tracer = N_tracer
+        self._grofile = grofile
         
         if auto_detect:
             print("Generating windows from center of mass")
@@ -204,7 +207,7 @@ class SystemSetup():
         #self._tracer_list = list()
         #for i, tracer in enumerate(tracer_list):
             #self._tracer_list.append(tracer.split()[0])
-        self._tracer_list = np.loadtxt(tracer_list)
+        self._tracer_list = np.loadtxt(tracer_list,dypte=int)
 
     def read_zlist(self, z_list):
         """
@@ -220,8 +223,10 @@ class SystemSetup():
         self._dz = np.absolute(float(self._zlist[0]) - float(self._zlist[1]))
         self._z0 = self._zlist[0]
 
-    def write_pulling_mdp(self, pull_filename, tracerlist, z_window_list, grofile, pull_coord_rate = 0,  
-            pull_coord_k = 1000, posres = None, t_pulling = None, stagefive = False, stagethree = False, 
+    def write_pulling_mdp(self, pull_filename=None, tracerlist=None, 
+            z_window_list=None, 
+            grofile=None, pull_coord_rate=0,pull_coord_k=1000,  
+            t_pulling=None, stagefive=False, stagethree = False, 
             moving_sim = False): 
         #Set up a pulling force on each tracer at very far windows
         #specify the group
@@ -279,8 +284,6 @@ class SystemSetup():
         pull_coord_vec = '0 0 1'
         pull_coord_start = 'no'
 
-        #print('Writing mdp and ndx files for {}, z_window = {} nm, pull_rate = {} nm/ps'.format(pull_group1_name, np.round(z_window, 2),
-        #        pull_coord1_rate))
 
         #Get the reference coordinates based on tracer coordinate and r_tracer_ref
         r_tracer_ref = 0.1 #(nm)Distance between tracer and reference
@@ -306,20 +309,6 @@ class SystemSetup():
             for i, tracer in enumerate(tracerlist):
                 pull_coord_rate_list[i] = self.calc_pulling_rate(grofile, tracer, z_window_list[i], t_pulling)
 
-        #if not t_pulling:
-        #    if pull_coord_rate == 0:
-        #        t_pulling = 1e3
-        #    else:
-        #        #In stage 2, we have a moving reference, need to determine the length of time necessary
-        #        #for the reference to hit the z-window
-        #        #This is based on the initial coordinates of the tracer, 
-        #        #desired z-window, and pull_coord_rate. Will also need the grofile to find coordinates
-        #        t_pulling_list = np.ones(len(tracerlist))
-        #        for i, tracer in enumerate(tracerlist):
-        #            t_pulling_list[i] = self.calc_t_pulling(grofile, tracer, z_window_list[i], pull_coord_rate)
-        #        t_pulling = max(t_pulling_list)
-        #else:
-        #    t_pulling = t_pulling
 
         #The following below are MD parameters, less likely to need to change
         #MDP parameters to control
@@ -392,8 +381,6 @@ class SystemSetup():
         #Actually writing the mdp file
         mdpfile = open(pull_filename,'w')
         mdpfile.write('; Run MDP parameters\n')
-        if posres:
-            mdpfile.write('{:25s} = {}\n'.format('define', ('-D'+posres)))
 
         mdpfile.write('{:25s} = {}\n'.format('integrator',integrator))
         mdpfile.write('{:25s} = {}\n'.format('dt', str(dt)))
@@ -440,26 +427,25 @@ class SystemSetup():
         mdpfile.write('{:25s} = {}\n'.format('gen_vel', str(gen_vel)))
         mdpfile.write('{:25s} = {}\n'.format('pbc', str(pbc)))
         mdpfile.write('{:25s} = {}\n'.format('DispCorr', str(DispCorr)))
-        if not posres:
-            mdpfile.write('\n; Pull parameters\n')
-            mdpfile.write('{:25s} = {}\n'.format('pull', str(pull)))
-            mdpfile.write('{:25s} = {}\n'.format('pull-nstxout', str(pull_nstxout)))
-            mdpfile.write('{:25s} = {}\n'.format('pull-nstfout', str(pull_nstfout)))
-            mdpfile.write('{:25s} = {}\n'.format('pull-ngroups', str(pull_ngroups)))
-            mdpfile.write('{:25s} = {}\n'.format('pull-ncoords', str(pull_ncoords)))
-            for i in range(len(tracerlist)):
-                mdpfile.write('{:25s} = {}\n'.format('pull-group'+str(i+1)+'-name', pull_group_names[i]))        
-                #mdpfile.write('{:25s} = {}\n'.format('pull_coord'+str(i+1)+'_name', pull_coord_type))
-                mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-groups', pull_coord_groups[i]))
-                mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-type', pull_coord_type))
-                mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-geometry', pull_coord_geometry))
-                mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-vec', pull_coord_vec))
-                mdpfile.write('{:25s} = {:<8.3f} {:<8.3f} {:<8.3f}\n'.format('pull-coord'+str(i+1)+'-origin', 
-                    pull_coord_origins[i][0], pull_coord_origins[i][1], pull_coord_origins[i][2]))
-                mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-dim', pull_coord_dim))
-                mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-rate', pull_coord_rate_list[i]))
-                mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-k', pull_coord_k))
-                mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-start', pull_coord_start))
+        mdpfile.write('\n; Pull parameters\n')
+        mdpfile.write('{:25s} = {}\n'.format('pull', str(pull)))
+        mdpfile.write('{:25s} = {}\n'.format('pull-nstxout', str(pull_nstxout)))
+        mdpfile.write('{:25s} = {}\n'.format('pull-nstfout', str(pull_nstfout)))
+        mdpfile.write('{:25s} = {}\n'.format('pull-ngroups', str(pull_ngroups)))
+        mdpfile.write('{:25s} = {}\n'.format('pull-ncoords', str(pull_ncoords)))
+        for i in range(len(tracerlist)):
+            mdpfile.write('{:25s} = {}\n'.format('pull-group'+str(i+1)+'-name', pull_group_names[i]))        
+            #mdpfile.write('{:25s} = {}\n'.format('pull_coord'+str(i+1)+'_name', pull_coord_type))
+            mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-groups', pull_coord_groups[i]))
+            mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-type', pull_coord_type))
+            mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-geometry', pull_coord_geometry))
+            mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-vec', pull_coord_vec))
+            mdpfile.write('{:25s} = {:<8.3f} {:<8.3f} {:<8.3f}\n'.format('pull-coord'+str(i+1)+'-origin', 
+                pull_coord_origins[i][0], pull_coord_origins[i][1], pull_coord_origins[i][2]))
+            mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-dim', pull_coord_dim))
+            mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-rate', pull_coord_rate_list[i]))
+            mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-k', pull_coord_k))
+            mdpfile.write('{:25s} = {}\n'.format('pull-coord'+str(i+1)+'-start', pull_coord_start))
         mdpfile.close()
 
     def calc_t_pulling(self, grofile, tracer, z_window, pull_coord_rate):
@@ -539,15 +525,68 @@ class SystemSetup():
     
  
   
-    def write_grompp_file(self, directoryname, filename, grofile, mdpfile, indexfile, topfile = None, oldtpr = None, cptfile = None, posres
-            = None): 
+    def write_grompp_file(self, directoryname=None, filename=None, 
+            grofile=None, mdpfile=None, indexfile=None, topfile=None): 
         gromppfilename = '{}/Grompp_{}.sh'.format(directoryname, filename)
         outfile = open(gromppfilename, 'w')
         outfile.write('gmx grompp -f {} -c {} -p {} -n {} -o {} -maxwarn 2 > grompp_{}.log 2>&1'.format((mdpfile), (grofile),
           topfile, (indexfile), (filename+'.tpr'), filename))
 
-
         outfile.close()
 
-   
+    def update_resnames(self,ingro="", outgro="Stage0.gro", outtop="Stage0.top"):
+        """ Create new grofile with updated resnames for tracers
 
+        Parameters
+        ---------
+        ingro : str
+            Input gromacs file
+        outgro: str
+            Filename for new gro file with updated residues
+        outtop : str
+            FIlename for new top file with updated residues
+
+        """
+          
+        traj = mdtraj.load(ingro)
+        topol = traj.topology
+        residues = [b for b in topol.residues]
+        atoms = [a for a in topol.atoms]
+        # MDTraj renames OW and HW from spc water as O and H, need to put it back
+        for atom in atoms:
+            if 'HOH' in atom.residue.name or 'SOL' in atom.residue.name:
+                atom.name=atom.name[:1]+"W"+atom.name[1:]
+        # Rename tracer residues to distinguish position restratining
+        for res in residues:
+            if 'HOH' in res.name:
+                res.name="SOL"
+            if res.resSeq in self.tracer_list:
+                res.name="TRC"
+        traj.save(outgro)
+        with open(outtop,'w') as f:
+            f.write("""#include "/raid6/homes/ahy3nz/Programs/setup/FF/gromos53a6/ff.itp"  
+; Include SPC water topology  
+#include "gromos53a6.ff/spc.itp"  
+#include "/raid6/homes/ahy3nz/Programs/setup/FF/gromos53a6/trc.itp"
+
+[ system ]
+All-atom bilayer system
+
+[ molecules ] 
+""")
+
+            counter = 0
+            previous_resname = None
+            for res in residues:
+                # If the new residue name matches old residue, increment tally
+                if res.name == previous_resname:
+                    counter +=1
+                # If not, then we have to print it to the top file
+                # But if it's blank then ignore it
+                elif not previous_resname:
+                    counter = 1
+                else: 
+                    f.write("{} \t {}\n".format(previous_resname, counter))
+                    counter = 1
+                previous_resname = res.name
+            f.write("{} \t {}\n".format(previous_resname, counter))

@@ -54,7 +54,7 @@ for i in range(N_sims):
     print("Grompping Stage{0}{1}".format(extension,i))
     p.wait()
     #os.system("bash Grompp_Stage{}{}.sh".format(extension,i))
-    if os.path.isfile((current_dir + "/sweep" + options.sweep + "/Sim" + str(i) + "/Stage" + extension + str(i) + ".tpr")):
+    if os.path.isfile((current_dir + "/sweep" + str(options.sweep) + "/Sim" + str(i) + "/Stage" + extension + str(i) + ".tpr")):
         pass
     else:
         print('Sim{} failed'.format(i))
