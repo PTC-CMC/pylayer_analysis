@@ -68,7 +68,7 @@ with open("{}_permeability.pbs".format(simulation),'w') as f:
     f.write("echo `cat $PBS_NODEFILE`\n")
     f.write("\n")
     f.write("module load gromacs/5.1.0\n")
-    f.write("cd \n".format(curr_dir))
+    f.write("cd {}\n".format(curr_dir))
     f.write("for i in {{0..{}}}\n".format(options.n_sweeps-1))
     f.write("do\n")
     # Now the repetitive setting up, grompping, mdrunning for stages 1-5
