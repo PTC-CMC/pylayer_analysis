@@ -41,7 +41,7 @@ N_tracer = len(thing.tracer_list)
 #Read zwindows
 #zwindows = open(zwindows_filename, 'r')
 #zwindowslines = zwindows.readlines()
-thing.read_zlist(zwindow_filename)
+thing.read_zlist(zwindows_filename)
 #N_window = len(zwindowslines)
 N_window = len(thing.zlist)
 
