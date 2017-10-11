@@ -207,7 +207,7 @@ class SystemSetup():
         #self._tracer_list = list()
         #for i, tracer in enumerate(tracer_list):
             #self._tracer_list.append(tracer.split()[0])
-        self._tracer_list = np.loadtxt(tracer_list,dypte=int)
+        self._tracer_list = np.loadtxt(tracer_list,dtype=int)
 
     def read_zlist(self, z_list):
         """
