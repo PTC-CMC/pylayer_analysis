@@ -27,7 +27,7 @@ read_data {structure_file}
 include LammpsOostenbrink.txt
     """.format(**locals()))
 
-def _write_rest(f, tracer_information):
+def _write_rest(f, tracer_information, record_force=True):
     ###########
     f.write("""
 group water type 57 58
@@ -73,9 +73,12 @@ dump_modify d1 append yes
     ############
     for i, tracer_triplet in enumerate(tracer_information):
         f.write("group t{0} molecule {1}\n".format(i, tracer_triplet[0]))
-        f.write("compute tracerfz{0} t{0} reduce sum fz\n".format(i))
-        f.write("variable redforce{0} equal c_tracerfz{0}\n".format(i))
-        f.write("fix pt{0} all print 3 \"${{step}} ${{redforce{0}}}\" append forceout{1} screen no\n".format(i, tracer_triplet[2]))
+
+        if record_force:
+            f.write("compute tracerfz{0} t{0} reduce sum fz\n".format(i))
+            f.write("variable redforce{0} equal c_tracerfz{0}\n".format(i))
+            f.write("fix pt{0} all print 3 \"${{step}} ${{redforce{0}}}\" append forceout{1} screen no\n".format(i, tracer_triplet[2]))
+
         f.write("fix 6{0} t{0} recenter NULL NULL {1} shift t{0}\n".format(i, tracer_triplet[1]))
         f.write("fix 7{0} t{0} momentum 1 linear 0 0 1\n".format(i))
         f.write("\n")
