@@ -13,6 +13,6 @@ for sweep in sweep_folders:
     sim_folders = [g for g in os.listdir() if os.path.isdir(g) and 'Sim' in g]
     for sim in sim_folders:
         os.chdir(os.path.join(working_dir, sweep, sim))
-        p = subprocess.Popen('sbatch Stage5_ZCon_lmps.sbatch', shell=True,
+        p = subprocess.Popen('sbatch Stage5_ZCon{}_lmps.sbatch'.format(sim[-1]), shell=True,
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 

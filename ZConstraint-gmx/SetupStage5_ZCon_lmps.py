@@ -5,8 +5,8 @@ import numpy as np
 import mdtraj
 import argparse
 
-def _write_submit_script(path):
-    with open('Stage5_ZCon_lmps.sbatch', 'w') as f:
+def _write_submit_script(sweep="", sim_number=0):
+    with open('Stage5_ZCon{}_lmps.sbatch'.format(sim_number), 'w') as f:
         f.write("""#!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --account=chbe285_gpu
@@ -17,10 +17,10 @@ def _write_submit_script(path):
 #SBATCH --output=my.stdout
 #SBATCH --mail-user=alexander.h.yang@vanderbilt.edu
 #SBATCH --mail-type=ALL
-#SBATCH --job-name=lmps/{}
-""".format('/'.join(path.split("/")[-2:])))
+#SBATCH --job-name={}/sim{}
+""".format('/'.join(sweep.split("/")[-1:]), sim_number))
         f.write('setpkgs -a lammps_openmpi\n')
-        f.write("srun -n 2 lmp -in Stage5_ZCon.input >& lmp_out.log\n")
+        f.write("srun -n 2 lmp -in Stage5_ZCon{}.input >& lmp_out.log\n".format(sim_number)
 
 
 def _write_input_header(f, temp=305.0, Nrun=380000, Nprint=1000, 
@@ -159,10 +159,9 @@ def _prepare_lmps(eq_structure=None, z_windows_file=None, tracerfile=None,
 
 
     # For now, let's only write a zconstraining file out
-    with open('Stage5_ZCon.input','w') as f:
+    with open('Stage5_ZCon{}.input'.format(sim_number),'w') as f:
         _write_input_header(f, structure_file=eq_structure[:-4]+'.lammpsdata')
         _write_rest(f, tracer_information)
-
 
 working_dir = os.getcwd()
 sweep_folders = [f for f in os.listdir() if os.path.isdir(f) and 'sweep' in f]
@@ -178,6 +177,9 @@ for sweep in sweep_folders:
             print("Converting in {}".format(os.getcwd()))
             _prepare_lmps(eq_structure=eq_structure, z_windows_file=z_windows_file, 
                     tracerfile=tracerfile, sim_number=int(sim[-1]))
-            _write_submit_script(os.getcwd())
+            p = subprocess.Popen('cp {}/LammpsOostenbrink.txt .'.format(working_dir),
+                    shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p.wait()
+            _write_submit_script(sweep=sweep, sim_number=int(sim[-1]))
         except IndexError:
             print("Stage4.gro not found, simulation may have crashed in {}".format(os.getcwd()))
