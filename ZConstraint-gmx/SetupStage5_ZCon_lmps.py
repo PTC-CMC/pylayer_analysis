@@ -5,6 +5,24 @@ import numpy as np
 import mdtraj
 import argparse
 
+def _write_submit_script(path):
+    with open('Stage5_ZCon_lmps.sbatch', 'w') as f:
+        f.write("""#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --account=chbe285_gpu
+#SBATCH --ntasks-per-node=2
+#SBATCH --partition=pascal
+#SBATCH --gres=gpu:1
+#SBATCH --time=0-96:00:00     # 2 minutes
+#SBATCH --output=my.stdout
+#SBATCH --mail-user=alexander.h.yang@vanderbilt.edu
+#SBATCH --mail-type=ALL
+#SBATCH --job-name=lmps/{}
+""".format('/'.join(path.split("/")[-2:])))
+        f.write('setpkgs -a lammps_openmpi\n')
+        f.write("srun -n 2 lmp -in Stage5_ZCon.input >& lmp_out.log\n")
+
+
 def _write_input_header(f, temp=305.0, Nrun=380000, Nprint=1000, 
         structure_file='Stage4_Eq0.lammpsdata'):
     f.write("""clear
@@ -160,5 +178,6 @@ for sweep in sweep_folders:
             print("Converting in {}".format(os.getcwd()))
             _prepare_lmps(eq_structure=eq_structure, z_windows_file=z_windows_file, 
                     tracerfile=tracerfile, sim_number=int(sim[-1]))
+            _write_submit_script(os.getcwd())
         except IndexError:
             print("Stage4.gro not found, simulation may have crashed in {}".format(os.getcwd()))
