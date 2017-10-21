@@ -1,7 +1,9 @@
-#import gro_to_lmps
+import gro_to_lmps
 import pdb
+import os
 import numpy as np
 import mdtraj
+import argparse
 
 def _write_input_header(f, temp=305.0, Nrun=380000, Nprint=1000, 
         structure_file='Stage4_Eq0.lammpsdata'):
@@ -88,7 +90,7 @@ dump_modify d1 append yes
     f.write("""
 run ${Nrun}
 
-write_restart ${restartfile}
+write_restart restartfile
 """)
     #########
         
@@ -100,41 +102,63 @@ write_restart ${restartfile}
     
 
 
+def _prepare_lmps(eq_structure=None, z_windows_file=None, tracerfile=None,
+        sim_number=0):
+    """ Convert structure to lammps and generate input file"""
+    #parser = argparse.ArgumentParser()
+    #parser.add_argument('-c', dest='eq_structure',action='store')
+    #parser.add_argument('-z', dest='z_windows_file', action='store')
+    #parser.add_argument('-t', dest='tracerfile', action='store')
+    #parser.add_argument('-s', dest='sim_number', action='store', type=int)
+    #args = parser.parse_args()
+
+    # First, convert a structure
+    #eq_structure = 'Stage4_Eq0.gro'
+    #z_windows_file = 'z_windows.out'
+    #tracerfile = 'tracers.out'
+    #sim_number=0
+
+    traj = mdtraj.load(eq_structure)
+    gro_to_lmps.convert(eq_structure)
+
+    # Load in the gmx z windows, scale/shift appropriately
+    z_windows = np.loadtxt(z_windows_file)
+    z_windows = [np.round(10*(z - traj.unitcell_lengths[0][2]/2),2) for z in z_windows]
+    np.savetxt('z_windows_lmps.out', z_windows)
+    n_windows = np.shape(z_windows)[0]
+    dz = abs(z_windows[0]-z_windows[1])
+
+    # Load in the tracer information
+    tracer_list = np.loadtxt(tracerfile, dtype=int)
+    n_tracers = np.shape(tracer_list)[0]
+    z_interval = dz * n_windows/n_tracers
 
 
-# First, convert a structure
-eq_structure = 'Stage4_Eq0.gro'
-z_windows_file = 'z_windows.out'
-tracerfile = 'tracers.out'
-sim_number=0
-
-traj = mdtraj.load(eq_structure)
-
-# Load in the gmx z windows, scale/shift appropriately
-z_windows = np.loadtxt(z_windows_file)
-z_windows = [np.round(10*(z - traj.unitcell_lengths[0][2]/2),2) for z in z_windows]
-n_windows = np.shape(z_windows)[0]
-dz = abs(z_windows[0]-z_windows[1])
-
-# Load in the tracer information
-tracer_list = np.loadtxt(tracerfile, dtype=int)
-n_tracers = np.shape(tracer_list)[0]
-z_interval = dz * n_windows/n_tracers
+    # Assign tracers to locations and force output indices
+    tracer_information = [[tracer_id, z_windows[sim_number + int(i*n_windows/n_tracers)],
+        sim_number + int(i*n_windows/n_tracers)] 
+            for i, tracer_id in enumerate(tracer_list)]
 
 
-# Assign tracers to locations
-tracer_information = [[tracer_id, z_windows[sim_number + int(i*n_windows/n_tracers)],
-    sim_number + int(i*n_windows/n_tracers)] 
-        for i, tracer_id in enumerate(tracer_list)]
-
-# Write the appropriate lammps input files for equilibration and zconstraining
-# Explicitly specify the zwindows and the tracers
-
-# For now, let's only write a zconstraining file out
-with open('Stage5_ZCon.input','w') as f:
-    _write_input_header(f)
-    _write_rest(f, tracer_information)
-    #_write_groups(f,trac
+    # For now, let's only write a zconstraining file out
+    with open('Stage5_ZCon.input','w') as f:
+        _write_input_header(f, structure_file=eq_structure[:-4]+'.lammpsdata')
+        _write_rest(f, tracer_information)
 
 
-
+working_dir = os.getcwd()
+sweep_folders = [f for f in os.listdir() if os.path.isdir(f) and 'sweep' in f]
+for sweep in sweep_folders:
+    os.chdir(os.path.join(working_dir, sweep))
+    z_windows_file = os.path.join(working_dir, sweep, 'z_windows.out')
+    tracerfile = os.path.join(working_dir, sweep, 'tracers.out')
+    sim_folders = [g for g in os.listdir() if os.path.isdir(g) and 'Sim' in g]
+    for sim in sim_folders:
+        os.chdir(os.path.join(working_dir, sweep, sim))
+        try:
+            eq_structure = [h for h in os.listdir() if os.path.isfile(h) and 'Stage4' in h and '.gro' in h][0]
+            print("Converting in {}".format(os.getcwd()))
+            _prepare_lmps(eq_structure=eq_structure, z_windows_file=z_windows_file, 
+                    tracerfile=tracerfile, sim_number=int(sim[-1]))
+        except IndexError:
+            print("Stage4.gro not found, simulation may have crashed in {}".format(os.getcwd()))
