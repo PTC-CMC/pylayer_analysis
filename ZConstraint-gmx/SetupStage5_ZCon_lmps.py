@@ -19,8 +19,9 @@ def _write_submit_script(sweep="", sim_number=0):
 #SBATCH --mail-type=ALL
 #SBATCH --job-name={}/sim{}
 """.format('/'.join(sweep.split("/")[-1:]), sim_number))
-        f.write('setpkgs -a lammps_openmpi\n')
-        f.write("srun -n 2 lmp -in Stage5_ZCon{}.input >& lmp_out.log\n".format(sim_number)
+        f.write('module restore lammps\n')
+        f.write('setpkgs -a fftw3_gcc\n')
+        f.write("srun -n 2 lmp_accre -in Stage5_ZCon{}.input >& lmp_out.log\n".format(sim_number)
 
 
 def _write_input_header(f, temp=305.0, Nrun=380000, Nprint=1000, 
@@ -81,7 +82,7 @@ fix 12 bilayer nvt temp ${temperature} ${temperature} 100.0
 fix 5 bilayer momentum 1 linear 1 1 1
 thermo ${Nprint}
 dump d2 all custom 40000 trajectory.lammps id type xu yu zu
-dump_modify d2 format "%d %d %.3f %.3f %.3f" append yes 
+dump_modify d2 format line "%d %d %.3f %.3f %.3f" append yes 
 
 dump d1 tracers custom 1000 tracerpos.xyz id mass x y z vx vy vz fx fy fz
 dump_modify d1 append yes
