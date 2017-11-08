@@ -12,7 +12,7 @@ parser.add_option('--gro', action = 'store', type = 'string', dest = 'grofile')
 parser.add_option('--Nwin', action='store', type='int', dest='N_window', default=40)
 parser.add_option('--Ntracer', action='store', type='int', dest='N_tracer', default=8)
 parser.add_option('--auto', action='store_true', dest='auto', default=False)
-parser.add_option('--nocenter', action='store_true', dest='center', default=False)
+parser.add_option('--nocenter', action='store_true', dest='nocenter', default=False)
 (options, args) = parser.parse_args()
 
 
@@ -22,9 +22,9 @@ composition = curr_dir.split('/')[-2]
 N_sims = int(options.N_window/options.N_tracer)
 initial_configuration = 'md_{}.gro'.format(simulation)
 # Center gro file
-if not nocenter:
-    traj = mdtraj.load(grofile)
-    perma_traj = mdtraj.load(grofile)
+if not options.nocenter:
+    traj = mdtraj.load(options.grofile)
+    perma_traj = mdtraj.load(options.grofile)
     non_water = traj.topology.select('not water')
     sub_traj = traj.atom_slice(non_water)
     # Get center of mass of the bilayer 
