@@ -93,7 +93,7 @@ with open("{}_permeability.pbs".format(simulation),'w') as f:
         for simnumber in range(N_sims):
             #f.write("\t gmx mdrun -ntomp 8 -gpu_id 0 -deffnm ~/Trajectories/Data/{0}/{1}/sweep$i/Sim{2}/{3}{2} > ~/Trajectories/Data/{0}/{1}/sweep$i/{3}{2}.out 2>&1\n".format(composition, simulation, simnumber, prefix))
             f.write("\t gmx mdrun -deffnm {0}/sweep$i/Sim{1}/{2}{1} > {0}/sweep$i/{2}{1}.out 2>&1\n".format(curr_dir,simnumber, prefix))
-            f.write("rm \"#index\"* \n")
+            f.write("\t rm \"#index\"* \n")
 
         f.write("\t \n")
     f.write("done\n")
