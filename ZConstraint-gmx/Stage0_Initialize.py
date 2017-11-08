@@ -80,7 +80,7 @@ with open("{}_permeability.pbs".format(simulation),'w') as f:
 
         # Write the setup lines
         if stagenumber == 1:
-            f.write("\t python Setup{0}.py --gro {7}.gro --top {1}.top --sweep $i --dz {2} --z0 {3} --Nwin {4} --Ntracer {5} {6}\n".format(prefix, simulation, 
+            f.write("\t python Setup{0}.py --gro {7} --top {1}.top --sweep $i --dz {2} --z0 {3} --Nwin {4} --Ntracer {5} {6}\n".format(prefix, simulation, 
                 options.dz, options.z0, options.N_window, options.N_tracer, 
                 auto_flag, initial_configuration))
         else:
