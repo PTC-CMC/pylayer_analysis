@@ -183,19 +183,30 @@ class SystemSetup():
         #tracer_max = 128 * 21
         #self._tracer_list = random.sample(range(tracer_min, tracer_max), self._N_tracer)
         #self.write_tracerlist(self._tracer_list)
-        tracer_min = 128 * 1
-        tracer_max = 128 * 21
-        tracer_list = list()
-        for i in range(self._N_tracer):
-            z = 8
-            # Make sure we have a tracer whose z coordinate is on the bottom leaflet
-            while (z > 3):
-                tracerid = random.sample(range(tracer_min, tracer_max), 1)
-                (x,y,z) = self.get_tracer_coordinates(grofile,tracerid[0])
+        #tracer_min = 128 * 1
+        #tracer_max = 128 * 21
+        #tracer_list = list()
+        #for i in range(self._N_tracer):
+        #    z = 8
+        #    # Make sure we have a tracer whose z coordinate is on the bottom leaflet
+        #    while (z > 3):
+        #        tracerid = random.sample(range(tracer_min, tracer_max), 1)
+        #        (x,y,z) = self.get_tracer_coordinates(grofile,tracerid[0])
 
-            tracer_list.append(tracerid[0])
-        self._tracer_list = tracer_list
+        #    tracer_list.append(tracerid[0])
+        #self._tracer_list = tracer_list
+        #self.write_tracerlist(tracer_list)
+        traj = mdtraj.load(grofile)
+        waters = traj.topology.select('water and name O')
+        atoms = [a for a in traj.topology.atoms]
+        top_waters = [i for i in waters if traj.xyz[0,i,2] <= 
+                traj.unitcell_lengths[0,2]/2]
+        tracer_list = np.random.choice(top_waters, self._N_tracer, replace=False)
+        tracer_list = [atoms[t].residue.index+1 for t in tracer_list]
+
+        self._tracerlist = tracer_list
         self.write_tracerlist(tracer_list)
+        
 
     def read_tracers(self, tracer_list):
         """
