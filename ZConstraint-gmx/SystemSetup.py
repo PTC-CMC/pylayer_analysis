@@ -204,7 +204,7 @@ class SystemSetup():
         tracer_list = np.random.choice(top_waters, self._N_tracer, replace=False)
         tracer_list = [atoms[t].residue.index+1 for t in tracer_list]
 
-        self._tracerlist = tracer_list
+        self._tracer_list = tracer_list
         self.write_tracerlist(tracer_list)
         
 
