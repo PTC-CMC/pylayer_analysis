@@ -5,6 +5,7 @@ import pdb
 import random
 import sys
 
+GMX_CMD="gmx_mpi"
 '''
 Pulling setup system class 
 Contains methods to write out mdp files for stage 2 and 3 pulling simulations
@@ -38,6 +39,8 @@ class SystemSetup():
             
         self._N_tracer = N_tracer
         self._grofile = grofile
+        if grofile:
+            os.system('echo q | {} make_ndx -f {}'.format(GMX_CMD, grofile))
         
         if auto_detect:
             print("Generating windows from center of mass")
@@ -540,7 +543,7 @@ class SystemSetup():
             grofile=None, mdpfile=None, indexfile=None, topfile=None): 
         gromppfilename = '{}/Grompp_{}.sh'.format(directoryname, filename)
         outfile = open(gromppfilename, 'w')
-        outfile.write('gmx grompp -f {} -c {} -p {} -n {} -o {} -maxwarn 2 > grompp_{}.log 2>&1'.format((mdpfile), (grofile),
+        outfile.write('{} grompp -f {} -c {} -p {} -n {} -o {} -maxwarn 2 > grompp_{}.log 2>&1'.format(GMX_CMD,(mdpfile), (grofile),
           topfile, (indexfile), (filename+'.tpr'), filename))
 
         outfile.close()

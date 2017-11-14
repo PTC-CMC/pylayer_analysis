@@ -31,7 +31,7 @@ topfile = options.topfile
 pull_coord_k = options.pull_coord_k
 N_sims = int(N_window/N_tracer)
 indexfile = 'FullIndex.ndx'
-os.system('echo q | gmx make_ndx -f {}'.format(grofile))
+#os.system('echo q | gmx make_ndx -f {}'.format(grofile))
 
 print('Setup Stage 1 Weak: Pulling with weak, fixed reference')
 print('{:10s} = {}'.format('dz', dz))

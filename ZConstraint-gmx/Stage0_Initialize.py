@@ -4,6 +4,7 @@
 from optparse import OptionParser
 import mdtraj
 import os
+MDRUN_CMD = "gmx_mpi mdrun"
 parser = OptionParser()
 parser.add_option('-n', action='store', type='int', dest='n_sweeps', default='1')
 parser.add_option('--dz', action='store', type='float', dest='dz', default=0.2)
@@ -20,7 +21,8 @@ curr_dir = os.getcwd()
 simulation = curr_dir.split('/')[-1]
 composition = curr_dir.split('/')[-2]
 N_sims = int(options.N_window/options.N_tracer)
-initial_configuration = 'md_{}.gro'.format(simulation)
+#initial_configuration = 'md_{}.gro'.format(simulation)
+initial_configuration = options.grofile 
 # Center gro file
 if not options.nocenter:
     traj = mdtraj.load(options.grofile)
@@ -91,8 +93,7 @@ with open("{}_permeability.pbs".format(simulation),'w') as f:
 
         # Write all the mdrun lines
         for simnumber in range(N_sims):
-            #f.write("\t gmx mdrun -ntomp 8 -gpu_id 0 -deffnm ~/Trajectories/Data/{0}/{1}/sweep$i/Sim{2}/{3}{2} > ~/Trajectories/Data/{0}/{1}/sweep$i/{3}{2}.out 2>&1\n".format(composition, simulation, simnumber, prefix))
-            f.write("\t gmx mdrun -deffnm {0}/sweep$i/Sim{1}/{2}{1} > {0}/sweep$i/{2}{1}.out 2>&1\n".format(curr_dir,simnumber, prefix))
+            f.write("\t {} -deffnm {0}/sweep$i/Sim{1}/{2}{1} > {0}/sweep$i/{2}{1}.out 2>&1\n".format(MDRUN_CMD, curr_dir,simnumber, prefix))
             f.write("\t rm \"#index\"* \n")
 
         f.write("\t \n")
