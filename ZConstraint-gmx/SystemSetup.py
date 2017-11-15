@@ -529,6 +529,7 @@ class SystemSetup():
             outfile.write('[ {} ]\n'.format(groupname))
             outfile.write('{:10.0f}\t{:10.0f}\t{:10.0f}\n'.format(
                 float(tracer_atoms[i][0]+1), float(tracer_atoms[i][1]+1), float(tracer_atoms[i][2]+1)))
+        outfile.close()
 
     def write_tracerlist(self, tracer_list, tracerlog = 'tracers.out'):
         outfile = open(tracerlog, 'w')
