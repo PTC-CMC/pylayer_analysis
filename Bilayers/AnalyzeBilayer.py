@@ -45,26 +45,29 @@ n_tails_per_lipid = n_lipid_tails/n_lipid
 # Vectorized Calculations start here
 print('Calculating area per lipid...')
 apl_avg, apl_std, apl_list = bilayer_analysis_functions.calc_APL(traj,n_lipid, blocked=options.blocked)
+np.savetxt('apl.dat', apl_list)
 print('Calculating tilt angles...')
 angle_avg, angle_std, angle_list = bilayer_analysis_functions.calc_tilt_angle(traj, topol, lipid_tails, blocked=options.blocked)
+np.savetxt('angle.dat', angle_list)
 print('Calculating area per tail...')
 apt_avg, apt_std, apt_list = bilayer_analysis_functions.calc_APT(traj, apl_list, angle_list, n_tails_per_lipid, 
         blocked=options.blocked)
+np.savetxt('apt.dat', apt_list)
 print('Calculating nematic order...')
 s2_ave, s2_std, s2_list = bilayer_analysis_functions.calc_nematic_order(traj, lipid_dict, blocked=options.blocked)
+np.savetxt('s2.dat' s2_list)
 print('Calculating headgroup distances...')
 headgroup_distance_dict = bilayer_analysis_functions.compute_headgroup_distances(traj, topol, headgroup_dict, blocked=options.blocked)
 print('Calculating bilayer height...')
 Hpp_ave, Hpp_std, Hpp_list = bilayer_analysis_functions.calc_bilayer_height(traj, headgroup_distance_dict, blocked=options.blocked)
+np.savetxt('height.dat', Hpp_list)
 print('Calculating component offsets...')
 offset_dict = bilayer_analysis_functions.calc_offsets(traj, headgroup_distance_dict, blocked=options.blocked)
 print('Calculating density profile...')
-density_profile, density_profile_avg, density_profile_top, density_profile_bot, bins = \
+d_a, d_t, d_b, bins, interdig_list,interdig_avg, interdig_std = \
     bilayer_analysis_functions.calc_density_profile(traj, topol, lipid_dict)
-print('Calculating interdigitation...')
-interdig_avg, interdig_std, interdig_list = bilayer_analysis_functions.calc_interdigitation(traj, density_profile_top, density_profile_bot, bins, blocked=options.blocked)
-print('Calculating hydrogen bonds...')
-hbond_matrix_avg, hbond_matrix_std, hbond_matrix_list, labelmap = bilayer_analysis_functions.calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict)
+#print('Calculating hydrogen bonds...')
+#hbond_matrix_avg, hbond_matrix_std, hbond_matrix_list, labelmap = bilayer_analysis_functions.calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict)
 
 # Printing properties
 print('Outputting to <{}>...'.format(outfilename))
@@ -91,13 +94,13 @@ outfile.write('{:<20s}: {} ({})\n'.format(
     'Leaflet 2 Tilt Angle', np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])]), 
     np.std(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])])))
 outfile.write('{:<20s}:\n'.format("Hbonding (D-A)"))
-for row_label in labelmap.keys():
-    for col_label in labelmap.keys():
-        row_index = labelmap[row_label]
-        col_index = labelmap[col_label]
-        hbond_avg = hbond_matrix_avg[row_index, col_index]
-        hbond_std = hbond_matrix_std[row_index, col_index]
-        outfile.write('{:<20s}: {} ({})\n'.format(str(row_label+"-"+ col_label), hbond_avg, hbond_std))
+#for row_label in labelmap.keys():
+#    for col_label in labelmap.keys():
+#        row_index = labelmap[row_label]
+#        col_index = labelmap[col_label]
+#        hbond_avg = hbond_matrix_avg[row_index, col_index]
+#        hbond_std = hbond_matrix_std[row_index, col_index]
+#        outfile.write('{:<20s}: {} ({})\n'.format(str(row_label+"-"+ col_label), hbond_avg, hbond_std))
 
 
 # Plotting
@@ -131,8 +134,9 @@ plt.tight_layout()
 outpdf.savefig(fig1)
 plt.close()
 
-density_profile_top_avg = np.mean(density_profile_top, axis = 0)
-density_profile_bot_avg = np.mean(density_profile_bot, axis = 0)
+density_profile_top_avg = np.mean(d_t, axis = 0)
+density_profile_bot_avg = np.mean(d_b, axis = 0)
+density_profile_average  = np.mean(d_a, axis=0)
 
 
 fig2 = plt.figure(2)

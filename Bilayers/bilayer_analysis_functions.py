@@ -780,99 +780,87 @@ def calc_nematic_order(traj, lipid_dict, blocked=False):
         s2_std = np.std(s2_list)
     return s2_ave, s2_std, s2_list
 
-def calc_density_profile(traj, topol, lipid_dict, n_bins = 50):
-    """
-    Input:  Trajectory, topology, lipid dictionary (mapping residue numbers to atom numbers), # bins
-    Compute the density profile of lipids using provided bins
-    Return: 1D histogram of densities in various bins for each frame (for top, bottom, and entire)
-    """
-    # First, divide box into 50 segments, based on z coordinates
-    # Z end is based on the max z box dimension
-    n_lipid = len(lipid_dict.keys())
-    # It might be better to do this off of just the lipid dictionary
-    z_end = -np.inf
-    z_begin = np.inf
+def identify_leaflets(traj, topol, lipid_dict):
+    """  Identify bilayer leaflets based on z coord
+    k"""
+    top_leaflet = []
+    bot_leaflet = []
+    all_z = []
     for i, key in enumerate(lipid_dict.keys()):
-        lipid_z_max = max(traj.atom_slice(lipid_dict[key]).xyz[:,0,2])
-        lipid_z_min = min(traj.atom_slice(lipid_dict[key]).xyz[:,0,2])
-        z_end = max(z_end, lipid_z_max)
-        z_begin = min(z_begin, lipid_z_min)
-    #z_end = np.amax(traj.xyz[:,:,2])
+        atoms = lipid_dict[key]
+        z_coords = [traj.xyz[:,atom,2].flatten() for atom in atoms]
+        for coord in z_coords:
+            all_z.append(coord)
+    z_cutoff = np.mean(all_z)
+
+    for resid, atom_indices in lipid_dict.items():
+        mean_z = np.mean(traj.xyz[:,atom_indices,2])
+        if mean_z <= z_cutoff:
+            for index in atom_indices:
+                bot_leaflet.append(index)
+        else:
+            for index in atom_indices:
+                top_leaflet.append(index)
+            #top_leaflet.append(atom_indices)
+    bot_leaflet = np.asarray(bot_leaflet).flatten()
+    top_leaflet = np.asarray(top_leaflet).flatten()
+    if len(top_leaflet) != len(bot_leaflet):
+        print("Warning: Asymmetric leaflet identification!")
+
+    return bot_leaflet, top_leaflet
+
+def get_all_masses(traj, topol, atom_indices):
+    """ Return array of masses corresponding to atom idnices"""
+    masses = np.zeros_like(atom_indices, dtype=float)
+    for i, index in enumerate(atom_indices):
+        masses[i] = get_mass(topol, index)
+    return masses
+
+
+def calc_density_profile(traj, topol, lipid_dict, bin_width=0.2):
+    """ Use numpy histogram, with weights, to get density profile"""
+    bot_leaflet, top_leaflet = identify_leaflets(traj, topol, lipid_dict)
     area = np.mean(traj.unitcell_lengths[:, 0] * traj.unitcell_lengths[:, 1])
-    # Interval is the last z coordinate divied by bins
-    z_begin -= 1
-    z_end += 1
-    z_interval = abs(z_end - z_begin)/(n_bins)
-    v_slice = z_interval * area
-    density_profile_top = 1e-40 * np.ones((traj.n_frames, n_bins + 1))
-    density_profile_bot = 1e-40 * np.ones((traj.n_frames, n_bins + 1)) 
-    density_profile = 1e-40 * np.ones((traj.n_frames, n_bins + 1))
-    # Generate windows
-    bins = np.linspace(0, z_end, num = n_bins + 1)
-    # For each leaflet, count the mass of a slice in the histogram, divided by volume of that slice
-    # masses dictionary
-    badcount = 0
-    z_threshold = 0.0
-    n_atoms = 0
-    # This loop gets the middle z value to distinguish two leaflets
-    # Leaflets are distinguished based on the z-coordinate of a headgroup atom compared to the threshold
-    for i, key in enumerate(lipid_dict.keys()):
-        lipid_i = lipid_dict[key]
-        atom_i = topol.atom(lipid_i[0])
-        if 'DSPC' in atom_i.residue.name or 'DPPC' in atom_i.residue.name or 'ISIS' in atom_i.residue.name or 'isis' in atom_i.residue.name:
-            atom_i = topol.atom(lipid_i[0])
-        else:
-            atom_i = topol.atom(lipid_i[10])
+    v_slice = area * bin_width
 
-        z_i = np.mean(traj.atom_slice([atom_i.index]).xyz[:,0,2])
-        z_threshold += z_i
-        n_atoms += 1
-    z_threshold /= n_atoms
-    botcount = 0
-    topcount = 0
-    for i, key in enumerate(lipid_dict.keys()):
-        lipid_i = lipid_dict[key]
-        atom_i = topol.atom(lipid_i[0])
-        if 'DSPC' in atom_i.residue.name or 'DPPC' in atom_i.residue.name or 'ISIS' in atom_i.residue.name or 'isis' in atom_i.residue.name:
-            atom_i = topol.atom(lipid_i[0])
-        else:
-            atom_i = topol.atom(lipid_i[10])
-
-        # base_z is the z-coordiante of a headgroup atom
-        # will be compared to z_threshold to identify which leaflet its molecule belongs to
-        base_z = np.mean(traj.atom_slice([atom_i.index]).xyz[:,0,2])
-        for atom_i in lipid_i:
-        # loop through each lipid atom, get the z coordinate (probably an array over time)
-            mass_i = get_mass(topol, atom_i)
-            z_i = traj.atom_slice([atom_i]).xyz[:,0,2]
-            # Row represents hte frame and the elemtn is the window it belongs in
-            window_i = np.floor(z_i/z_interval)
-            for j, bin_j in enumerate(window_i):
-                #if i < n_lipid/2:
-                # 
-                if base_z <= z_threshold:
-                    density_profile_bot[j, int(bin_j)] += mass_i
-                    botcount +=1
-                else:
-                    density_profile_top[j, int(bin_j)] += mass_i
-                    topcount +=1
-                density_profile[j, int(bin_j)] += mass_i
-    
-    # Divide by volume of slice to get the density
-    density_profile_bot /= v_slice
-    density_profile_top /= v_slice
-    density_profile /= v_slice
-
-    print("topcount {}".format(topcount))
-    print("botcount {}".format(botcount))
-    
+    density_profile_bot = []
+    density_profile_top = []
+    density_profile_all = []
     # Convert from g/nm3 to kg/m3, and nm to m
-    density_profile_bot = 1e24 * density_profile_bot
-    density_profile_top = 1e24 * density_profile_top
-    density_profile = 1e24 * density_profile
-    density_profile_avg = np.mean(density_profile, axis = 0)
+    bot_masses = 1e24 * get_all_masses(traj, topol, bot_leaflet) / v_slice
+    top_masses =  1e24 * get_all_masses(traj, topol, top_leaflet) / v_slice
+    bounds = (np.min(traj.xyz[:, bot_leaflet, 2]),
+            np.max(traj.xyz[:, top_leaflet,2]))
+    n_bins = int(round((bounds[1] - bounds[0]) / bin_width))
+    bin_width = (bounds[1] - bounds[0]) / n_bins
+    
+    interdigitation = []
+    for xyz in traj.xyz:
+        bot_hist, bin_edges = np.histogram(xyz[bot_leaflet,2], bins=n_bins,
+                range=bounds, normed=False, weights=bot_masses)
+        top_hist, bin_edges = np.histogram(xyz[top_leaflet,2], bins=n_bins,
+                range=bounds, normed=False, weights=top_masses)
+        all_hist = [x+y for x,y in zip(top_hist, bot_hist)]
+        density_profile_bot.append(bot_hist)
+        density_profile_top.append(top_hist)
+        density_profile_all.append(all_hist)
 
-    return density_profile, density_profile_avg, density_profile_bot, density_profile_top, bins
+        bin_centers = bin_edges[1:] - bin_width / 2
+        integrand = []
+        for top_slice, bot_slice in zip(top_hist, bot_hist):
+            numerator = 4 * top_slice * bot_slice
+            denominator =  (top_slice + bot_slice) ** 2
+            overlap = 0
+            if denominator != 0:
+                overlap = numerator / denominator
+            integrand.append(overlap)
+        interdigitation.append(integrate.simps(integrand, x = bin_centers))
+    idig_avg = np.mean(interdigitation)
+    idig_std = np.std(interdigitation)
+    return np.asarray(density_profile_all), \
+        np.asarray(density_profile_bot), np.asarray(density_profile_top), \
+        bin_centers, interdigitation, idig_avg, idig_std
+
 
 def get_mass(topol, atom_i):
     """
