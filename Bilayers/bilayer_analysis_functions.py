@@ -969,7 +969,7 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict,include_water_
 
 
 def _compute_rotational_correlation(traj, atom_1, atom_2, 
-        dt = 10, n_time_origins=5):
+        dt = 10, n_time_origins=50):
     """ Compute rotational correlation over various time intervals
     For two atoms with respect to distance vector at a time origin
 
