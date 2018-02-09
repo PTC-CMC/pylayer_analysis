@@ -55,7 +55,7 @@ apt_avg, apt_std, apt_list = bilayer_analysis_functions.calc_APT(traj, apl_list,
 np.savetxt('apt.dat', apt_list)
 print('Calculating nematic order...')
 s2_ave, s2_std, s2_list = bilayer_analysis_functions.calc_nematic_order(traj, lipid_dict, blocked=options.blocked)
-np.savetxt('s2.dat' s2_list)
+np.savetxt('s2.dat', s2_list)
 print('Calculating headgroup distances...')
 headgroup_distance_dict = bilayer_analysis_functions.compute_headgroup_distances(traj, topol, headgroup_dict, blocked=options.blocked)
 print('Calculating bilayer height...')
