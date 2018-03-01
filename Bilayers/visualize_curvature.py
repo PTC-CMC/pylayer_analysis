@@ -7,6 +7,11 @@ import matplotlib.animation as animation
 import mdtraj
 import bilayer_analysis_functions
 
+""" 2D Animation of lipid headgroup centers of masses
+colors reflect Z coordinate,
+the animation function should work. If it doesn't, then your ffmpeg 
+or matplotlib is out of date"""
+
 def _animate(i, my_plot, all_xyz,all_colors,mymap):
 
     my_plot.set_offsets(all_xyz[i,:, 0:2])
