@@ -172,6 +172,54 @@ def _find_atoms_around(traj, atoms, thickness=1, z=0):
             valid_indices.append(atom)
     return valid_indices
 
+def _normalize(values, mean=None):
+    """ Normalize values such that the mean is 0 """
+
+    if mean is None:
+        mean = np.mean(values)
+
+    #new_array = np.array([val - mean for line in values for val in line])
+    #new_array.reshape(values.shape)
+    new_array = values - mean
+    return new_array
+
+
+def _surface_plot(data, xbin_centers, ybin_centers,
+        cmap='viridis', num_xticks=None, num_yticks=None, num_ticks=5,
+        title="", filename=""):
+        """ Some basic 2d surface plotting """
+        # Yes we need to plot the transpose, otherwise the spatial X coords
+        # get plotted on the Y axis and the Y coords get plotted on the X axis
+        fig = plt.figure(1)
+        plt.imshow(data[0,:,:].T, cmap=cmap, origin='lower')
+        plt.colorbar()
+        
+        if num_xticks is None:
+            num_xticks = num_ticks
+        if num_yticks is None:
+            num_yticks = num_ticks
+
+
+        if data.shape[1] < num_xticks:
+            num_xticks = data.shape[1]
+        xtick_vals, step = np.linspace(0, data.shape[1], num=num_xticks, 
+                dtype=int, retstep=True, endpoint=False)
+        xtick_labels = [np.round(x,2) for x in xbin_centers][::int(np.ceil(step))]
+        plt.xticks(xtick_vals,  xtick_labels)
+
+        if data.shape[2] < num_yticks:
+            num_yticks = data.shape[2]
+        ytick_vals, step = np.linspace(0, data.shape[2], num=num_yticks,
+                dtype=int, retstep=True, endpoint=False)
+        ytick_labels = [np.round(y,2) for y in ybin_centers][::int(np.ceil(step))]
+        plt.yticks(ytick_vals,  ytick_labels)
+
+        plt.title(title)
+        plt.savefig(filename, transparent=True)
+        plt.close()
+
+   
+
 if __name__ == "__main__":
     grofile = 'centered.gro'
     #traj = mdtraj.load(xtcfile, top=grofile)
@@ -198,6 +246,7 @@ if __name__ == "__main__":
     # Generate 2D histogram of density 
     all_indices = [a.index for a in traj.topology.atoms if a.residue.is_water]
     thickness = 0.5
+    grid_size = 2.5
     for i, z_interface in enumerate(interfaces):
         if i == 0:
             name = "botwater"
@@ -211,30 +260,16 @@ if __name__ == "__main__":
 
         # Given that subset of atoms, then use the 2d histogram 
         density_surface, xbin_centers, ybin_centers = calc_density_surface(traj,
-                atoms_z, grid_size=0.5, thickness=thickness)
-        fig1 = plt.figure(1)
+                atoms_z, grid_size=grid_size, thickness=thickness)
+        density_surface = _normalize(density_surface, mean=rho_interface)
 
         # Yes we need to plot the transpose, otherwise the spatial X coords
         # get plotted on the Y axis and the Y coords get plotted on the X axis
-        plt.imshow(density_surface[0,:,:].T, cmap='viridis', origin='lower')
-        plt.colorbar()
 
-
-        xtick_vals, step = np.linspace(0, density_surface.shape[1], num=5, 
-                dtype=int, retstep=True, endpoint=False)
-        xtick_labels = [np.round(x,2) for x in xbin_centers][::int(step)]
-        plt.xticks(xtick_vals,  xtick_labels)
-
-        ytick_vals, step = np.linspace(0, density_surface.shape[2], num=5,
-                dtype=int, retstep=True, endpoint=False)
-        ytick_labels = [np.round(y,2) for y in ybin_centers][::int(step)]
-        plt.yticks(ytick_vals,  ytick_labels)
-        #plt.xticks(np.arange(0, density_surface.shape[1], step=5), 
-        #        [np.round(x,2) for x in xbin_centers][::5])
-        #plt.yticks(np.arange(density_surface.shape[2], step=5), 
-        #        [np.round(y,2) for y in ybin_centers][::5])
-        plt.savefig('{}.svg'.format(name), transparent=True)
-        plt.close()
+        _surface_plot(density_surface, xbin_centers, ybin_centers,
+                num_ticks=5, 
+                title="Deviation from interfacial water density ({:.0f} kg/m$^3$)".format(rho_interface),
+                filename='{}_waterdensity.svg'.format(name))
 
     # Using the 2D hist bins, find the z-interface in each grid
 
@@ -243,6 +278,7 @@ if __name__ == "__main__":
 
     interface_bot_surface = np.zeros_like(density_surface)
     interface_top_surface = np.zeros_like(density_surface)
+
     for x, y in itertools.product(xbin_centers, ybin_centers):
         atoms_xy = _find_atoms_within(traj, x=x, y=y, atom_indices=water_indices,
                 xbin_width=xbin_width, ybin_width=ybin_width)
@@ -255,38 +291,18 @@ if __name__ == "__main__":
         interface_top_surface[ 0,int(np.floor(x/xbin_width)), 
                 int(np.floor(y/ybin_width))] = z_interface_top
 
+    interface_bot_surface = _normalize(interface_bot_surface)
+    interface_top_surface = _normalize(interface_top_surface)
 
-    fig3 = plt.figure(3)
-    plt.imshow(interface_bot_surface[0, :, :].T, cmap='viridis', origin='lower')
-    plt.colorbar()
+    _surface_plot(interface_bot_surface, xbin_centers, ybin_centers,
+            num_ticks=5,
+            title="Deviation from interface location (nm)",
+            filename='interface_bot_surface.svg')
 
-    xtick_vals, step = np.linspace(0, interface_bot_surface.shape[1], num=5, 
-            dtype=int, retstep=True, endpoint=False)
-    xtick_labels = [np.round(x,2) for x in xbin_centers][::int(step)]
-    plt.xticks(xtick_vals,  xtick_labels)
+    _surface_plot(interface_top_surface, xbin_centers, ybin_centers,
+            num_ticks=5,
+            title="Deviation from interface location (nm)",
+            filename='interface_top_surface.svg')
 
-    ytick_vals, step = np.linspace(0, interface_bot_surface.shape[2], num=5,
-            dtype=int, retstep=True, endpoint=False)
-    ytick_labels = [np.round(y,2) for y in ybin_centers][::int(step)]
-    plt.yticks(ytick_vals,  ytick_labels)
 
-    plt.savefig('interface_bot_surface.svg', transparent=True)
-    plt.close()
-
-    fig4 = plt.figure(4)
-    plt.imshow(interface_top_surface[0, :, :].T, cmap='viridis', origin='lower')
-    plt.colorbar()
-
-    xtick_vals, step = np.linspace(0, interface_top_surface.shape[1], num=5, 
-            dtype=int, retstep=True, endpoint=False)
-    xtick_labels = [np.round(x,2) for x in xbin_centers][::int(step)]
-    plt.xticks(xtick_vals,  xtick_labels)
-
-    ytick_vals, step = np.linspace(0, interface_top_surface.shape[2], num=5,
-            dtype=int, retstep=True, endpoint=False)
-    ytick_labels = [np.round(y,2) for y in ybin_centers][::int(step)]
-    plt.yticks(ytick_vals,  ytick_labels)
-
-    plt.savefig('interface_top_surface.svg', transparent=True)
-    plt.close()
-
+    # Based on the xbins and ybins, figure out which tracers belong where
