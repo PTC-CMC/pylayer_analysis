@@ -1,6 +1,9 @@
 import numpy as np
+import time
 import itertools
 import pdb
+import glob
+import subprocess
 import mdtraj
 import matplotlib
 matplotlib.use('agg')
@@ -8,6 +11,32 @@ import matplotlib.pyplot as plt
 
 """ Compute density profiles for lipids and water
 also compute density profiles for smaller XY grids"""
+
+def _wrap_trj(traj):
+    """ Wrap a trajectory """
+    new_traj = mdtraj.Trajectory(xyz=traj.xyz, topology=traj.topology,
+            time=traj.time, unitcell_lengths=traj.unitcell_lengths,
+            unitcell_angles=traj.unitcell_angles)
+
+    for i in range(new_traj.n_frames):
+        for a in new_traj.topology.atoms:
+            for j in range(3):
+                while new_traj.xyz[i, a.index, j] < 0:
+                    new_traj.xyz[i, a.index, j] += new_traj.unitcell_lengths[i, j]
+                while new_traj.xyz[i, a.index, j] > new_traj.unitcell_lengths[i, j]:
+                    new_traj.xyz[i, a.index, j] -= new_traj.unitcell_lengths[i, j]
+
+                new_traj.xyz[i, a.index, j] = new_traj.xyz[i, a.index,j] \
+                        + 0.5* new_traj.unitcell_lengths[i,j]
+
+                while new_traj.xyz[i, a.index, j] < 0:
+                    new_traj.xyz[i, a.index, j] += new_traj.unitcell_lengths[i, j]
+                while new_traj.xyz[i, a.index, j] > new_traj.unitcell_lengths[i, j]:
+                    new_traj.xyz[i, a.index, j] -= new_traj.unitcell_lengths[i, j]
+
+    return new_traj
+
+
 
 
 def get_mass(topol, atom_i):
@@ -103,7 +132,7 @@ def calc_density_surface(traj, atom_indices, thickness=1,
         xbin_centers = xedges[1:] - xbin_width / 2
         ybin_centers = yedges[1:] - ybin_width / 2
 
-    return np.array(density_profile), xbin_centers, ybin_centers
+    return np.array(density_profile), xbin_centers, ybin_centers, xedges, yedges
 
 
 def _find_interface(water_p, bins, rho_interface=984,frame=0,reverse=False):
@@ -172,15 +201,26 @@ def _find_atoms_around(traj, atoms, thickness=1, z=0):
             valid_indices.append(atom)
     return valid_indices
 
-def _normalize(values, mean=None):
-    """ Normalize values such that the mean is 0 """
+def _normalize(values, mean=None, reverse=False):
+    """ Normalize values such that the mean is 0 ,
+    
+    mean : float, optional
+        If specified, use this value and subtract `mean` from `values`
+        If unspecified, compute the mean-per-frame to normalize
+    reverse : bool, optional
+        If true, swap the order of subtraction (useful for the lower leaflet)
+        
+        """
 
+    new_array = np.zeros_like(values)
     if mean is None:
-        mean = np.mean(values)
+        for i in range(new_array.shape[0]):
+            mean = np.mean(values[i])
+            if reverse:
+                new_array[i] = mean - values[i]
+            else:
+                new_array[i] = values[i] - mean
 
-    #new_array = np.array([val - mean for line in values for val in line])
-    #new_array.reshape(values.shape)
-    new_array = values - mean
     return new_array
 
 
@@ -204,14 +244,14 @@ def _surface_plot(data, xbin_centers, ybin_centers,
             num_xticks = data.shape[1]
         xtick_vals, step = np.linspace(0, data.shape[1], num=num_xticks, 
                 dtype=int, retstep=True, endpoint=False)
-        xtick_labels = [np.round(x,2) for x in xbin_centers][::int(np.ceil(step))]
+        xtick_labels = [np.round(x,2) for x in xbin_centers][::int(np.floor(step))]
         plt.xticks(xtick_vals,  xtick_labels)
 
         if data.shape[2] < num_yticks:
             num_yticks = data.shape[2]
         ytick_vals, step = np.linspace(0, data.shape[2], num=num_yticks,
                 dtype=int, retstep=True, endpoint=False)
-        ytick_labels = [np.round(y,2) for y in ybin_centers][::int(np.ceil(step))]
+        ytick_labels = [np.round(y,2) for y in ybin_centers][::int(np.floor(step))]
         plt.yticks(ytick_vals,  ytick_labels)
 
         plt.title(title)
@@ -221,9 +261,16 @@ def _surface_plot(data, xbin_centers, ybin_centers,
    
 
 if __name__ == "__main__":
-    grofile = 'centered.gro'
-    #traj = mdtraj.load(xtcfile, top=grofile)
-    traj = mdtraj.load(grofile)
+    #grofile = 'centered.gro'
+    grofile = glob.glob("Stage4_*.pdb")[0]
+    trajfile = "trajectory.lammps"
+    traj = mdtraj.load_lammpstrj(trajfile, top=grofile)
+    # In case we have some false frames stuck on the front, just look at the
+    # last 26 frames because that should be a continuous trjaectory
+    traj = traj[-26:]
+    traj = _wrap_trj(traj)
+    grotraj = mdtraj.load(grofile)
+    tracers = np.loadtxt('tracers.out', dtype=int)
 
 
     # Water density profile over a region
@@ -233,7 +280,8 @@ if __name__ == "__main__":
             l_y=traj.unitcell_lengths[0,1])
     fig2=plt.figure(2)
     plt.plot(bins, water_p[0])
-    plt.savefig("water_profile.svg",transparent=True)
+    plt.savefig("water_profile.jpg",transparent=True)
+    plt.close()
 
 
     # Identification of top and bottom interfaces
@@ -246,7 +294,7 @@ if __name__ == "__main__":
     # Generate 2D histogram of density 
     all_indices = [a.index for a in traj.topology.atoms if a.residue.is_water]
     thickness = 0.5
-    grid_size = 2.5
+    grid_size = 1.0
     for i, z_interface in enumerate(interfaces):
         if i == 0:
             name = "botwater"
@@ -259,17 +307,16 @@ if __name__ == "__main__":
         vmd_string = " ".join(["{}".format(thing) for thing in atoms_z])
 
         # Given that subset of atoms, then use the 2d histogram 
-        density_surface, xbin_centers, ybin_centers = calc_density_surface(traj,
+        density_surface, xbin_centers, ybin_centers, xedges, yedges = calc_density_surface(traj,
                 atoms_z, grid_size=grid_size, thickness=thickness)
-        density_surface = _normalize(density_surface, mean=rho_interface)
 
         # Yes we need to plot the transpose, otherwise the spatial X coords
         # get plotted on the Y axis and the Y coords get plotted on the X axis
 
-        _surface_plot(density_surface, xbin_centers, ybin_centers,
+        _surface_plot(_normalize(density_surface), xbin_centers, ybin_centers,
                 num_ticks=5, 
                 title="Deviation from interfacial water density ({:.0f} kg/m$^3$)".format(rho_interface),
-                filename='{}_waterdensity.svg'.format(name))
+                filename='{}_waterdensity.jpg'.format(name))
 
     # Using the 2D hist bins, find the z-interface in each grid
 
@@ -282,27 +329,56 @@ if __name__ == "__main__":
     for x, y in itertools.product(xbin_centers, ybin_centers):
         atoms_xy = _find_atoms_within(traj, x=x, y=y, atom_indices=water_indices,
                 xbin_width=xbin_width, ybin_width=ybin_width)
-        profile_xy, bins = calc_density_profile(traj, traj.topology, atoms_xy,
-                l_x=xbin_width, l_y=ybin_width)
-        z_interface_bot, z_interface_top = _find_interface(profile_xy, bins,
-                rho_interface=rho_interface)
-        interface_bot_surface[ 0,int(np.floor(x/xbin_width)), 
-                int(np.floor(y/ybin_width))] = z_interface_bot
-        interface_top_surface[ 0,int(np.floor(x/xbin_width)), 
-                int(np.floor(y/ybin_width))] = z_interface_top
+        if len(atoms_xy) > 0:
+            profile_xy, bins = calc_density_profile(traj, traj.topology, atoms_xy,
+                    l_x=xbin_width, l_y=ybin_width)
+            z_interface_bot, z_interface_top = _find_interface(profile_xy, bins,
+                    rho_interface=rho_interface)
+            interface_bot_surface[ 0,int(np.floor(x/xbin_width)), 
+                    int(np.floor(y/ybin_width))] = z_interface_bot
+            interface_top_surface[ 0,int(np.floor(x/xbin_width)), 
+                    int(np.floor(y/ybin_width))] = z_interface_top
+        else:
+            print("No atoms found around ({}, {})".format(x, y))
+            interface_bot_surface[ 0,int(np.floor(x/xbin_width)), 
+                    int(np.floor(y/ybin_width))] = -100
+            interface_top_surface[ 0,int(np.floor(x/xbin_width)), 
+                    int(np.floor(y/ybin_width))] = -100
 
-    interface_bot_surface = _normalize(interface_bot_surface)
-    interface_top_surface = _normalize(interface_top_surface)
+            
 
-    _surface_plot(interface_bot_surface, xbin_centers, ybin_centers,
+            
+    _surface_plot(_normalize(interface_bot_surface,reverse=True), xbin_centers, ybin_centers,
+    #_surface_plot(interface_bot_surface, xbin_centers, ybin_centers,
             num_ticks=5,
             title="Deviation from interface location (nm)",
-            filename='interface_bot_surface.svg')
+            filename='interface_bot_surface.jpg')
 
-    _surface_plot(interface_top_surface, xbin_centers, ybin_centers,
+    _surface_plot(_normalize(interface_top_surface), xbin_centers, ybin_centers,
+    #_surface_plot(interface_top_surface, xbin_centers, ybin_centers,
             num_ticks=5,
             title="Deviation from interface location (nm)",
-            filename='interface_top_surface.svg')
+            filename='interface_top_surface.jpg')
+
 
 
     # Based on the xbins and ybins, figure out which tracers belong where
+    for tracer in tracers:
+        res = traj.topology.residue(tracer-1)
+        tracer_oxygen = res.atom(0)
+        xyz = traj.xyz[0, tracer_oxygen.index, :]
+        # Identify which xy region we're in 
+        bin_x = np.digitize(xyz[0], xedges) - 1
+        bin_y = np.digitize(xyz[1], yedges) - 1
+
+        # Identify the z interface for this xy region
+        (interface_bot, interface_top) = (interface_bot_surface[0, bin_x, bin_y],
+                interface_top_surface[0, bin_x, bin_y])
+        if interface_bot - 0.1 <= xyz[2] <= interface_bot + 0.1:
+            print("Tracer {} is close to interface at z = {}".format(tracer, interface_bot))
+        elif interface_top - 0.1 <= xyz[2] <= interface_top + 0.1:
+            print("Tracer {} is close to interface at z = {}".format(tracer, interface_bot))
+        else:
+            print("Tracer {} at z = {} not found by any interface".format(tracer, xyz[2]))
+
+
