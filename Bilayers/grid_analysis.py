@@ -1,6 +1,7 @@
 import os
 import time
 import numpy as np
+import pandas as pd
 import itertools
 import pdb
 import glob
@@ -11,27 +12,31 @@ import matplotlib.pyplot as plt
 from multiprocessing import Pool
 import mdtraj
 import permeability as prm
+import bilayer_analysis_functions
 
 """ Compute density profiles for lipids and water
 also compute density profiles for smaller XY grids"""
 
 def main():
+    # If your'e in a sim folder
+    grid_analysis_routine()
+
     # Iterate through every sweep and sim directory
-    curr_dir = os.getcwd()
-    sweeps = [thing for thing in os.listdir() if 'sweep' in thing[0:6] and
-            os.path.isdir(thing)]
-    all_sampled_interfaces = []
-    for sweep in sweeps:
-        os.chdir(os.path.join(curr_dir, sweep))
-        sims = [thing for thing in os.listdir() if 'Sim' in thing[0:4] and
-            os.path.isdir(thing)]
-        with Pool(5) as pool:
-            sampled_interfaces = pool.starmap(_parallel_grid_analysis_routine, 
-                    zip(itertools.repeat(curr_dir), itertools.repeat(sweep),
-                        sims))
-            all_sampled_interfaces.append(sampled_interfaces)
-    sampled_interfaces_hist, bin_edges = np.histogram(all_sampled_interfaces.flatten())
-    pdb.set_trace()
+    #curr_dir = os.getcwd()
+    #sweeps = [thing for thing in os.listdir() if 'sweep' in thing[0:6] and
+    #        os.path.isdir(thing)]
+    #all_grid_outputs = []
+    #for sweep in sweeps:
+    #    os.chdir(os.path.join(curr_dir, sweep))
+    #    sims = [thing for thing in os.listdir() if 'Sim' in thing[0:4] and
+    #        os.path.isdir(thing)]
+    #    with Pool(5) as pool:
+    #        grid_outputs = pool.starmap(_parallel_grid_analysis_routine, 
+    #                zip(itertools.repeat(curr_dir), itertools.repeat(sweep),
+    #                    sims))
+    #        for grid_output_dict in grid_outputs:
+    #            all_grid_outputs.append(grid_output_dict)
+    #pdb.set_trace()
         # Serial
         #for sim in sims:
         #    os.chdir(os.path.join(curr_dir, sweep, sim))
@@ -61,6 +66,7 @@ def grid_analysis_routine():
 
     # Water density profile over a region
     water_indices = traj.topology.select('water') 
+    headgroup_indices = _get_headgroup_indices(traj)
     water_p, bins = calc_density_profile(traj, traj.topology, water_indices,
             l_x=traj.unitcell_lengths[0,0],
             l_y=traj.unitcell_lengths[0,1])
@@ -72,15 +78,17 @@ def grid_analysis_routine():
 
     # Identification of top and bottom interfaces
     rho_water = 984 # SPC water
-    rho_interface = rho_water / np.e # Definition of water interface
-    z_interface_bot, z_interface_top = _find_interface(water_p, bins, rho_interface=rho_interface)
+    #hho_interface = rho_water / np.e # Definition of water interface
+    rho_interface = 100
+    #z_interface_bot, z_interface_top = _find_interface_water(water_p, bins, rho_interface=rho_interface)
+    z_interface_bot, z_interface_top = _find_interface_lipid(traj, headgroup_indices)
     leaflet_interfaces = [z_interface_bot, z_interface_top]
 
 
     # Generate 2D histogram of density 
     all_indices = [a.index for a in traj.topology.atoms if a.residue.is_water]
     thickness = 0.5
-    grid_size = 1.0
+    grid_size = 1.5
     for i, z_interface in enumerate(leaflet_interfaces):
         if i == 0:
             name = "botwater"
@@ -110,13 +118,23 @@ def grid_analysis_routine():
     interface_top_surface = np.zeros_like(density_surface)
 
     for x, y in itertools.product(xbin_centers, ybin_centers):
-        atoms_xy = _find_atoms_within(traj, x=x, y=y, atom_indices=water_indices,
+        #atoms_xy = _find_atoms_within(traj, x=x, y=y, atom_indices=water_indices,
+        atoms_xy = _find_atoms_within(traj, x=x, y=y, atom_indices=headgroup_indices,
                 xbin_width=xbin_width, ybin_width=ybin_width)
         if len(atoms_xy) > 0:
             profile_xy, bins = calc_density_profile(traj, traj.topology, atoms_xy,
                     l_x=xbin_width, l_y=ybin_width)
-            z_interface_bot, z_interface_top = _find_interface(profile_xy, bins,
-                    rho_interface=rho_interface)
+
+            fig = plt.figure(1)
+            plt.plot(bins, np.mean(profile_xy, axis=0))
+            plt.xlabel("Z (nm)", fontsize=20)
+            plt.ylabel("Density (kg/m$^3$)", fontsize=20)
+            plt.savefig('{:.2f}_{:.2f}_waterp.jpg'.format(float(x), float(y)))
+            plt.close()
+
+            #z_interface_bot, z_interface_top = _find_interface_water(profile_xy, bins,
+            #        rho_interface=rho_interface)
+            z_interface_bot, z_interface_top = _find_interface_lipid(traj, atoms_xy)
             interface_bot_surface[ 0,int(np.floor(x/xbin_width)), 
                     int(np.floor(y/ybin_width))] = z_interface_bot
             interface_top_surface[ 0,int(np.floor(x/xbin_width)), 
@@ -137,7 +155,7 @@ def grid_analysis_routine():
     plt.xlabel("Interface location (mean set to 0) (nm)", fontsize=20)
     plt.ylabel("Frequency", fontsize=20)
     plt.legend()
-    plt.savefig("Zinterface_histogram.svg", transparent=True)
+    plt.savefig("Zinterface_histogram.jpg", transparent=True)
     plt.close()
 
             
@@ -171,26 +189,30 @@ def grid_analysis_routine():
         (interface_bot, interface_top) = (interface_bot_surface[0, bin_x, bin_y],
                 interface_top_surface[0, bin_x, bin_y])
         if interface_bot - 0.1 <= xyz[2] <= interface_bot + 0.1:
-            print("Path {}, Tracer {}, zinterface {:.3f}".format(curr_path, tracer, interface_bot))
-            sampled_interfaces.append(interface_bot - leaflet_interfaces[0])
+            print("Path {}, Tracer {}, zinterface {:.3f}".format(curr_path, 
+                tracer, interface_bot))
+            sampled_interfaces.append(leaflet_interfaces[0] - interface_bot)
             analyze_tracer = True
         elif interface_top - 0.1 <= xyz[2] <= interface_top + 0.1:
-            print("Path {}, Tracer {}, zinterface {:.3f}".format(curr_path, tracer, interface_bot))
+            print("Path {}, Tracer {}, zinterface {:.3f}".format(curr_path, 
+                tracer, interface_bot))
             sampled_interfaces.append(interface_top - leaflet_interfaces[1])
             analyze_tracer = True
         else:
             analyze_tracer = False
 
+        analyze_tracer = False
         if analyze_tracer:
             # Find forceout file
             n_tracers = len(tracers)
+            n_sims = _get_n_sims()
             dz = 2 # Angstroms
             kB = 1.987e-3
             T = 305
             RT2 = (kB*T)**2
 
             sim_number = int(curr_path[-1].replace('Sim', ''))
-            forceout_index = sim_number + (i * n_tracers)
+            forceout_index = sim_number + (i * n_sims)
 
             meanforce_file = '../meanforce{}.dat'.format(forceout_index)
             meanforce = np.loadtxt(meanforce_file)
@@ -278,6 +300,16 @@ def get_all_masses(traj, topol, atom_indices):
         masses[i] = get_mass(topol, index)
     return masses
 
+def _get_headgroup_indices(traj):
+    """ Return a giant list of all indices that correspond ot headgroups"""
+
+    lipid_dict, headgroup_dict = bilayer_analysis_functions.get_lipids(traj.topology)
+    headgroup_indices = []
+    for key, val in headgroup_dict.items():
+        for a in val:
+            headgroup_indices.append(a)
+    return headgroup_indices
+
 
 def calc_density_profile(traj, topol, atom_indices, l_x=2, l_y=2,
         bin_width=0.2):
@@ -352,7 +384,7 @@ def calc_density_surface(traj, atom_indices, thickness=1,
     return np.array(density_profile), xbin_centers, ybin_centers, xedges, yedges
 
 
-def _find_interface(water_p, bins, rho_interface=984,frame=0,reverse=False):
+def _find_interface_water(water_p, bins, rho_interface=984,frame=0,reverse=False):
     """ Given a density profile of water,
     find the location of the interface
    
@@ -364,24 +396,55 @@ def _find_interface(water_p, bins, rho_interface=984,frame=0,reverse=False):
         step = 1
     else:
         step = -1
-    midpoint = int(np.shape(water_p)[1]/2)
-    # Find closest indices to rho_interface
-    s = np.argsort(np.abs(water_p[0, : midpoint] - rho_interface))
-
-    # Use linear interpolation to find more precise value of interface
+    # If using a time-averaged water profile:
+    time_avg_water_p = np.mean(water_p, axis=0)
+    midpoint = int(np.shape(time_avg_water_p)[0]/2)
+    s = np.argsort(np.abs(time_avg_water_p[ : midpoint] - rho_interface))
     z_interface_bot = np.interp(rho_interface,
-            [water_p[0,s[0]], water_p[0,s[1]], water_p[0,s[2]]], 
+            [time_avg_water_p[s[0]], time_avg_water_p[s[1]], time_avg_water_p[s[2]]], 
             [bins[s[0]], bins[s[1]], bins[s[1]]])
 
-
-    # Find closest indices to rho_interface
-    s = np.argsort(np.abs(water_p[0, midpoint : ] - rho_interface))
-
-    # Use linear interpolation to find more precise value of interface
+    s = np.argsort(np.abs(time_avg_water_p[midpoint : ] - rho_interface))
     z_interface_top = np.interp(rho_interface,
-            [water_p[0,midpoint+s[0]], water_p[0, midpoint+s[1]], water_p[0, midpoint+s[2]]], 
+            [time_avg_water_p[midpoint+s[0]], time_avg_water_p[ midpoint+s[1]], time_avg_water_p[ midpoint+s[2]]], 
             [bins[midpoint+s[0]], bins[midpoint+s[1]], bins[midpoint+ s[1]]])
 
+
+    # If just using the first frame of the water profile
+    #midpoint = int(np.shape(water_p)[1]/2)
+    # Find closest indices to rho_interface
+    #s = np.argsort(np.abs(water_p[0, : midpoint] - rho_interface))
+
+    # Use linear interpolation to find more precise value of interface
+        #z_interface_bot = np.interp(rho_interface,
+    #        [water_p[0,s[0]], water_p[0,s[1]], water_p[0,s[2]]], 
+    #        [bins[s[0]], bins[s[1]], bins[s[1]]])
+
+
+
+    # Find closest indices to rho_interface
+    #s = np.argsort(np.abs(water_p[0, midpoint : ] - rho_interface))
+
+    # Use linear interpolation to find more precise value of interface
+        #z_interface_top = np.interp(rho_interface,
+    #        [water_p[0,midpoint+s[0]], water_p[0, midpoint+s[1]], water_p[0, midpoint+s[2]]], 
+    #        [bins[midpoint+s[0]], bins[midpoint+s[1]], bins[midpoint+ s[1]]])
+
+    return z_interface_bot, z_interface_top
+
+def _find_interface_lipid(traj, headgroup_indices):
+    """ Find the interface based on lipid head groups"""
+
+    # Sort into top and bottom leaflet
+    midplane = np.mean(traj.xyz[:,headgroup_indices,2])
+    bot_leaflet = [a for a in headgroup_indices if traj.xyz[0,a,2] < midplane]
+    top_leaflet = [a for a in headgroup_indices if traj.xyz[0,a,2] > midplane]
+
+    com_bot = mdtraj.compute_center_of_mass(traj.atom_slice(bot_leaflet))
+    com_top = mdtraj.compute_center_of_mass(traj.atom_slice(top_leaflet))
+
+    z_interface_bot = np.mean(com_bot, axis=0)[2]
+    z_interface_top = np.mean(com_top, axis=0)[2]
 
     return z_interface_bot, z_interface_top
 
@@ -475,7 +538,13 @@ def _surface_plot(data, xbin_centers, ybin_centers,
         plt.savefig(filename, transparent=True)
         plt.close()
 
-   
+def _get_n_sims():
+    working_dir = os.getcwd()
+    os.chdir('..')
+    sim_folders = [thing for thing in os.listdir() if 'Sim' in thing[0:4] and
+            os.path.isdir(thing)]
+    os.chdir(working_dir)
+    return len(sim_folders)
 
 if __name__ == "__main__":
     start = time.time()
