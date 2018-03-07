@@ -1,31 +1,37 @@
-import numpy as np
 import os
 import time
+import numpy as np
 import itertools
 import pdb
 import glob
 import subprocess
-import mdtraj
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 from multiprocessing import Pool
+import mdtraj
+import permeability as prm
 
 """ Compute density profiles for lipids and water
 also compute density profiles for smaller XY grids"""
 
 def main():
+    # Iterate through every sweep and sim directory
     curr_dir = os.getcwd()
     sweeps = [thing for thing in os.listdir() if 'sweep' in thing[0:6] and
             os.path.isdir(thing)]
+    all_sampled_interfaces = []
     for sweep in sweeps:
         os.chdir(os.path.join(curr_dir, sweep))
         sims = [thing for thing in os.listdir() if 'Sim' in thing[0:4] and
             os.path.isdir(thing)]
         with Pool(5) as pool:
-            pool.starmap(_parallel_grid_analysis_routine, 
+            sampled_interfaces = pool.starmap(_parallel_grid_analysis_routine, 
                     zip(itertools.repeat(curr_dir), itertools.repeat(sweep),
                         sims))
+            all_sampled_interfaces.append(sampled_interfaces)
+    sampled_interfaces_hist, bin_edges = np.histogram(all_sampled_interfaces.flatten())
+    pdb.set_trace()
         # Serial
         #for sim in sims:
         #    os.chdir(os.path.join(curr_dir, sweep, sim))
@@ -33,11 +39,11 @@ def main():
 
 def _parallel_grid_analysis_routine(curr_dir,sweep,sim):
     os.chdir(os.path.join(curr_dir, sweep,sim))
-    grid_analysis_routine()
+    sampled_interfaces = grid_analysis_routine()
+    return sampled_interfaces
 
 
 def grid_analysis_routine():
-    #grofile = 'centered.gro'
     curr_path = os.getcwd().split('/')[-2:]
     grofile = glob.glob("Stage4_*.gro")[0]
     trajfile = "trajectory.lammps"
@@ -48,6 +54,9 @@ def grid_analysis_routine():
     traj = _wrap_trj(traj)
     grotraj = mdtraj.load(grofile)
     tracers = np.loadtxt('tracers.out', dtype=int)
+
+    # grid_output_dict will neatly contain all information and gets returned
+    grid_output_dict = {}
 
 
     # Water density profile over a region
@@ -65,14 +74,14 @@ def grid_analysis_routine():
     rho_water = 984 # SPC water
     rho_interface = rho_water / np.e # Definition of water interface
     z_interface_bot, z_interface_top = _find_interface(water_p, bins, rho_interface=rho_interface)
-    interfaces = [z_interface_bot, z_interface_top]
+    leaflet_interfaces = [z_interface_bot, z_interface_top]
 
 
     # Generate 2D histogram of density 
     all_indices = [a.index for a in traj.topology.atoms if a.residue.is_water]
     thickness = 0.5
     grid_size = 1.0
-    for i, z_interface in enumerate(interfaces):
+    for i, z_interface in enumerate(leaflet_interfaces):
         if i == 0:
             name = "botwater"
         else:
@@ -86,19 +95,17 @@ def grid_analysis_routine():
         density_surface, xbin_centers, ybin_centers, xedges, yedges = calc_density_surface(traj,
                 atoms_z, grid_size=grid_size, thickness=thickness)
 
-        # Yes we need to plot the transpose, otherwise the spatial X coords
-        # get plotted on the Y axis and the Y coords get plotted on the X axis
-
         _surface_plot(_normalize(density_surface), xbin_centers, ybin_centers,
                 num_ticks=5, 
                 title="Deviation from interfacial water density ({:.0f} kg/m$^3$)".format(rho_interface),
                 filename='{}_waterdensity.jpg'.format(name))
 
-    # Using the 2D hist bins, find the z-interface in each grid
 
     xbin_width = xbin_centers[1] - xbin_centers[0]
     ybin_width = ybin_centers[1] - ybin_centers[0]
+    
 
+    # Using the 2D hist bins, find the z-interface in each grid
     interface_bot_surface = np.zeros_like(density_surface)
     interface_top_surface = np.zeros_like(density_surface)
 
@@ -121,6 +128,7 @@ def grid_analysis_routine():
             interface_top_surface[ 0,int(np.floor(x/xbin_width)), 
                     int(np.floor(y/ybin_width))] = -100
 
+    
     fig = plt.figure(1)
     plt.hist(_normalize(interface_bot_surface[0]).flatten(), 
             label="Bottom", alpha=0.4)
@@ -134,13 +142,11 @@ def grid_analysis_routine():
 
             
     _surface_plot(_normalize(interface_bot_surface,reverse=True), xbin_centers, ybin_centers,
-    #_surface_plot(interface_bot_surface, xbin_centers, ybin_centers,
             num_ticks=5,
             title="Deviation from interface location (nm)",
             filename='interface_bot_surface.jpg')
 
     _surface_plot(_normalize(interface_top_surface), xbin_centers, ybin_centers,
-    #_surface_plot(interface_top_surface, xbin_centers, ybin_centers,
             num_ticks=5,
             title="Deviation from interface location (nm)",
             filename='interface_top_surface.jpg')
@@ -148,10 +154,15 @@ def grid_analysis_routine():
 
 
     # Based on the xbins and ybins, figure out which tracers belong where
-    for tracer in tracers:
+    sampled_interfaces = []
+    all_G = []
+    all_D = []
+    all_P = []
+    for i, tracer in enumerate(tracers):
         res = traj.topology.residue(tracer-1)
         tracer_oxygen = res.atom(0)
         xyz = traj.xyz[0, tracer_oxygen.index, :]
+
         # Identify which xy region we're in 
         bin_x = np.digitize(xyz[0], xedges) - 1
         bin_y = np.digitize(xyz[1], yedges) - 1
@@ -161,14 +172,62 @@ def grid_analysis_routine():
                 interface_top_surface[0, bin_x, bin_y])
         if interface_bot - 0.1 <= xyz[2] <= interface_bot + 0.1:
             print("Path {}, Tracer {}, zinterface {:.3f}".format(curr_path, tracer, interface_bot))
-            #print("Tracer {} is close to interface at z = {}".format(tracer, interface_bot))
+            sampled_interfaces.append(interface_bot - leaflet_interfaces[0])
+            analyze_tracer = True
         elif interface_top - 0.1 <= xyz[2] <= interface_top + 0.1:
             print("Path {}, Tracer {}, zinterface {:.3f}".format(curr_path, tracer, interface_bot))
-            #print("Tracer {} is close to interface at z = {}".format(tracer, interface_bot))
-        #else:
-            #print("Tracer {} at z = {} not found by any interface".format(tracer, xyz[2]))
+            sampled_interfaces.append(interface_top - leaflet_interfaces[1])
+            analyze_tracer = True
+        else:
+            analyze_tracer = False
+
+        if analyze_tracer:
+            # Find forceout file
+            n_tracers = len(tracers)
+            dz = 2 # Angstroms
+            kB = 1.987e-3
+            T = 305
+            RT2 = (kB*T)**2
+
+            sim_number = int(curr_path[-1].replace('Sim', ''))
+            forceout_index = sim_number + (i * n_tracers)
+
+            meanforce_file = '../meanforce{}.dat'.format(forceout_index)
+            meanforce = np.loadtxt(meanforce_file)
+            dG = meanforce * dz
+
+            fcorr_file = '../fcorr{}.dat'.format(forceout_index)
+            int_F, int_F_val, FACF = prm.integrate_acf_over_time(fcorr_file, 
+                    timestep=1)
+
+            diff_coeff = RT2 / int_F_val
+
+            resist = np.exp(dG/ (kB * T)) / diff_coeff
+
+            P = 1 / (resist * dz * 1e-8) # Convert z from \AA to cm
+
+            all_G.append(dG)
+            all_D.append(diff_coeff)
+            all_P.append(P)
 
 
+
+
+    grid_output_dict['leaflet_interfaces'] = leaflet_interfaces
+    grid_output_dict['thickness'] = thickness
+    grid_output_dict['grid_size'] = grid_size
+    grid_output_dict['xbin_centers'] = xbin_centers
+    grid_output_dict['ybin_centers'] = ybin_centers
+    grid_output_dict['xedges'] = xedges
+    grid_output_dict['yedges'] = yedges
+    grid_output_dict['interface_bot'] = interface_bot_surface
+    grid_output_dict['interface_top'] = interface_top_surface
+    grid_output_dict['sampled_interfaces'] = sampled_interfaces
+    grid_output_dict['free_energy'] = all_G
+    grid_output_dict['diffusion'] = all_D
+    grid_output_dict['permeability'] = all_P
+
+    return grid_output_dict
 
 def _wrap_trj(traj):
     """ Wrap a trajectory """
