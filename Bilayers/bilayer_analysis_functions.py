@@ -64,18 +64,18 @@ def get_lipids(topol):
             # Figure out head groups
             if 'DSPC' in resname:
                 if 'DSPC' in headgroup_dict:
-                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name:
+                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name or 'NL' in atom_i.name:
                         headgroup_dict['DSPC'].append(i)
                 else:
-                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name:
+                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name or 'NL' in atom_i.name:
                         headgroup_dict['DSPC'] = list()
                         headgroup_dict['DSPC'].append(i)
             elif 'DPPC' in resname:
                 if 'DPPC' in headgroup_dict:
-                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name:
+                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name or 'NL' in atom_i.name:
                         headgroup_dict['DPPC'].append(i)
                 else:
-                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name:
+                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name or 'NL' in atom_i.name:
                         headgroup_dict['DPPC'] = list()
                         headgroup_dict['DPPC'].append(i)
             elif 'ISIS' in resname or 'isis' in resname:
