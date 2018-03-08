@@ -15,28 +15,38 @@ import permeability as prm
 import bilayer_analysis_functions
 
 """ Compute density profiles for lipids and water
-also compute density profiles for smaller XY grids"""
+compute density profiles for smaller XY grids
+Compute local interfaces for XY regions as well as leaflet interfaces
+Leaflet interfaces can be determined by water density or headgroup coordinates
+Based on the 2D grid and definition of interface, compute tracer
+permeability properties.
+Save to pickle flie for later analysis
+
+"""
 
 def main():
+    perm_data = pd.DataFrame()
     # If your'e in a sim folder
-    grid_analysis_routine()
+    #grid_analysis_routine()
 
     # Iterate through every sweep and sim directory
-    #curr_dir = os.getcwd()
-    #sweeps = [thing for thing in os.listdir() if 'sweep' in thing[0:6] and
-    #        os.path.isdir(thing)]
-    #all_grid_outputs = []
-    #for sweep in sweeps:
-    #    os.chdir(os.path.join(curr_dir, sweep))
-    #    sims = [thing for thing in os.listdir() if 'Sim' in thing[0:4] and
-    #        os.path.isdir(thing)]
-    #    with Pool(5) as pool:
-    #        grid_outputs = pool.starmap(_parallel_grid_analysis_routine, 
-    #                zip(itertools.repeat(curr_dir), itertools.repeat(sweep),
-    #                    sims))
-    #        for grid_output_dict in grid_outputs:
-    #            all_grid_outputs.append(grid_output_dict)
-    #pdb.set_trace()
+    curr_dir = os.getcwd()
+    sweeps = [thing for thing in os.listdir() if 'sweep' in thing[0:6] and
+            os.path.isdir(thing)]
+    all_grid_outputs = []
+    for sweep in sweeps:
+        os.chdir(os.path.join(curr_dir, sweep))
+        sims = [thing for thing in os.listdir() if 'Sim' in thing[0:4] and
+            os.path.isdir(thing)]
+        with Pool(5) as pool:
+            grid_outputs = pool.starmap(_parallel_grid_analysis_routine, 
+                    zip(itertools.repeat(curr_dir), itertools.repeat(sweep),
+                        sims))
+        for sim_output in grid_outputs:
+            for tracer_dict in sim_output:
+                perm_data = perm_data.append(tracer_dict, ignore_index=True)
+    os.chdir(curr_dir)
+    perm_data.to_pickle('perm_pickle.pkl')
         # Serial
         #for sim in sims:
         #    os.chdir(os.path.join(curr_dir, sweep, sim))
@@ -44,8 +54,8 @@ def main():
 
 def _parallel_grid_analysis_routine(curr_dir,sweep,sim):
     os.chdir(os.path.join(curr_dir, sweep,sim))
-    sampled_interfaces = grid_analysis_routine()
-    return sampled_interfaces
+    tracer_outputs = grid_analysis_routine()
+    return tracer_outputs
 
 
 def grid_analysis_routine():
@@ -60,9 +70,7 @@ def grid_analysis_routine():
     grotraj = mdtraj.load(grofile)
     tracers = np.loadtxt('tracers.out', dtype=int)
 
-    # grid_output_dict will neatly contain all information and gets returned
-    grid_output_dict = {}
-
+    
 
     # Water density profile over a region
     water_indices = traj.topology.select('water') 
@@ -172,11 +180,14 @@ def grid_analysis_routine():
 
 
     # Based on the xbins and ybins, figure out which tracers belong where
-    sampled_interfaces = []
-    all_G = []
-    all_D = []
-    all_P = []
+    all_tracer_outputs = []
+    n_tracers = len(tracers)
+    n_sims = _get_n_sims()
+
     for i, tracer in enumerate(tracers):
+        # grid_output_dict will neatly contain all information and gets returned
+        grid_output_dict = {}
+
         res = traj.topology.residue(tracer-1)
         tracer_oxygen = res.atom(0)
         xyz = traj.xyz[0, tracer_oxygen.index, :]
@@ -188,68 +199,113 @@ def grid_analysis_routine():
         # Identify the z interface for this xy region
         (interface_bot, interface_top) = (interface_bot_surface[0, bin_x, bin_y],
                 interface_top_surface[0, bin_x, bin_y])
-        if interface_bot - 0.1 <= xyz[2] <= interface_bot + 0.1:
-            print("Path {}, Tracer {}, zinterface {:.3f}".format(curr_path, 
-                tracer, interface_bot))
-            sampled_interfaces.append(leaflet_interfaces[0] - interface_bot)
-            analyze_tracer = True
-        elif interface_top - 0.1 <= xyz[2] <= interface_top + 0.1:
-            print("Path {}, Tracer {}, zinterface {:.3f}".format(curr_path, 
-                tracer, interface_bot))
-            sampled_interfaces.append(interface_top - leaflet_interfaces[1])
-            analyze_tracer = True
+
+        # Find distance from local interface and leaflet interface
+        if abs(interface_bot - xyz[2]) < abs(interface_top - xyz[2]):
+            d_from_local_i = interface_bot - xyz[2]
+            d_from_leaflet_i = leaflet_interfaces[0] - xyz[2]
+            closest_interface = interface_bot
         else:
-            analyze_tracer = False
+            d_from_local_i = xyz[2] - interface_top
+            d_from_leaflet_i = xyz[2] = leaflet_interfaces[1] 
+            closest_interface = interface_top
 
-        analyze_tracer = False
-        if analyze_tracer:
-            # Find forceout file
-            n_tracers = len(tracers)
-            n_sims = _get_n_sims()
-            dz = 2 # Angstroms
-            kB = 1.987e-3
-            T = 305
-            RT2 = (kB*T)**2
+        # Find forceout file, do anallysis
+        dz = 2 # Angstroms
+        kB = 1.987e-3 # kcal/mol k
+        T = 305
+        RT2 = (kB*T)**2
 
-            sim_number = int(curr_path[-1].replace('Sim', ''))
-            forceout_index = sim_number + (i * n_sims)
+        sim_number = int(curr_path[-1].replace('Sim', ''))
+        forceout_index = sim_number + (i * n_sims)
 
-            meanforce_file = '../meanforce{}.dat'.format(forceout_index)
-            meanforce = np.loadtxt(meanforce_file)
-            dG = meanforce * dz
+        meanforce_file = '../meanforce{}.dat'.format(forceout_index)
+        meanforce = np.loadtxt(meanforce_file)
+        dG = meanforce * dz
 
-            fcorr_file = '../fcorr{}.dat'.format(forceout_index)
-            int_F, int_F_val, FACF = prm.integrate_acf_over_time(fcorr_file, 
-                    timestep=1)
+        fcorr_file = '../fcorr{}.dat'.format(forceout_index)
+        int_F, int_F_val, FACF = prm.integrate_acf_over_time(fcorr_file, 
+                timestep=1)
 
-            diff_coeff = RT2 / int_F_val
+        diff_coeff = RT2 / int_F_val
 
-            resist = np.exp(dG/ (kB * T)) / diff_coeff
+        resist = np.exp(dG/ (kB * T)) / diff_coeff
 
-            P = 1 / (resist * dz * 1e-8) # Convert z from \AA to cm
-
-            all_G.append(dG)
-            all_D.append(diff_coeff)
-            all_P.append(P)
+        P = 1 / (resist * dz * 1e-8) # Convert z from \AA to cm
 
 
+        grid_output_dict['leaflet_interfaces'] = leaflet_interfaces
+        grid_output_dict['thickness'] = thickness
+        grid_output_dict['grid_size'] = grid_size
+        grid_output_dict['xbin_centers'] = xbin_centers
+        grid_output_dict['ybin_centers'] = ybin_centers
+        grid_output_dict['xedges'] = xedges
+        grid_output_dict['yedges'] = yedges
+        grid_output_dict['interface_bot'] = interface_bot_surface
+        grid_output_dict['interface_top'] = interface_top_surface
+        grid_output_dict['path'] = curr_path
+        grid_output_dict['tracer'] = tracer
+        grid_output_dict['local_interface'] = closest_interface
+        grid_output_dict['d_from_local_i'] = d_from_local_i
+        grid_output_dict['d_from_leaflet_i'] = d_from_leaflet_i
+        grid_output_dict['meanforce_file'] = meanforce_file
+        grid_output_dict['fcorr_file'] = fcorr_file
+        grid_output_dict['free_energy'] = dG
+        grid_output_dict['diffusion'] = diff_coeff
+        grid_output_dict['permeability'] = P
+        
+
+        all_tracer_outputs.append(grid_output_dict)
 
 
-    grid_output_dict['leaflet_interfaces'] = leaflet_interfaces
-    grid_output_dict['thickness'] = thickness
-    grid_output_dict['grid_size'] = grid_size
-    grid_output_dict['xbin_centers'] = xbin_centers
-    grid_output_dict['ybin_centers'] = ybin_centers
-    grid_output_dict['xedges'] = xedges
-    grid_output_dict['yedges'] = yedges
-    grid_output_dict['interface_bot'] = interface_bot_surface
-    grid_output_dict['interface_top'] = interface_top_surface
-    grid_output_dict['sampled_interfaces'] = sampled_interfaces
-    grid_output_dict['free_energy'] = all_G
-    grid_output_dict['diffusion'] = all_D
-    grid_output_dict['permeability'] = all_P
+        #all_G.append(dG)
+        #all_D.append(diff_coeff)
+        #all_P.append(P)
 
-    return grid_output_dict
+
+        #if interface_bot - 0.1 <= xyz[2] <= interface_bot + 0.1:
+        #    sampled_interfaces.append(leaflet_interfaces[0] - interface_bot)
+        #    analyze_tracer = True
+        #elif interface_top - 0.1 <= xyz[2] <= interface_top + 0.1:
+        #    sampled_interfaces.append(interface_top - leaflet_interfaces[1])
+        #    analyze_tracer = True
+        #else:
+        #    analyze_tracer = False
+
+        #if analyze_tracer:
+        #    # Find forceout file
+        #    n_tracers = len(tracers)
+        #    n_sims = _get_n_sims()
+        #    dz = 2 # Angstroms
+        #    kB = 1.987e-3
+        #    T = 305
+        #    RT2 = (kB*T)**2
+
+        #    sim_number = int(curr_path[-1].replace('Sim', ''))
+        #    forceout_index = sim_number + (i * n_sims)
+
+        #    meanforce_file = '../meanforce{}.dat'.format(forceout_index)
+        #    meanforce = np.loadtxt(meanforce_file)
+        #    dG = meanforce * dz
+
+        #    fcorr_file = '../fcorr{}.dat'.format(forceout_index)
+        #    int_F, int_F_val, FACF = prm.integrate_acf_over_time(fcorr_file, 
+        #            timestep=1)
+
+        #    diff_coeff = RT2 / int_F_val
+
+        #    resist = np.exp(dG/ (kB * T)) / diff_coeff
+
+        #    P = 1 / (resist * dz * 1e-8) # Convert z from \AA to cm
+
+        #    all_G.append(dG)
+        #    all_D.append(diff_coeff)
+        #    all_P.append(P)
+
+
+
+
+    return all_tracer_outputs
 
 def _wrap_trj(traj):
     """ Wrap a trajectory """
