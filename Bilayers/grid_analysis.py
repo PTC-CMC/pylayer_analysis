@@ -221,7 +221,7 @@ def grid_analysis_routine():
 
         meanforce_file = '../meanforce{}.dat'.format(forceout_index)
         meanforce = np.loadtxt(meanforce_file)
-        dG = meanforce * dz
+        dG = -meanforce * dz
 
         fcorr_file = '../fcorr{}.dat'.format(forceout_index)
         int_F, int_F_val, FACF = prm.integrate_acf_over_time(fcorr_file, 
