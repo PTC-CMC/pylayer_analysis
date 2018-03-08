@@ -207,7 +207,7 @@ def grid_analysis_routine():
             closest_interface = interface_bot
         else:
             d_from_local_i = xyz[2] - interface_top
-            d_from_leaflet_i = xyz[2] = leaflet_interfaces[1] 
+            d_from_leaflet_i = xyz[2] - leaflet_interfaces[1] 
             closest_interface = interface_top
 
         # Find forceout file, do anallysis
@@ -219,12 +219,13 @@ def grid_analysis_routine():
         sim_number = int(curr_path[-1].replace('Sim', ''))
         forceout_index = sim_number + (i * n_sims)
 
-        meanforce_file = '../meanforce{}.dat'.format(forceout_index)
-        meanforce = np.loadtxt(meanforce_file)
+        meanforce_file = 'meanforce{}.dat'.format(forceout_index)
+        meanforce = np.loadtxt(os.path.join('..',meanforce_file))
         dG = -meanforce * dz
 
-        fcorr_file = '../fcorr{}.dat'.format(forceout_index)
-        int_F, int_F_val, FACF = prm.integrate_acf_over_time(fcorr_file, 
+        fcorr_file = 'fcorr{}.dat'.format(forceout_index)
+        fcorr = np.loadtxt(os.path.join('..', fcorr_file))
+        int_F, int_F_val, FACF = prm.integrate_acf_over_time(os.path.join('..',fcorr_file), 
                 timestep=1)
 
         diff_coeff = RT2 / int_F_val
@@ -245,11 +246,13 @@ def grid_analysis_routine():
         grid_output_dict['interface_top'] = interface_top_surface
         grid_output_dict['path'] = curr_path
         grid_output_dict['tracer'] = tracer
+        grid_output_dict['tracer_z'] = xyz[2]
+        grid_output_dict['forceout_index'] = forceout_index
         grid_output_dict['local_interface'] = closest_interface
         grid_output_dict['d_from_local_i'] = d_from_local_i
         grid_output_dict['d_from_leaflet_i'] = d_from_leaflet_i
-        grid_output_dict['meanforce_file'] = meanforce_file
-        grid_output_dict['fcorr_file'] = fcorr_file
+        grid_output_dict['meanforce'] = meanforce
+        grid_output_dict['fcorr'] = fcorr
         grid_output_dict['free_energy'] = dG
         grid_output_dict['diffusion'] = diff_coeff
         grid_output_dict['permeability'] = P
