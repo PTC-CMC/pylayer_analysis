@@ -47,6 +47,7 @@ def main():
                 perm_data = perm_data.append(tracer_dict, ignore_index=True)
     os.chdir(curr_dir)
     perm_data.to_pickle('perm_pickle.pkl')
+
         # Serial
         #for sim in sims:
         #    os.chdir(os.path.join(curr_dir, sweep, sim))
@@ -96,7 +97,7 @@ def grid_analysis_routine():
     # Generate 2D histogram of density 
     all_indices = [a.index for a in traj.topology.atoms if a.residue.is_water]
     thickness = 0.5
-    grid_size = 1.5
+    grid_size = 1.0
     for i, z_interface in enumerate(leaflet_interfaces):
         if i == 0:
             name = "botwater"
@@ -143,22 +144,33 @@ def grid_analysis_routine():
             #z_interface_bot, z_interface_top = _find_interface_water(profile_xy, bins,
             #        rho_interface=rho_interface)
             z_interface_bot, z_interface_top = _find_interface_lipid(traj, atoms_xy)
-            interface_bot_surface[ 0,int(np.floor(x/xbin_width)), 
-                    int(np.floor(y/ybin_width))] = z_interface_bot
-            interface_top_surface[ 0,int(np.floor(x/xbin_width)), 
+            if z_interface_bot is not None:
+                interface_bot_surface[ 0,int(np.floor(x/xbin_width)), 
+                     int(np.floor(y/ybin_width))] = z_interface_bot
+            else:
+                interface_bot_surface[ 0,int(np.floor(x/xbin_width)), 
+                     int(np.floor(y/ybin_width))] = -100
+
+
+            if z_interface_top is not None:
+                interface_top_surface[ 0,int(np.floor(x/xbin_width)), 
                     int(np.floor(y/ybin_width))] = z_interface_top
+            else: 
+                interface_top_surface[ 0,int(np.floor(x/xbin_width)), 
+                    int(np.floor(y/ybin_width))] = 100
+
         else:
             print("No atoms found around ({}, {})".format(x, y))
             interface_bot_surface[ 0,int(np.floor(x/xbin_width)), 
                     int(np.floor(y/ybin_width))] = -100
             interface_top_surface[ 0,int(np.floor(x/xbin_width)), 
-                    int(np.floor(y/ybin_width))] = -100
+                    int(np.floor(y/ybin_width))] = 100
 
     
     fig = plt.figure(1)
-    plt.hist(_normalize(interface_bot_surface[0]).flatten(), 
+    plt.hist(_normalize(interface_bot_surface[0], mean=leaflet_interfaces[0]).flatten(), 
             label="Bottom", alpha=0.4)
-    plt.hist(_normalize(interface_top_surface[0]).flatten(), 
+    plt.hist(_normalize(interface_top_surface[0], mean=leaflet_interfaces[1]).flatten(), 
             label="Top", alpha=0.4)
     plt.xlabel("Interface location (mean set to 0) (nm)", fontsize=20)
     plt.ylabel("Frequency", fontsize=20)
@@ -167,12 +179,12 @@ def grid_analysis_routine():
     plt.close()
 
             
-    _surface_plot(_normalize(interface_bot_surface,reverse=True), xbin_centers, ybin_centers,
+    _surface_plot(_normalize(interface_bot_surface,reverse=True, mean=leaflet_interfaces[0]), xbin_centers, ybin_centers,
             num_ticks=5,
             title="Deviation from interface location (nm)",
             filename='interface_bot_surface.jpg')
 
-    _surface_plot(_normalize(interface_top_surface), xbin_centers, ybin_centers,
+    _surface_plot(_normalize(interface_top_surface, mean=leaflet_interfaces[1]), xbin_centers, ybin_centers,
             num_ticks=5,
             title="Deviation from interface location (nm)",
             filename='interface_top_surface.jpg')
@@ -245,8 +257,8 @@ def grid_analysis_routine():
         grid_output_dict['interface_bot'] = interface_bot_surface
         grid_output_dict['interface_top'] = interface_top_surface
         grid_output_dict['path'] = curr_path
-        grid_output_dict['tracer'] = tracer
-        grid_output_dict['tracer_z'] = xyz[2]
+        grid_output_dict['tracer_id'] = tracer
+        grid_output_dict['tracer_xyz'] = xyz
         grid_output_dict['forceout_index'] = forceout_index
         grid_output_dict['local_interface'] = closest_interface
         grid_output_dict['d_from_local_i'] = d_from_local_i
@@ -495,7 +507,8 @@ def _find_interface_lipid(traj, headgroup_indices):
     """ Find the interface based on lipid head groups"""
 
     # Sort into top and bottom leaflet
-    midplane = np.mean(traj.xyz[:,headgroup_indices,2])
+    #midplane = np.mean(traj.xyz[:,headgroup_indices,2])
+    midplane = np.mean(traj.unitcell_lengths[:,2])/2
     bot_leaflet = [a for a in headgroup_indices if traj.xyz[0,a,2] < midplane]
     top_leaflet = [a for a in headgroup_indices if traj.xyz[0,a,2] > midplane]
 
@@ -504,6 +517,11 @@ def _find_interface_lipid(traj, headgroup_indices):
 
     z_interface_bot = np.mean(com_bot, axis=0)[2]
     z_interface_top = np.mean(com_top, axis=0)[2]
+    
+    if len(bot_leaflet) == 0:
+        z_interface_bot = None
+    if len(top_leaflet) == 0:
+        z_interface_top = None
 
     return z_interface_bot, z_interface_top
 
@@ -552,13 +570,13 @@ def _normalize(values, mean=None, reverse=False):
         """
 
     new_array = np.zeros_like(values)
-    if mean is None:
-        for i in range(new_array.shape[0]):
+    for i in range(new_array.shape[0]):
+        if mean is None:
             mean = np.mean(values[i])
-            if reverse:
-                new_array[i] = mean - values[i]
-            else:
-                new_array[i] = values[i] - mean
+        if reverse:
+            new_array[i] = mean - values[i]
+        else:
+            new_array[i] = values[i] - mean
 
     return new_array
 
