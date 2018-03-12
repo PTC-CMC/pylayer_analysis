@@ -642,6 +642,8 @@ def calc_head_distance(traj, topol, head_indices, blocked=False):
             mass_i = 30.97
         elif 'O' in topol.atom(atom_j).name:
             mass_i = 16.00
+        else:
+            mass_i = topol.atom(atom_j).element.mass
         if atom_counter < len(head_indices)/2:
             zcoord_top += mass_i * traj.atom_slice([atom_j]).xyz[:,0,2]
             mass_top += mass_i
