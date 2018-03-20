@@ -63,9 +63,9 @@ def main(bs_sample_size=None, n_bs=1):
             np.max(df.d_from_leaflet_i.values))
     n_bins = int(round((bounds[1] - bounds[0]) / bin_width))
     
-    ##################
+    ##############################################
     ## Looking at distance from local interface ##
-    #################
+    #############################################
     #d_from_leaflet_hist, edges = np.histogram(df.d_from_leaflet_i.values, bins=10)
     #bin_width = edges[1] - edges[0]
     d_from_local_hist, edges = np.histogram(df.d_from_local_i.values, bins=n_bins)
@@ -182,9 +182,9 @@ def main(bs_sample_size=None, n_bs=1):
 
 
        
-    ###############
+    ################################################
     ## Looking at distance from leaflet interface ##
-    ###############
+    ################################################
 
     bounds = (np.min(df.d_from_leaflet_i.values),
             np.max(df.d_from_leaflet_i.values))
@@ -304,9 +304,9 @@ def main(bs_sample_size=None, n_bs=1):
 
 
         
-    ###########
+    ############################
     ### Absolute coordinates ###
-    ##############
+    ############################
     absolute_p = pd.DataFrame()
     n_forceouts = len(set(df.loc[:,'forceout_index'].values))
     
@@ -393,12 +393,27 @@ def main(bs_sample_size=None, n_bs=1):
     absolute_permeability = np.mean(bs_p)
     absolute_permeability_err = np.std(bs_p)
 
+    ##################################
+    ## Symmetrizing absolute bins ####
+    ##################################
+    bs_d_profile_sym = symmetrize_each(bs_d_profile)
+    bs_g_profile_sym = symmetrize_each(bs_g_profile, zero_boundary_condition=True)
+    bs_r_profile_sym = np.zeros((n_forceouts, n_bs))
+    bs_p_sym = np.zeros(n_bs)
+    for bs_i in range(n_bs):
+        for window in range(n_forceouts):
+            bs_r_profile_sym[window, bs_i] = np.exp(bs_g_profile_sym[window, bs_i] / \
+                    (kb*T)) / bs_d_profile_sym[window, bs_i]
 
+        bs_p_sym[bs_i] = 1/(np.sum(bs_r_profile_sym[:, bs_i]) * dz * 1e-8)
+    absolute_permeability_sym = np.mean(bs_p_sym)
+    absolute_permeability_err = np.std(bs_p_sym)
         
-    print("{0},{1},{2},{3},{4},{5},{6},{7}".format(n_bs, bs_sample_size, 
+    print("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}".format(n_bs, bs_sample_size, 
         d_from_local_i_permeability, d_from_local_i_permeability_err,
         d_from_leaflet_i_permeability, d_from_leaflet_i_permeability_err,
-        absolute_permeability, absolute_permeability_err))
+        absolute_permeability, absolute_permeability_err,
+        absolute_permeability_sym, absolute_permeability_err))
 
     
     ##########
@@ -502,6 +517,78 @@ def _select_bootstrap_indices(sample_size, n_bootstraps, bootstrap_sample_size):
         bootstrap_indices[i,:] = np.random.choice(possible_indices, 
                 size=bootstrap_sample_size,replace=True)
     return bootstrap_indices
+
+def symmetrize_each(data, zero_boundary_condition=False):
+    """Symmetrize a profile
+    
+    Params
+    ------
+    data : np.ndarray, shape=(n,n_sweeps)
+        Data to be symmetrized
+    zero_boundary_condition : bool, default=False
+        If True, shift the right half of the curve before symmetrizing
+
+    Returns
+    -------
+    dataSym : np.ndarray, shape=(n,)
+        symmetrized data
+
+    This function symmetrizes a 1D array. It also provides an error estimate
+    for each value, taken as the standard error between the "left" and "right"
+    values. The zero_boundary_condition shifts the "right" half of the curve 
+    such that the final value goes to 0. This should be used if the data is 
+    expected to approach zero, e.g., in the case of pulling a water molecule 
+    through one phase into bulk water.
+    """
+    n_sweeps = data.shape[1]
+    n_windows = data.shape[0]
+    n_win_half = int(np.ceil(float(n_windows)/2))
+    dataSym = np.zeros_like(data)
+    for s in range(n_sweeps):
+        for i, sym_val in enumerate(dataSym[:n_win_half,s]):
+            val = 0.5 * (data[i,s] + data[-(i+1),s])
+            dataSym[i,s] = val
+            dataSym[-(i+1),s] = val
+        if zero_boundary_condition:
+            dataSym[:,s] -= dataSym[0,s] 
+    return dataSym
+
+def symmetrize(data, zero_boundary_condition=False):
+    """Symmetrize a profile
+    
+    Params
+    ------
+    data : np.ndarray, shape=(n,)
+        Data to be symmetrized
+    zero_boundary_condition : bool, default=False
+        If True, shift the right half of the curve before symmetrizing
+
+    Returns
+    -------
+    dataSym : np.ndarray, shape=(n,)
+        symmetrized data
+    dataSym_err : np.ndarray, shape=(n,)
+        error estimate in symmetrized data
+
+    This function symmetrizes a 1D array. It also provides an error estimate
+    for each value, taken as the standard error between the "left" and "right"
+    values. The zero_boundary_condition shifts the "right" half of the curve 
+    such that the final value goes to 0. This should be used if the data is 
+    expected to approach zero, e.g., in the case of pulling a water molecule 
+    through one phase into bulk water.
+    """
+    n_windows = data.shape[0]
+    n_win_half = int(np.ceil(float(n_windows)/2))
+    dataSym = np.zeros_like(data)
+    dataSym_err = np.zeros_like(data)
+    shift = {True: data[-1], False: 0.0}
+    for i, sym_val in enumerate(dataSym[:n_win_half]):
+        val = 0.5 * (data[i] + data[-(i+1)])
+        err = np.std([data[i], data[-(i+1)] - shift[zero_boundary_condition]]) / np.sqrt(2)
+        dataSym[i], dataSym_err[i] = val, err
+        dataSym[-(i+1)], dataSym_err[-(i+1)] = val, err        
+    return dataSym, dataSym_err
+
 
 
     
