@@ -10,8 +10,9 @@ import permeability as prm
 import pdb
 
 def main(bs_sample_size=None, n_bs=1):
-    df = pd.read_pickle('perm_pickle_1.0nm.pkl')
-    #df = pd.read_pickle('perm_pickle_sweep0rh.pkl')
+    #df = pd.read_pickle('perm_29sweeps_1.0nm.pkl')
+
+    df = pd.read_pickle('perm_20sweeps_1.0nm.pkl')
     """
     df columns
     ----------
@@ -407,13 +408,13 @@ def main(bs_sample_size=None, n_bs=1):
 
         bs_p_sym[bs_i] = 1/(np.sum(bs_r_profile_sym[:, bs_i]) * dz * 1e-8)
     absolute_permeability_sym = np.mean(bs_p_sym)
-    absolute_permeability_err = np.std(bs_p_sym)
+    absolute_permeability_sym_err = np.std(bs_p_sym)
         
-    print("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}".format(n_bs, bs_sample_size, 
+    print("{0},{1},{2},{3},{4},{5},{6},{7},{8}".format(n_bs, 
         d_from_local_i_permeability, d_from_local_i_permeability_err,
         d_from_leaflet_i_permeability, d_from_leaflet_i_permeability_err,
         absolute_permeability, absolute_permeability_err,
-        absolute_permeability_sym, absolute_permeability_err))
+        absolute_permeability_sym, absolute_permeability_sym_err))
 
     
     ##########
