@@ -525,6 +525,27 @@ def _find_interface_lipid(traj, headgroup_indices):
 
     return z_interface_bot, z_interface_top
 
+def _find_leaflet_peaks(traj, headgroup_indices):
+    """ Find the most bulk-facing atoms based on headgroups """
+    # Sort into top and bottom leaflet
+    #midplane = np.mean(traj.xyz[:,headgroup_indices,2])
+    midplane = np.mean(traj.unitcell_lengths[:,2])/2
+    bot_leaflet = [a for a in headgroup_indices if traj.xyz[0,a,2] < midplane]
+    top_leaflet = [a for a in headgroup_indices if traj.xyz[0,a,2] > midplane]
+
+    peak_b = None
+    peak_t = None
+    if len(bot_leaflet) >0 :
+        avg_traj_b = np.mean(traj.atom_slice(bot_leaflet).xyz[:,:,2], axis=0)
+        peak_b = np.min(avg_traj_b)
+    if len(top_leaflet) >0 :
+        avg_traj_t = np.mean(traj.atom_slice(top_leaflet).xyz[:,:,2], axis=0)
+        peak_t = np.max(avg_traj_t)
+    
+
+    
+    return peak_b, peak_t
+
 def _find_atoms_within(traj, x=0, y=0, xbin_width=1, 
         ybin_width=1, atom_indices=None):
     """ Find atoms within a square with 
