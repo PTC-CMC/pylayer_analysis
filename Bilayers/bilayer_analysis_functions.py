@@ -148,6 +148,15 @@ def get_lipids(topol):
                     if 'CH' not in atom_i.name:
                         headgroup_dict['acd24'] = list()
                         headgroup_dict['acd24'].append(i)
+            #elif 'alc' in resname:
+            #    if 'alc' in headgroup_dict:
+            #        if 'CH' not in atom_i.name:
+            #            headgroup_dict['alc'].append(i)
+            #    else:
+            #        if 'CH' not in atom_i.name:
+            #            headgroup_dict['alc'] = list()
+            #            headgroup_dict['alc'].append(i)
+
             elif 'alc12' in resname:
                 if 'alc12' in headgroup_dict:
                     if 'CH' not in atom_i.name:
@@ -875,12 +884,15 @@ def get_mass(topol, atom_i):
     Mass dictionary is in units of amu
     Return: mass of that atom (g)
     """
-    mass_dict = {'O': 15.99940, 'OM': 15.99940, 'OA': 15.99940, 'OE': 15.99940, 'OW': 15.99940,'N': 14.00670,
+    try:
+        mass_dict = {'O': 15.99940, 'OM': 15.99940, 'OA': 15.99940, 'OE': 15.99940, 'OW': 15.99940,'N': 14.00670,
             'NT': 14.00670, 'NL': 14.00670, 'NR': 14.00670, 'NZ': 14.00670, 'NE': 14.00670, 'C': 12.01100, 
             'CH0': 12.0110, 'CH1': 13.01900, 'CH2': 14.02700, 'CH3': 15.03500, 'CH4': 16.04300, 'CH2r': 14.02700,
             'CR1': 13.01900, 'HC': 1.00800, 'H':  1.00800, 'P': 30.97380, 'CL': 35.45300, 'F': 18.99840, 
             'CL-': 35.45300}
-    mass_i = 1.66054e-24 * mass_dict[topol.atom(atom_i).name]
+        mass_i = 1.66054e-24 * mass_dict[topol.atom(atom_i).name]
+    except KeyError:
+        mass_i = 1.66054e-24 * topol.atom(atom_i).element.mass
     return mass_i
 
 def calc_interdigitation(traj, density_profile_top, density_profile_bot, bins, blocked=False):
