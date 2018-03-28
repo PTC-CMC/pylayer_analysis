@@ -136,7 +136,7 @@ plt.close()
 
 density_profile_top_avg = np.mean(d_t, axis = 0)
 density_profile_bot_avg = np.mean(d_b, axis = 0)
-density_profile_average  = np.mean(d_a, axis=0)
+density_profile_avg  = np.mean(d_a, axis=0)
 
 
 fig2 = plt.figure(2)
