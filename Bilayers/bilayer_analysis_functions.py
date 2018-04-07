@@ -828,7 +828,6 @@ def calc_offsets(traj, headgroup_distance_dict, blocked=False):
     return offset_dict
 
 def calc_nematic_order(traj, blocked=False):
-#def calc_nematic_order(traj, lipid_dict, blocked=False):
     """ COmpute nematic order over each leaflet"""
 
     top_chains = []
@@ -841,12 +840,6 @@ def calc_nematic_order(traj, blocked=False):
                 top_chains.append(indices)
             else:
                 bot_chains.append(indices)
-    #for i, key in enumerate(lipid_dict.keys()):
-    #    indices = [int(item) for item in lipid_dict[key]]
-    #    if i <= 63:
-    #        top_chains.append(indices)
-    #    else:
-    #        bot_chains.append(indices)
     s2_top = mdtraj.compute_nematic_order(traj, indices=top_chains)
     s2_bot = mdtraj.compute_nematic_order(traj, indices=bot_chains)
     s2_list = (s2_top + s2_bot)/2
@@ -860,30 +853,30 @@ def calc_nematic_order(traj, blocked=False):
         s2_std = np.std(s2_list)
     return s2_ave, s2_std, s2_list
 
-#def identify_leaflets(traj, topol, lipid_dict):
 def identify_leaflets(traj):
     """  Identify bilayer leaflets based on z coord
     k"""
     top_leaflet = []
     bot_leaflet = []
     all_z = []
+    for residue in traj.topology.residues:
+        if not residue.is_water:
+            residue_atoms = [a.index for a in residue.atoms]
+            all_z.append(traj.atom_slice(residue_atoms).xyz[:,:,2].flatten())
 
-    for i, key in enumerate(lipid_dict.keys()):
-        atoms = lipid_dict[key]
-        z_coords = [traj.xyz[:,atom,2].flatten() for atom in atoms]
-        for coord in z_coords:
-            all_z.append(coord)
     z_cutoff = np.mean(all_z)
 
-    for resid, atom_indices in lipid_dict.items():
-        mean_z = np.mean(traj.xyz[:,atom_indices,2])
-        if mean_z <= z_cutoff:
-            for index in atom_indices:
-                bot_leaflet.append(index)
-        else:
-            for index in atom_indices:
-                top_leaflet.append(index)
-            #top_leaflet.append(atom_indices)
+    for residue in traj.topology.residues:
+        if not residue.is_water:
+            residue_atoms = [a.index for a in residue.atoms]
+            mean_z = np.mean(traj.atom_slice(residue_atoms).xyz[:,:,2])
+            if mean_z <= z_cutoff:
+                for index in residue_atoms:
+                    bot_leaflet.append(index)
+            else:
+                for index in residue_atoms:
+                    top_leaflet.append(index)
+
     bot_leaflet = np.asarray(bot_leaflet).flatten()
     top_leaflet = np.asarray(top_leaflet).flatten()
     if len(top_leaflet) != len(bot_leaflet):
@@ -900,9 +893,8 @@ def get_all_masses(traj, topol, atom_indices):
 
 
 def calc_density_profile(traj, topol, bin_width=0.2):
-#def calc_density_profile(traj, topol, lipid_dict, bin_width=0.2):
     """ Use numpy histogram, with weights, to get density profile"""
-    bot_leaflet, top_leaflet = identify_leaflets(traj, topol)
+    bot_leaflet, top_leaflet = identify_leaflets(traj)
     area = np.mean(traj.unitcell_lengths[:, 0] * traj.unitcell_lengths[:, 1])
     v_slice = area * bin_width
 
