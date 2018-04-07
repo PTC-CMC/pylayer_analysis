@@ -20,6 +20,8 @@ from scipy.optimize import curve_fit
 import pandas as pd
 import mdtraj as mdtraj
 
+import group_templates
+
 def calc_APL(traj, n_lipid,blocked=False):
     ''' 
     Input: Trajectory and number of lipids
@@ -40,6 +42,53 @@ def calc_APL(traj, n_lipid,blocked=False):
     apl_avg = areaavg/(n_lipid/2)
     apl_std = areastd/(n_lipid/2)
     return (apl_avg, apl_std, apl_list)
+
+def identify_groups(traj, forcefield='gromos53a6'):
+    """ Identify tails and heads for all lipids in system
+
+    Parameters
+    ----------
+    traj: MDTraj Trajectory
+    forcefield: str, default 'gromos53a6'
+        String describing the force field (see `group_templates.py`)
+
+    Returns
+    -------
+    tail_groups : Dictionary mapping a lipidtail to its indices
+        keys : residue index (with a or b if two-tailed)
+        values : tail atom indices
+    head_groups : Dictionary mapping residue names to respective list of indices
+        keys : residue names
+        values : headgroup atom indices 
+        """
+    if forcefield == 'gromos53a6':
+        groups = group_templates.gromos53a6_groups()
+    else:
+        sys.exit("Forcefield not supported")
+
+    tail_groups = OrderedDict()
+    head_groups = OrderedDict()
+    # Initialize empty lists for each headgroup category
+    for resname in list(set([residue.name for residue in traj.topology.residues])):
+        if 'HOH' not in resname and 'SOL' not in resname and 'water' not in resname:
+            head_groups[resname] = []
+
+    # Iterate through each residue, finding the template associated with
+    # the residue name, and shifting the indices based on the first atom index
+    for residue in traj.topology.residues():
+        template = groups[residue.name]
+        headgroups_i = template['head'] + residue.atom(0).index
+        head_groups[residue.name] += headgroups_i
+        if "PC" in residue.name or "ISIS" in residue.name:
+            tail_1 = template['tail_1'] + residue.atom(0).index
+            tail_2 = template['tail_2'] + residue.atom(0).index
+            tail_groups[str(residue.index)+"a"] = tail_1
+            tail_groups[str(residue.index)+"b"] = tail_2
+        else:
+            tail = template['tail'] + residue.atom(0).index
+            tail_groups[str(residue.index)] = tail
+
+    return tail_groups, head_groups
 
 def get_lipids(topol):
     ''' Input a topology object
