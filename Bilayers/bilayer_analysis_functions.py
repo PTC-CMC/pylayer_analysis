@@ -1,21 +1,26 @@
 from __future__ import print_function
-import mdtraj as mdtraj
-import sys
-import scipy.integrate as integrate
-from scipy.optimize import curve_fit
-import pandas as pd
 import os
+import sys
+import time
+
 from optparse import OptionParser
 import pdb
-import itertools
-import numpy as np
-import matplotlib
 import collections
 from collections import OrderedDict
+
+import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
-import time
+
+import itertools
+import numpy as np
+import scipy.integrate as integrate
+from scipy.optimize import curve_fit
+import pandas as pd
+import mdtraj as mdtraj
+
+import group_templates
 
 def calc_APL(traj, n_lipid,blocked=False):
     ''' 
@@ -38,483 +43,54 @@ def calc_APL(traj, n_lipid,blocked=False):
     apl_std = areastd/(n_lipid/2)
     return (apl_avg, apl_std, apl_list)
 
-def get_lipids(topol):
-    ''' Input a topology object
-        Iterate through each atom
-        If the atom's residue isn't water (so a lipid), add it to the dictionary
-        lipid_dict is a dictionary mapping residue indices to a list of respective atom indices
-        headgroup_dict is a dictionary mapping moleculetypes (DSPC, alc12, etc) to a list of 
-        indices of the headgroup
-    '''
-    # Dictionary of resname keys that map to atom list values
-    lipid_dict= OrderedDict()
-    headgroup_dict = OrderedDict()
-    for i in topol.select('all'):
-        atom_i = topol.atom(i)
-        if not atom_i.residue.is_water:
-            residue_i = atom_i.residue
-            resname = atom_i.residue.name
-            # If the lipid_dict already has the residue key, append it
-            if residue_i.index in lipid_dict:
-                lipid_dict[residue_i.index].append(i)
-            # If the lipid_dict doesn't have the residue key, make a list and append it
+def identify_groups(traj, forcefield='gromos53a6'):
+    """ Identify tails and heads for all lipids in system
+
+    Parameters
+    ----------
+    traj: MDTraj Trajectory
+    forcefield: str, default 'gromos53a6'
+        String describing the force field (see `group_templates.py`)
+
+    Returns
+    -------
+    tail_groups : Dictionary mapping a lipidtail to its indices
+        keys : residue index (with a or b if two-tailed)
+        values : tail atom indices
+    head_groups : Dictionary mapping residue names to respective list of indices
+        keys : residue names
+        values : headgroup atom indices 
+        """
+    if forcefield == 'gromos53a6':
+        groups = group_templates.gromos53a6_groups()
+    else:
+        sys.exit("Forcefield not supported")
+
+    tail_groups = OrderedDict()
+    head_groups = OrderedDict()
+    # Initialize empty lists for each headgroup category
+    for resname in list(set([residue.name for residue in traj.topology.residues])):
+        if 'HOH' not in resname and 'SOL' not in resname and 'water' not in resname:
+            head_groups[resname] = []
+
+    # Iterate through each residue, finding the template associated with
+    # the residue name, and shifting the indices based on the first atom index
+    for residue in traj.topology.residues:
+        if not residue.is_water:
+            template = groups[residue.name]
+            headgroups_i = [val + residue.atom(0).index for val in template['head']]
+            head_groups[residue.name] += headgroups_i
+            if "PC" in residue.name or "ISIS" in residue.name:
+                tail_1 = [val + residue.atom(0).index for val in template['tail_1']]
+                tail_2 = [val + residue.atom(0).index for val in template['tail_2']]
+                tail_groups[str(residue.index)+"a"] = tail_1
+                tail_groups[str(residue.index)+"b"] = tail_2
             else:
-                lipid_dict[residue_i.index] = list()
-                lipid_dict[residue_i.index].append(i)
-            # Figure out head groups
-            if 'DSPC' in resname:
-                if 'DSPC' in headgroup_dict:
-                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name or 'NL' in atom_i.name:
-                        headgroup_dict['DSPC'].append(i)
-                else:
-                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name or 'NL' in atom_i.name:
-                        headgroup_dict['DSPC'] = list()
-                        headgroup_dict['DSPC'].append(i)
-            elif 'DPPC' in resname:
-                if 'DPPC' in headgroup_dict:
-                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name or 'NL' in atom_i.name:
-                        headgroup_dict['DPPC'].append(i)
-                else:
-                    if 'P' in atom_i.name or 'OM' in atom_i.name or 'OA' in atom_i.name or 'NL' in atom_i.name:
-                        headgroup_dict['DPPC'] = list()
-                        headgroup_dict['DPPC'].append(i)
-            elif 'ISIS' in resname or 'isis' in resname:
-                if 'ISIS' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['ISIS'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['ISIS'] = list()
-                        headgroup_dict['ISIS'].append(i)
-            elif 'SS' in resname:
-                print("SS headgroups not included")
+                tail = [val + residue.atom(0).index for val in template['tail']]
+                tail_groups[str(residue.index)] = tail
 
-            elif 'acd12' in resname:
-                if 'acd12' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd12'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd12'] = list()
-                        headgroup_dict['acd12'].append(i)
+    return tail_groups, head_groups
 
-            elif 'acd14' in resname:
-                if 'acd14' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd14'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd14'] = list()
-                        headgroup_dict['acd14'].append(i)
-
-            elif 'acd16' in resname:
-                if 'acd16' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd16'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd16'] = list()
-                        headgroup_dict['acd16'].append(i)
-            elif 'acd18' in resname:
-                if 'acd18' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd18'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd18'] = list()
-                        headgroup_dict['acd18'].append(i)
-            elif 'acd20' in resname:
-                if 'acd20' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd20'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd20'] = list()
-                        headgroup_dict['acd20'].append(i)
-
-            elif 'acd22' in resname:
-                if 'acd22' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd22'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd22'] = list()
-                        headgroup_dict['acd22'].append(i)
-            elif 'acd24' in resname:
-                if 'acd24' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd24'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['acd24'] = list()
-                        headgroup_dict['acd24'].append(i)
-            #elif 'alc' in resname:
-            #    if 'alc' in headgroup_dict:
-            #        if 'CH' not in atom_i.name:
-            #            headgroup_dict['alc'].append(i)
-            #    else:
-            #        if 'CH' not in atom_i.name:
-            #            headgroup_dict['alc'] = list()
-            #            headgroup_dict['alc'].append(i)
-
-            elif 'alc12' in resname:
-                if 'alc12' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc12'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc12'] = list()
-                        headgroup_dict['alc12'].append(i)
-            elif 'alc14' in resname:
-                if 'alc14' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc14'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc14'] = list()
-                        headgroup_dict['alc14'].append(i)
-            elif 'alc16' in resname:
-                if 'alc16' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc16'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc16'] = list()
-                        headgroup_dict['alc16'].append(i)
-            elif 'alc18' in resname:
-                if 'alc18' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc18'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc18'] = list()
-                        headgroup_dict['alc18'].append(i)
-            elif 'alc20' in resname:
-                if 'alc20' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc20'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc20'] = list()
-                        headgroup_dict['alc20'].append(i)
-            elif 'alc22' in resname:
-                if 'alc22' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc22'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc22'] = list()
-                        headgroup_dict['alc22'].append(i)
-            elif 'alc24' in resname:
-                if 'alc24' in headgroup_dict:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc24'].append(i)
-                else:
-                    if 'CH' not in atom_i.name:
-                        headgroup_dict['alc24'] = list()
-                        headgroup_dict['alc24'].append(i)
-
-    return lipid_dict, headgroup_dict
-
-def get_lipid_tails(topol, lipid_dict):
-    ''' Input topology the lipid dictionary
-        Look at the atoms in the lipid dictionary
-        For each atom, get the index, (shifted to zero), residue name and residue index
-        For that particular residue name, figure out if it belongs in a tail and add it
-        If there are multiple tails for that residue, denote differences with 'a' and 'b'
-        So Lipida and Lipidb are different keys in the lipid_tails dict
-        But respective values correspond to that tail
-        Return lipid_tails, a dictionary mapping each lipid tail to its atoms
-        Return lipid_heads, a dictionary apping each lipid head to its atoms
-    '''
-
-    # Get an atom
-    # Get that atom's residue
-    # Shift atom indices by the index of the first atom in the residue 0
-    # Based on the residue, check if that atom's shifted index falls within the tail range
-    lipid_tails = OrderedDict()
-    lipid_heads = OrderedDict()
-    for lipid in lipid_dict.keys():
-        lipid_atoms = lipid_dict[lipid]
-        for atom_index in lipid_atoms:
-            shifted_index = atom_index - lipid_atoms[0]
-            atom_i = topol.atom(atom_index)
-            resname = atom_i.residue.name
-            resindex = atom_i.residue.index
-            # This might need improvement, right now hard coding lipid tail definitions
-            # Looking at 12 carbons after the headgroup
-            if 'DSPC' in resname:
-                if 14 == shifted_index or 16 <= shifted_index <= 26:
-                    if (str(resindex) + 'a') in lipid_tails:
-                        lipid_tails[(str(resindex) + 'a')].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex) + 'a')] = list()
-                        lipid_tails[(str(resindex) + 'a')].append(atom_index)
-
-
-                elif 35 == shifted_index or 37 <= shifted_index <= 47:
-                    if (str(resindex) + 'b') in lipid_tails:
-                        lipid_tails[(str(resindex) + 'b')].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex) + 'b')] = list()
-                        lipid_tails[(str(resindex) + 'b')].append(atom_index)
-                elif 0 <= shifted_index <= 13:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-            elif 'DPPC' in resname:
-                if 14 == shifted_index or 16 <= shifted_index <= 26:
-                    if (str(resindex) + 'a') in lipid_tails:
-                        lipid_tails[(str(resindex) + 'a')].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex) + 'a')] = list()
-                        lipid_tails[(str(resindex) + 'a')].append(atom_index)
-
-
-                elif 33 == shifted_index or 35 <= shifted_index <= 45:
-                    if ( str(resindex) + 'b') in lipid_tails:
-                        lipid_tails[(str(resindex) + 'b')].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex) + 'b')] = list()
-                        lipid_tails[(str(resindex) + 'b')].append(atom_index)
-                elif 0 <= shifted_index <= 13:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-            elif 'ISIS' in resname or 'isis' in resname:
-                if 0 <= shifted_index <= 17:
-                    if ( str(resindex) + 'a') in lipid_tails:
-                        lipid_tails[(str(resindex) + 'a')].append(atom_index)
-                    else:
-                        lipid_tails[( str(resindex) + 'a')] = list()
-                        lipid_tails[( str(resindex) + 'a')].append(atom_index)
-
-                elif 21 <= shifted_index <= 37:
-                    if (str(resindex) + 'b') in lipid_tails:
-                        lipid_tails[(str(resindex) + 'b')].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex) + 'b')] = list()
-                        lipid_tails[(str(resindex) + 'b')].append(atom_index)
-                #else:
-                #    if str(resindex) not in lipid_heads:
-                #        lipid_heads[str(resindex)] = []
-                #    lipid_heads[str(resindex)].append(atom_index)
-
-
-            elif 'SS' in resname:
-                if 5 <= shifted_index <= 16:
-                    if ( str(resindex) + 'a') in lipid_tails:
-                        lipid_tails[(str(resindex) + 'a')].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex) + 'a')] = list()
-                        lipid_tails[(str(resindex) + 'a')].append(atom_index)
-
-                elif 18 == shifted_index or 20 <= shifted_index <= 30:
-                    if ( str(resindex) + 'b') in lipid_tails:
-                        lipid_tails[(str(resindex) + 'b')].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex) + 'b')] = list()
-                        lipid_tails[(str(resindex) + 'b')].append(atom_index)
-                #else:
-                #    if str(resindex) not in lipid_heads:
-                #        lipid_heads[str(resindex)] = []
-                #    lipid_heads[str(resindex)].append(atom_index)
-
-
-
-            elif 'acd12' in resname:
-                if 0 <= shifted_index <= 10:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex))].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex))] = list()
-                        lipid_tails[(str(resindex))].append(atom_index)
-                elif shifted_index >= atom_i.residue.n_atoms-4:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-
-            elif 'acd14' in resname:
-                if 0 <= shifted_index <= 12:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex))].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex))] = list()
-                        lipid_tails[(str(resindex))].append(atom_index)
-                elif shifted_index >= atom_i.residue.n_atoms-4:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-            elif 'acd16' in resname:
-                if 0 <= shifted_index <= 14:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex))].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex))] = list()
-                        lipid_tails[(str(resindex))].append(atom_index)
-                elif shifted_index >= atom_i.residue.n_atoms-4:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-
-            elif 'acd18' in resname:
-                if 0 <= shifted_index <= 16:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex))].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex))] = list()
-                        lipid_tails[(str(resindex))].append(atom_index)
-                elif shifted_index >= atom_i.residue.n_atoms-4:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-
-            elif 'acd20' in resname:
-                if 0 <= shifted_index <= 18:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex))].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex))] = list()
-                        lipid_tails[(str(resindex))].append(atom_index)
-                elif shifted_index >= atom_i.residue.n_atoms-4:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-
-            elif 'acd22' in resname:
-                if 0 <= shifted_index <= 20:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex))].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex))] = list()
-                        lipid_tails[(str(resindex))].append(atom_index)
-                elif shifted_index >= atom_i.residue.n_atoms-4:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-
-
-            elif 'alc12' in resname:
-                if 0 <= shifted_index <= 11:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex) )].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex))] = list()
-                        lipid_tails[(str(resindex))].append(atom_index)
-
-                elif shifted_index >= atom_i.residue.n_atoms-2:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-
-            elif 'alc14' in resname:
-                if 0 <= shifted_index <= 13:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex))].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex))] = list()
-                        lipid_tails[(str(resindex))].append(atom_index)
-
-                elif shifted_index >= atom_i.residue.n_atoms-2:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-
-
-            elif 'alc16' in resname:
-                if 0 <= shifted_index <= 15:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex))].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex))] = list()
-                        lipid_tails[(str(resindex))].append(atom_index)
-
-                elif shifted_index >= atom_i.residue.n_atoms-2:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-
-            elif 'alc18' in resname:
-                if 0 <= shifted_index <= 17:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex) )].append(atom_index)
-                    else:
-                        lipid_tails[( str(resindex))] = list()
-                        lipid_tails[( str(resindex))].append(atom_index)
-
-                elif shifted_index >= atom_i.residue.n_atoms-2:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-
-            elif 'alc20' in resname:
-                if 0 <= shifted_index <= 19:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex))].append(atom_index)
-                    else:
-                        lipid_tails[( str(resindex))] = list()
-                        lipid_tails[( str(resindex))].append(atom_index)
-
-                elif shifted_index >= atom_i.residue.n_atoms-2:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-
-            elif 'alc22' in resname:
-                if 0 <= shifted_index <= 21:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex))].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex))] = list()
-                        lipid_tails[(str(resindex))].append(atom_index)
-                elif shifted_index >= atom_i.residue.n_atoms-2:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-            elif 'alc24' in resname:
-                if 0 <= shifted_index <= 23:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex))].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex))] = list()
-                        lipid_tails[(str(resindex))].append(atom_index)
-                elif shifted_index >= atom_i.residue.n_atoms-2:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-            elif 'acd24' in resname:
-                if 0 <= shifted_index <= 22:
-                    if ( str(resindex)) in lipid_tails:
-                        lipid_tails[(str(resindex))].append(atom_index)
-                    else:
-                        lipid_tails[(str(resindex))] = list()
-                        lipid_tails[(str(resindex))].append(atom_index)
-                elif shifted_index >= atom_i.residue.n_atoms-4:
-                    if str(resindex) not in lipid_heads:
-                        lipid_heads[str(resindex)] = []
-                    lipid_heads[str(resindex)].append(atom_index)
-
-
-
-            else:
-                print('Lipid {} not incorporated in lipid tail identification'.format(resname))
-                sys.exit()
-    return lipid_tails, lipid_heads
 
 def calc_tilt_angle(traj, topol, lipid_tails, blocked=False):
     ''' 
@@ -774,15 +350,19 @@ def calc_offsets(traj, headgroup_distance_dict, blocked=False):
 
     return offset_dict
 
-def calc_nematic_order(traj, lipid_dict, blocked=False):
+def calc_nematic_order(traj, blocked=False):
+    """ COmpute nematic order over each leaflet"""
+
     top_chains = []
     bot_chains = []
-    for i, key in enumerate(lipid_dict.keys()):
-        indices = [int(item) for item in lipid_dict[key]]
-        if i <= 63:
-            top_chains.append(indices)
-        else:
-            bot_chains.append(indices)
+
+    for i, residue in enumerate(traj.topology.residues):
+        if not residue.is_water:
+            indices = [a.index for a in residue.atoms]
+            if i<=63:
+                top_chains.append(indices)
+            else:
+                bot_chains.append(indices)
     s2_top = mdtraj.compute_nematic_order(traj, indices=top_chains)
     s2_bot = mdtraj.compute_nematic_order(traj, indices=bot_chains)
     s2_list = (s2_top + s2_bot)/2
@@ -796,28 +376,31 @@ def calc_nematic_order(traj, lipid_dict, blocked=False):
         s2_std = np.std(s2_list)
     return s2_ave, s2_std, s2_list
 
-def identify_leaflets(traj, topol, lipid_dict):
+def identify_leaflets(traj):
     """  Identify bilayer leaflets based on z coord
     k"""
     top_leaflet = []
     bot_leaflet = []
     all_z = []
-    for i, key in enumerate(lipid_dict.keys()):
-        atoms = lipid_dict[key]
-        z_coords = [traj.xyz[:,atom,2].flatten() for atom in atoms]
-        for coord in z_coords:
-            all_z.append(coord)
+    for residue in traj.topology.residues:
+        if not residue.is_water:
+            residue_atoms = [a.index for a in residue.atoms]
+            for val in traj.atom_slice(residue_atoms).xyz[:,:,2].flatten():
+                all_z.append(val)
+
     z_cutoff = np.mean(all_z)
 
-    for resid, atom_indices in lipid_dict.items():
-        mean_z = np.mean(traj.xyz[:,atom_indices,2])
-        if mean_z <= z_cutoff:
-            for index in atom_indices:
-                bot_leaflet.append(index)
-        else:
-            for index in atom_indices:
-                top_leaflet.append(index)
-            #top_leaflet.append(atom_indices)
+    for residue in traj.topology.residues:
+        if not residue.is_water:
+            residue_atoms = [a.index for a in residue.atoms]
+            mean_z = np.mean(traj.atom_slice(residue_atoms).xyz[:,:,2])
+            if mean_z <= z_cutoff:
+                for index in residue_atoms:
+                    bot_leaflet.append(index)
+            else:
+                for index in residue_atoms:
+                    top_leaflet.append(index)
+
     bot_leaflet = np.asarray(bot_leaflet).flatten()
     top_leaflet = np.asarray(top_leaflet).flatten()
     if len(top_leaflet) != len(bot_leaflet):
@@ -833,9 +416,9 @@ def get_all_masses(traj, topol, atom_indices):
     return masses
 
 
-def calc_density_profile(traj, topol, lipid_dict, bin_width=0.2):
+def calc_density_profile(traj, topol, bin_width=0.2):
     """ Use numpy histogram, with weights, to get density profile"""
-    bot_leaflet, top_leaflet = identify_leaflets(traj, topol, lipid_dict)
+    bot_leaflet, top_leaflet = identify_leaflets(traj)
     area = np.mean(traj.unitcell_lengths[:, 0] * traj.unitcell_lengths[:, 1])
     v_slice = area * bin_width
 
