@@ -35,10 +35,10 @@ topol = traj.topology
 print('Gathering system information <{}>...'.format(grofile))
 #lipid_dict, headgroup_dict = bilayer_analysis_functions.get_lipids(topol)
 #lipid_tails,lipid_heads = bilayer_analysis_functions.get_lipid_tails(topol, lipid_dict)
-lipid_tails, headgroup_dict = bilayer_analys_functions.identify_groups(traj, 
+lipid_tails, headgroup_dict = bilayer_analysis_functions.identify_groups(traj, 
         forcefield='gromos53a6')
-
-n_lipid = len(headgroup_dict.keys())
+pdb.set_trace()
+n_lipid = len([res for res in traj.topology.residues if not res.is_water])
 n_lipid_tails = len(lipid_tails.keys())
 n_tails_per_lipid = n_lipid_tails/n_lipid
 
@@ -67,7 +67,7 @@ print('Calculating component offsets...')
 offset_dict = bilayer_analysis_functions.calc_offsets(traj, headgroup_distance_dict, blocked=options.blocked)
 print('Calculating density profile...')
 d_a, d_t, d_b, bins, interdig_list,interdig_avg, interdig_std = \
-    bilayer_analysis_functions.calc_density_profile(traj, topol, lipid_dict)
+    bilayer_analysis_functions.calc_density_profile(traj, topol)
 #print('Calculating hydrogen bonds...')
 #hbond_matrix_avg, hbond_matrix_std, hbond_matrix_list, labelmap = bilayer_analysis_functions.calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict)
 
