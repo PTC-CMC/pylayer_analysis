@@ -75,18 +75,19 @@ def identify_groups(traj, forcefield='gromos53a6'):
 
     # Iterate through each residue, finding the template associated with
     # the residue name, and shifting the indices based on the first atom index
-    for residue in traj.topology.residues():
-        template = groups[residue.name]
-        headgroups_i = template['head'] + residue.atom(0).index
-        head_groups[residue.name] += headgroups_i
-        if "PC" in residue.name or "ISIS" in residue.name:
-            tail_1 = template['tail_1'] + residue.atom(0).index
-            tail_2 = template['tail_2'] + residue.atom(0).index
-            tail_groups[str(residue.index)+"a"] = tail_1
-            tail_groups[str(residue.index)+"b"] = tail_2
-        else:
-            tail = template['tail'] + residue.atom(0).index
-            tail_groups[str(residue.index)] = tail
+    for residue in traj.topology.residues:
+        if not residue.is_water:
+            template = groups[residue.name]
+            headgroups_i = [val + residue.atom(0).index for val in template['head']]
+            head_groups[residue.name] += headgroups_i
+            if "PC" in residue.name or "ISIS" in residue.name:
+                tail_1 = [val + residue.atom(0).index for val in template['tail_1']]
+                tail_2 = [val + residue.atom(0).index for val in template['tail_2']]
+                tail_groups[str(residue.index)+"a"] = tail_1
+                tail_groups[str(residue.index)+"b"] = tail_2
+            else:
+                tail = [val + residue.atom(0).index for val in template['tail']]
+                tail_groups[str(residue.index)] = tail
 
     return tail_groups, head_groups
 
@@ -837,9 +838,9 @@ def calc_nematic_order(traj, blocked=False):
         if not residue.is_water:
             indices = [a.index for a in residue.atoms]
             if i<=63:
-                top_chains += indices
+                top_chains.append(indices)
             else:
-                bot_chains += indices
+                bot_chains.append(indices)
     #for i, key in enumerate(lipid_dict.keys()):
     #    indices = [int(item) for item in lipid_dict[key]]
     #    if i <= 63:
@@ -859,12 +860,14 @@ def calc_nematic_order(traj, blocked=False):
         s2_std = np.std(s2_list)
     return s2_ave, s2_std, s2_list
 
-def identify_leaflets(traj, topol, lipid_dict):
+#def identify_leaflets(traj, topol, lipid_dict):
+def identify_leaflets(traj):
     """  Identify bilayer leaflets based on z coord
     k"""
     top_leaflet = []
     bot_leaflet = []
     all_z = []
+
     for i, key in enumerate(lipid_dict.keys()):
         atoms = lipid_dict[key]
         z_coords = [traj.xyz[:,atom,2].flatten() for atom in atoms]
@@ -896,9 +899,10 @@ def get_all_masses(traj, topol, atom_indices):
     return masses
 
 
-def calc_density_profile(traj, topol, lipid_dict, bin_width=0.2):
+def calc_density_profile(traj, topol, bin_width=0.2):
+#def calc_density_profile(traj, topol, lipid_dict, bin_width=0.2):
     """ Use numpy histogram, with weights, to get density profile"""
-    bot_leaflet, top_leaflet = identify_leaflets(traj, topol, lipid_dict)
+    bot_leaflet, top_leaflet = identify_leaflets(traj, topol)
     area = np.mean(traj.unitcell_lengths[:, 0] * traj.unitcell_lengths[:, 1])
     v_slice = area * bin_width
 
