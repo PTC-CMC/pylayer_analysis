@@ -33,8 +33,6 @@ topol = traj.topology
 
 # Compute system information
 print('Gathering system information <{}>...'.format(grofile))
-#lipid_dict, headgroup_dict = bilayer_analysis_functions.get_lipids(topol)
-#lipid_tails,lipid_heads = bilayer_analysis_functions.get_lipid_tails(topol, lipid_dict)
 lipid_tails, headgroup_dict = bilayer_analysis_functions.identify_groups(traj, 
         forcefield='gromos53a6')
 n_lipid = len([res for res in traj.topology.residues if not res.is_water])
