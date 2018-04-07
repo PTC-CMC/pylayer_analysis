@@ -1,21 +1,24 @@
 from __future__ import print_function
-import mdtraj as mdtraj
-import sys
-import scipy.integrate as integrate
-from scipy.optimize import curve_fit
-import pandas as pd
 import os
+import sys
+import time
+
 from optparse import OptionParser
 import pdb
-import itertools
-import numpy as np
-import matplotlib
 import collections
 from collections import OrderedDict
+
+import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
-import time
+
+import itertools
+import numpy as np
+import scipy.integrate as integrate
+from scipy.optimize import curve_fit
+import pandas as pd
+import mdtraj as mdtraj
 
 def calc_APL(traj, n_lipid,blocked=False):
     ''' 
