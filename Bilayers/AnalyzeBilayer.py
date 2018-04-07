@@ -33,10 +33,12 @@ topol = traj.topology
 
 # Compute system information
 print('Gathering system information <{}>...'.format(grofile))
-lipid_dict, headgroup_dict = bilayer_analysis_functions.get_lipids(topol)
-lipid_tails,lipid_heads = bilayer_analysis_functions.get_lipid_tails(topol, lipid_dict)
+#lipid_dict, headgroup_dict = bilayer_analysis_functions.get_lipids(topol)
+#lipid_tails,lipid_heads = bilayer_analysis_functions.get_lipid_tails(topol, lipid_dict)
+lipid_tails, headgroup_dict = bilayer_analys_functions.identify_groups(traj, 
+        forcefield='gromos53a6')
 
-n_lipid = len(lipid_dict.keys())
+n_lipid = len(headgroup_dict.keys())
 n_lipid_tails = len(lipid_tails.keys())
 n_tails_per_lipid = n_lipid_tails/n_lipid
 
@@ -54,7 +56,7 @@ apt_avg, apt_std, apt_list = bilayer_analysis_functions.calc_APT(traj, apl_list,
         blocked=options.blocked)
 np.savetxt('apt.dat', apt_list)
 print('Calculating nematic order...')
-s2_ave, s2_std, s2_list = bilayer_analysis_functions.calc_nematic_order(traj, lipid_dict, blocked=options.blocked)
+s2_ave, s2_std, s2_list = bilayer_analysis_functions.calc_nematic_order(traj, blocked=options.blocked)
 np.savetxt('s2.dat', s2_list)
 print('Calculating headgroup distances...')
 headgroup_distance_dict = bilayer_analysis_functions.compute_headgroup_distances(traj, topol, headgroup_dict, blocked=options.blocked)
