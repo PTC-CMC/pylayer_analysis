@@ -862,7 +862,8 @@ def identify_leaflets(traj):
     for residue in traj.topology.residues:
         if not residue.is_water:
             residue_atoms = [a.index for a in residue.atoms]
-            all_z.append(traj.atom_slice(residue_atoms).xyz[:,:,2].flatten())
+            for val in traj.atom_slice(residue_atoms).xyz[:,:,2].flatten():
+                all_z.append(val)
 
     z_cutoff = np.mean(all_z)
 
