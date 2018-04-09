@@ -4,7 +4,9 @@ from collections import OrderedDict
 """ Group defintiions for several lipid species
 depends on the forcefield and molecule parameterization """
 
-
+# //////////////////
+# Gromos 53a6 Lipids
+# //////////////////
 g53a6_groups = OrderedDict()
 ########################
 ### PC phospholipids ###
@@ -90,12 +92,34 @@ g53a6_groups['alc24'] = OrderedDict()
 g53a6_groups['alc24']['tail'] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
 g53a6_groups['alc24']['head'] = [24,25]
 
+
+# ///////////////
+# Charmm36 Lipids
+# ///////////////
+c36_groups['DPPC'] = OrderedDict()
+
+# #######################
+# ### PC Phosphoipids ###
+# #######################
+c36_groups['DPPC']['head'] = [19,20,21,22,23]
+c36_groups['DPPC']['tail_1'] = [39,41,87,90,93,96,99,102,105,108,111,114,117,120,123,
+        126]
+c36_groups['DPPC']['tail_2'] = [30,32,44,47,50,53,56,59,62,65,68,71,74,77,80,83]
+
+
+c36_groups['DSPC']['head'] = [19,20,21,22,23]
+c36_groups['DSPC']['tail_1'] = [39,41,93,96,99,102,105,108,111,114,117,120,123,126,
+        129,132,135,138]
+c36_groups['DSPC']['tail_2'] = [30,32,44,47,50,53,56,59,62,65,68,71,74,77,80,83,86,
+        89]
+
  
 
 def gromos53a6_groups():
     return g53a6_groups
 
-
+def charmm36_groups():
+    return c36_groups
 
 
 
