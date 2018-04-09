@@ -61,9 +61,16 @@ def identify_groups(traj, forcefield='gromos53a6'):
         keys : residue names
         values : headgroup atom indices 
         """
-    if forcefield == 'gromos53a6':
-        groups = group_templates.gromos53a6_groups()
-    else:
+    ff_templates = {'gromos53a6': group_templates.gromos53a6_groups,
+            'charmm36': group_templates.charmm36_groups}
+    #if forcefield == 'gromos53a6':
+    #    groups = group_templates.gromos53a6_groups()
+
+    #else:
+    #    sys.exit("Forcefield not supported")
+    try:
+        groups = ff_templates[forcefield]()
+    except KeyError:
         sys.exit("Forcefield not supported")
 
     tail_groups = OrderedDict()
