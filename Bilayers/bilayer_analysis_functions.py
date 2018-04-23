@@ -87,7 +87,7 @@ def identify_groups(traj, forcefield='gromos53a6'):
             template = groups[residue.name]
             headgroups_i = [val + residue.atom(0).index for val in template['head']]
             head_groups[residue.name] += headgroups_i
-            if "PC" in residue.name or "ISIS" in residue.name:
+            if "PC" in residue.name or "ISIS" in residue.name or 'cer' in residue.name:
                 tail_1 = [val + residue.atom(0).index for val in template['tail_1']]
                 tail_2 = [val + residue.atom(0).index for val in template['tail_2']]
                 tail_groups[str(residue.index)+"a"] = tail_1
@@ -268,92 +268,51 @@ def compute_headgroup_distances(traj, topol, headgroup_dict, blocked=False):
         headgroup_distance_dict[key] = calc_head_distance(traj, topol, headgroup_dict[key], blocked=False)
     return headgroup_distance_dict
 
-def calc_bilayer_height(traj, headgroup_distance_dict,blocked=False):
+def calc_bilayer_height(traj, headgroup_distance_dict,blocked=False,anchor='DSPC'):
     """
-    Input: Dictionary of molecule types and their headroup distances
+    Input:
+    Dictionary of molecule types and their headroup distances
     Calculate bilayer height by comparing DSPC or DPPC headgroup distances
+    anchor : str
+        Reference group to look at height
     Return: bilayer height average, bilayer height std, bilayer heigh per frame list
     """
-    try:
-        if headgroup_distance_dict['DSPC']:
-            dist_list = headgroup_distance_dict['DSPC'][2]
-            #dist_frame_avg = np.mean(dist_list, axis = 1)
-            if blocked:
-                dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-                dist_block_avgs = np.mean(dist_blocks,axis=1)
-                dist_avg = np.mean(dist_block_avgs)
-                dist_std = np.std(dist_block_avgs)
-            else:
-                dist_avg = np.mean(dist_list)
-                dist_std = np.std(dist_list)
-    except KeyError:
-        try:
-    #elif headgroup_distance_dict['DPPC']:
+    dist_list = headgroup_distance_dict[anchor][2]
+    if blocked:
+        dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+        dist_block_avgs = np.mean(dist_blocks,axis=1)
+        dist_avg = np.mean(dist_block_avgs)
+        dist_std = np.std(dist_block_avgs)
+    else:
+        dist_avg = np.mean(dist_list)
+        dist_std = np.std(dist_list)
 
-            dist_list = headgroup_distance_dict['DPPC'][2]
-            #dist_frame_avg = np.mean(dist_list, axis = 1)
-            if blocked: 
-                dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-                dist_block_avgs = np.mean(dist_blocks, axis=1)
-                dist_avg = np.mean(dist_block_avgs)
-                dist_std = np.std(dist_block_avgs)
-            else:
-                dist_avg = np.mean(dist_list)
-                dist_std = np.std(dist_list)
-        except KeyError:
-    #else:
-            print ('No phosphate groups to compare')
 
     return (dist_avg, dist_std, dist_list)
-def calc_offsets(traj, headgroup_distance_dict, blocked=False):
+
+def calc_offsets(traj, headgroup_distance_dict, blocked=False, anchor="DSPC"):
     """ 
-    Input: dictionary of molecule types and their headgroup distances
+    Input:
+    dictionary of molecule types and their headgroup distances
+    anchor : str
+       Reference group to compare offsets 
     Calculate the offsets with respect to the phosphate group
     Return: dictionary of offsets with respect to the phosphate group
     Values are (distance averaged over n_Frames, distance std over n_frame)
     """
     offset_dict = OrderedDict()
-    try:
-        if headgroup_distance_dict['DSPC']:
-            use_DSPC = True
-            use_DPPC = False
-    except KeyError:
-    #elif headgroup_distance_dict['DPPC']:
-        try:
-            headgroup_distance_dict['DPPC']
-            use_DSPC = False
-            use_DPPC = True
-        except KeyError:
-    #else:
-            print('No phosphate groups to compare to')
+    
     for key in headgroup_distance_dict.keys():
-        # Determine if reference is DSPC or DPPC
-        if use_DSPC:
-            offset_list = (headgroup_distance_dict['DSPC'][2] - headgroup_distance_dict[key][2])/2
-            #offset_frame_avg = np.mean(offset_list, axis = 1)
-            if blocked:
-                offset_blocks = offset_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-                offset_block_avgs = np.mean(offset_blocks, axis = 1)
-                offset_avg = np.mean(offset_block_avgs)
-                offset_std = np.std(offset_block_avgs)
-            else:
-                offset_avg = np.mean(offset_list)
-                offset_std = np.std(offset_list)
-            offset_dict[key] = (offset_avg, offset_std)
-        elif use_DPPC:
-            offset_list = (headgroup_distance_dict['DPPC'][2] - headgroup_distance_dict[key][2])/2
-            #offset_frame_avg = np.mean(offset_list, axis = 1)
-            if blocked:
-                offset_blocks = offset_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-                offset_block_avgs = np.mean(offset_blocks, axis = 1)
-                offset_avg = np.mean(offset_block_avgs)
-                offset_std = np.std(offset_blocks_avgs)
-            else:
-                offset_avg = np.mean(offset_list)
-                offset_std = np.std(offset_list)
-            offset_dict[key] = (offset_avg, offset_std)
+        offset_list = (headgroup_distance_dict[anchor][2] - headgroup_distance_dict[key][2]) / 2
+        if blocked:
+            offset_blocks = offset_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+            offset_block_avgs = np.mean(offset_blocks, axis=1)
+            offset_avg = np.mean(offset_block_avgs)
+            offset_std = np.std(offset_block_avgs)
         else:
-            print ('No phosphate groups to compare')
+            offset_avg = np.mean(offset_list)
+            offset_std = np.std(offset_list)
+        offset_dict[key] = [offset_avg, offset_std]
 
     return offset_dict
 
