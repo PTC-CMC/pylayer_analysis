@@ -96,24 +96,53 @@ g53a6_groups['alc24']['head'] = [24,25]
 # ///////////////
 # Charmm36 Lipids
 # ///////////////
-c36_groups['DPPC'] = OrderedDict()
+c36_groups = OrderedDict()
 
 # #######################
 # ### PC Phosphoipids ###
 # #######################
+c36_groups['DPPC'] = OrderedDict()
 c36_groups['DPPC']['head'] = [19,20,21,22,23]
 c36_groups['DPPC']['tail_1'] = [39,41,87,90,93,96,99,102,105,108,111,114,117,120,123,
         126]
 c36_groups['DPPC']['tail_2'] = [30,32,44,47,50,53,56,59,62,65,68,71,74,77,80,83]
 
 
+c36_groups['DSPC'] = OrderedDict()
 c36_groups['DSPC']['head'] = [19,20,21,22,23]
 c36_groups['DSPC']['tail_1'] = [39,41,93,96,99,102,105,108,111,114,117,120,123,126,
         129,132,135,138]
 c36_groups['DSPC']['tail_2'] = [30,32,44,47,50,53,56,59,62,65,68,71,74,77,80,83,86,
         89]
 
- 
+# #################
+# ### Ceramides ###
+# #################
+# Sphingosine tails are tail_1
+# FA tails are tail_2
+
+c36_groups['cer1'] = OrderedDict()
+c36_groups['cer1']['head'] = [24, 25, 22, 23, 18, 105, 19, 106, 107, 20, 21, 15, 
+                              104, 16, 17, 14, 103, 13, 102]
+c36_groups['cer1']['tail_1'] = np.arange(0,13)
+c36_groups['cer1']['tail_2'] = np.concatenate(( np.arange(26,55), np.arange(58, 76) ))
+
+c36_groups['ecer2'] = OrderedDict()
+c36_groups['ecer2']['head'] = [ 0, 1, 2, 3, 50, 51, 52, 53, 54, 55, 56, 57, 58, 
+                                59, 60, 61, 62, 63, 64]
+c36_groups['ecer2']['tail_1'] = np.arange(65,105)
+c36_groups['ecer2']['tail_2'] = np.arange(11,50)
+
+c36_groups['ucer2'] = OrderedDict()
+c36_groups['ucer2']['head'] = [ 0, 1, 2, 3, 74, 75, 76, 77, 78, 79, 80, 81, 82, 
+                                83, 84, 85, 86, 87, 88]
+c36_groups['ucer2']['tail_1'] = np.arange(89, 129)
+c36_groups['ucer2']['tail_2'] = np.arange(11, 74)
+
+c36_groups['ucer6'] = OrderedDict()
+c36_groups['ucer6']['head'] = []
+c36_groups['ucer6']['tail_1'] = []
+c36_groups['ucer6']['tail_2'] = np.arange(4,75)
 
 def gromos53a6_groups():
     return g53a6_groups
