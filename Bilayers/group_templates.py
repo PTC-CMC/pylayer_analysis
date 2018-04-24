@@ -144,6 +144,38 @@ c36_groups['ucer6']['head'] = []
 c36_groups['ucer6']['tail_1'] = []
 c36_groups['ucer6']['tail_2'] = np.arange(4,75)
 
+####################
+# ### FFA Groups ###
+####################
+
+c36_groups['ffa12'] = OrderedDict()
+c36_groups['ffa12']['head'] = np.arange(0,4)
+c36_groups['ffa12']['tail'] = np.arange(4,38)
+
+c36_groups['ffa16'] = OrderedDict()
+c36_groups['ffa16']['head'] = np.arange(15,19)
+c36_groups['ffa16']['tail'] = np.concatenate(( np.arange(0,15), np.arange(19,50) ))
+
+c36_groups['ffa24'] = OrderedDict()
+c36_groups['ffa24']['head'] = np.arange(23,27)
+c36_groups['ffa24']['tail'] = np.concatenate(( np.arange(0,23), np.arange(27,74) )) 
+
+###################
+# ### OH Groups ###
+###################
+
+c36_groups['oh12'] = OrderedDict()
+c36_groups['oh12']['head'] = [35,38]
+c36_groups['oh12']['tail'] = np.concatenate(( np.arange(0,35), [36,37] ))
+
+c36_groups['oh16'] = OrderedDict()
+c36_groups['oh16']['head'] = [47,50]
+c36_groups['oh16']['tail'] = np.concatenate(( np.arange(0,47), [48,49] ))
+
+c36_groups['oh24'] = OrderedDict()
+c36_groups['oh24']['head'] = [71,74]
+c36_groups['oh24']['tail'] = np.concatenate(( np.arange(0,71), [72,73] ))
+
 def gromos53a6_groups():
     return g53a6_groups
 
