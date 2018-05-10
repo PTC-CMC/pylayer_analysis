@@ -133,6 +133,13 @@ c36_groups['ecer2']['head'] = [ 0, 1, 2, 3, 50, 51, 52, 53, 54, 55, 56, 57, 58,
 c36_groups['ecer2']['tail_1'] = np.arange(65,105)
 c36_groups['ecer2']['tail_2'] = np.arange(11,50)
 
+c36_groups['ecer3'] = OrderedDict()
+c36_groups['ecer3']['head'] = [ 0, 1, 2, 3, 50, 51, 52, 53, 54, 55, 56, 57, 58, 
+                                59, 60, 61, 62, 63, 64]
+c36_groups['ecer3']['tail_1'] = np.arange(65,105)
+c36_groups['ecer3']['tail_2'] = np.arange(11,50)
+
+
 c36_groups['ucer2'] = OrderedDict()
 c36_groups['ucer2']['head'] = [ 0, 1, 2, 3, 74, 75, 76, 77, 78, 79, 80, 81, 82, 
                                 83, 84, 85, 86, 87, 88]

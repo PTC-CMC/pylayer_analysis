@@ -536,7 +536,7 @@ def calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict,include_water_
     return (hbond_matrix_avg, hbond_matrix_std, hbond_matrix_list, labelmap)
 
 
-def _compute_rotational_correlation(traj, atom_1, atom_2, 
+def _compute_rotational_autocorrelation(traj, atom_1, atom_2, 
         dt = 10, n_time_origins=50):
     """ Compute rotational correlation over various time intervals
     For two atoms with respect to distance vector at a time origin
@@ -596,8 +596,8 @@ def _compute_rotational_correlation(traj, atom_1, atom_2,
 
     return correlation
 
-def compute_rotational_correlation(traj,
-        dt = 10, n_time_origins=5):   
+def compute_rotational_autocorrelation(traj,
+        dt = 10, n_time_origins=5, forcefield='charmm36'):   
     """ Compute rotatoinal correlation over various time intervals
     For two atoms with respect to distance vector at a time origin
 
@@ -617,6 +617,17 @@ def compute_rotational_correlation(traj,
     rotational_correlations = list()
         List of rotational correlations over each time interval
         """
+    ff_templates = {'gromos53a6': group_templates.gromos53a6_groups,
+            'charmm36': group_templates.charmm36_groups}
+    #if forcefield == 'gromos53a6':
+    #    groups = group_templates.gromos53a6_groups()
+
+    #else:
+    #    sys.exit("Forcefield not supported")
+    try:
+        groups = ff_templates[forcefield]()
+    except KeyError:
+        sys.exit("Forcefield not supported")
 
     # Need to figure out which moleucles are DSPC
     # [16,32] and [37,53] correspond to each tail (zero-index)
@@ -624,24 +635,29 @@ def compute_rotational_correlation(traj,
     for resid, residue in enumerate(traj.topology.residues):
         if 'DSPC' in residue.name:
             local_atoms = [atom for atom in residue.atoms]
-            atom_1 = np.random.randint(16,33)
-            atom_2 = np.random.randint(37,54)
+            #atom_1 = np.random.randint(16,33)
+            #atom_2 = np.random.randint(37,54)
+            atom_1 = np.random.choice(groups['DSPC']['tail_1'])
+            atom_2 = np.random.choice(groups['DSPC']['tail_2'])
     
             global_1 = local_atoms[atom_1].index
             global_2 = local_atoms[atom_2].index
     
-            correlation = _compute_rotational_correlation(traj, global_1, global_2,
+            correlation = _compute_rotational_autocorrelation(traj, global_1, global_2,
                     n_time_origins=n_time_origins, dt=dt)
             all_correlations.append(correlation)
         elif 'DPPC' in residue.name:
             local_atoms = [atom for atom in residue.atoms]
-            atom_1 = np.random.randint(16,30)
-            atom_2 = np.random.randint(35,49)
+            #atom_1 = np.random.randint(16,30)
+            #atom_2 = np.random.randint(35,49)
+            atom_1 = np.random.choice(groups['DPPC']['tail_1'])
+            atom_2 = np.random.choice(groups['DPPC']['tail_2'])
+
     
             global_1 = local_atoms[atom_1].index
             global_2 = local_atoms[atom_2].index
     
-            correlation = _compute_rotational_correlation(traj, global_1, global_2,
+            correlation = _compute_rotational_autocorrelation(traj, global_1, global_2,
                     n_time_origins=n_time_origins, dt=dt)
             all_correlations.append(correlation)
 
