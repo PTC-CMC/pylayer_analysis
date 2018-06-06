@@ -1,4 +1,4 @@
-from __future__ import print_function
+#from __future__ import print_function
 import os
 import sys
 import time
@@ -19,26 +19,67 @@ import scipy.integrate as integrate
 from scipy.optimize import curve_fit
 import pandas as pd
 import mdtraj as mdtraj
+import simtk.unit as unit
 
 import group_templates
 
-def calc_APL(traj, n_lipid,blocked=False):
+def block_avg(traj, data, block_size=5*unit.nanosecond):
+    """
+    Break a 2d numpy array into blocks
+
+    This function is taken directly from Tim Moore's `block_avg` (see
+    https://github.com/tcmoore3/block_avg).
+
+    Parameters
+    ----------
+    traj : mdtraj.Trajectory
+        Used to determine timestep
+    data : np.ndarray, shape=(m, n)
+        The data to block; must be a 2-dimensional array
+    block_size : simtk.unit.unit.Unit
+        The size of each block, should have time dimension
+    Returns
+    -------
+    blocks : np.ndarray, shape=(m/block_size, n)
+        The block averaged data
+    stds : np.ndarray, shape=(m/block_size, n)
+        The standard deviation of each block
+    Notes
+    -----
+    `m` must not necessarily be divisible by `block_size` ; in the case
+    that it isn't, the data is trimmed *from the beginning* so that it is.
+    """
+
+    timestep = traj.time[1] * unit.picosecond - traj.time[0] * unit.picosecond
+    block_size = int(block_size/timestep)
+    remainder = data.shape[0] % block_size
+    if remainder != 0:
+        data = data[remainder:]
+    n_blocks = int(data.shape[0] / block_size)
+    data = data.reshape((n_blocks, block_size))
+    blocks = np.mean(data, axis=1)
+    stds = np.std(data, axis=1)
+    return blocks, stds
+
+def calc_APL(traj, n_lipid,blocked=False, block_size=5*unit.nanosecond):
     ''' 
     Input: Trajectory and number of lipids
     Compute areas by looking at x and y unit cell lengths
     Return: array of area per lipids (n_frame x 1) [Angstrom]
     '''
-    area = 100 * traj.unitcell_lengths[:, 0] * traj.unitcell_lengths[:, 1] # This is n_frame x 1
+    area = (traj.unitcell_lengths[:, 0] * unit.nanometer 
+            * traj.unitcell_lengths[:, 1] * unit.nanometer) # This is n_frame x 1
+    area = area.in_units_of(unit.angstrom**2)
     if blocked:
-        area_blocked = area[:-1].reshape(int((traj.n_frames-1)/250), 250) # Reshape so that each row is a block of 250 frames (5ns)
-        area_block_avg = np.mean(area_blocked, axis=1)
-        areaavg = np.mean(area_block_avg)
-        areastd = np.std(area_block_avg)#/(len(area_block_avg)**0.5)
+        #timestep = traj.time[1] * unit.picosecond - traj.time[0] * unit.picosecond
+        #block_size_frames = int(block_size/timestep)
+        blocks, stds = block_avg(traj, area, block_size=5*unit.nanosecond)
+        areastd = np.std(blocks)
+        areaavg = np.mean(blocks)
     else:
         areaavg = np.mean(area)
         areastd = np.std(area)
-    apl_list = np.eye(traj.n_frames, 1)
-    apl_list[:,0] = area[:]/(n_lipid/2)
+    apl_list = area/(n_lipid/2)
     apl_avg = areaavg/(n_lipid/2)
     apl_std = areastd/(n_lipid/2)
     return (apl_avg, apl_std, apl_list)
@@ -99,7 +140,8 @@ def identify_groups(traj, forcefield='gromos53a6'):
     return tail_groups, head_groups
 
 
-def calc_tilt_angle(traj, topol, lipid_tails, blocked=False):
+def calc_tilt_angle(traj, topol, lipid_tails, blocked=False, 
+        block_size=5*unit.nanosecond):
     ''' 
     Input: Trajectory, topology, dictionary of lipid tails with atom index values
     Compute characteristic vector using eigenvector associated with
@@ -112,27 +154,26 @@ def calc_tilt_angle(traj, topol, lipid_tails, blocked=False):
 
     surface_normal = np.asarray([0, 0, 1.0])
     angle_list = []
-    angle_list = np.eye(traj.n_frames, len(lipid_tails.keys()))
+    angle_list = np.eye(traj.n_frames, len(lipid_tails.keys())) * unit.degree
     index = 0
     for key in lipid_tails.keys():
         lipid_i_atoms = lipid_tails[key]
         traj_lipid_i = traj.atom_slice(lipid_i_atoms)
         director = mdtraj.geometry.order._compute_director(traj_lipid_i)
-        lipid_angle = np.rad2deg(np.arccos(np.dot(director, surface_normal)))
+        lipid_angle = np.rad2deg(np.arccos(np.dot(director, surface_normal))) * unit.degree
         for i,angle in enumerate(lipid_angle):
-            if angle >= 90:
-                angle = 180- angle
+            if angle >= 90*unit.degree:
+                angle = 180*unit.degree - angle
                 lipid_angle[i] = angle
         #angle_list.append(lipid_angle)
         angle_list[:,index] = lipid_angle
         index += 1
-
     angle_frame_avg = np.mean(angle_list, axis = 1) # For each frame, average all tail tilt angles
     if blocked:
-        angle_blocks = angle_frame_avg[:-1].reshape(int((traj.n_frames-1)/250),250) # Reshape into blocks of 5ns
-        angle_block_avgs = np.mean(angle_blocks, axis = 1)
-        angle_avg = np.mean(angle_block_avgs)
-        angle_std = np.std(angle_block_avgs)#/(len(angle_block_avgs)**0.5)
+        blocks, stds = block_avg(traj, angle_frame_avg, block_size=5*unit.nanosecond)
+        angle_std = np.std(blocks)
+        angle_avg = np.mean(blocks)
+        
     else:
         angle_avg = np.mean(angle_frame_avg)
         angle_std = np.std(angle_frame_avg)
