@@ -153,25 +153,23 @@ def calc_tilt_angle(traj, topol, lipid_tails, blocked=False,
     '''
 
     surface_normal = np.asarray([0, 0, 1.0])
-    angle_list = []
-    angle_list = unit.Quantity(np.eye(traj.n_frames, len(lipid_tails.keys())),
-                                unit.degree)
+    angle_list = np.eye(traj.n_frames, len(lipid_tails.keys()))
     index = 0
     for key in lipid_tails.keys():
         lipid_i_atoms = lipid_tails[key]
         traj_lipid_i = traj.atom_slice(lipid_i_atoms)
         director = mdtraj.geometry.order._compute_director(traj_lipid_i)
         #lipid_angle = np.rad2deg(np.arccos(np.dot(director, surface_normal))) * unit.degree
-        lipid_angle = unit.Quantity(np.rad2deg(np.arccos(np.dot(director, 
-                                                            surface_normal))) , 
-                                                            unit.degree)
+        lipid_angle = np.rad2deg(np.arccos(np.dot(director, 
+                                                surface_normal))) 
         for i,angle in enumerate(lipid_angle):
-            if angle >= 90*unit.degree:
-                angle = 180*unit.degree - angle
+            if angle >= 90:
+                angle = 180 - angle
                 lipid_angle[i] = angle
         #angle_list.append(lipid_angle)
         angle_list[:,index] = lipid_angle
         index += 1
+    angle_list = unit.Quantity(angle_list, unit.degree)
     angle_frame_avg = np.mean(angle_list, axis = 1) # For each frame, average all tail tilt angles
     if blocked:
         blocks, stds = block_avg(traj, angle_frame_avg, block_size=5*unit.nanosecond)
@@ -192,9 +190,11 @@ def calc_APT(traj, apl_list, angle_list, n_tails_per_lipid, blocked=False):
     # Each element in angle list correspond to a tail, and that element is a row of tilts per frame
     # Each element in apl list is the apl for a frame
     apt_list = angle_list
-    apt_list = unit.Quantity([np.cos(angle_list[i,:].in_units_of(unit.radian)._value) 
-                * apl_list[i]._value/n_tails_per_lipid  for i, _ in enumerate(angle_list)],
-                apl_list.unit)
+    apt_list = unit.Quantity(np.array([np.cos(
+                            angle_list[i,:].in_units_of(unit.radian)._value) 
+                            * apl_list[i]._value/n_tails_per_lipid  
+                            for i, _ in enumerate(angle_list)]),
+                            apl_list.unit)
     apt_frame_avg = unit.Quantity(np.mean(apt_list._value, axis = 1), 
                                 apt_list.unit) # For each frame, averge all tail tilt angeles
     if blocked:
@@ -470,7 +470,6 @@ def calc_density_profile(traj, topol, bin_width=0.2, blocked=False,
                                 block_size=block_size)
         idig_avg = np.mean(blocks)
         idig_std = np.std(blocks)
-        pdb.set_trace()
     else:
         idig_avg = np.mean(interdigitation)
         idig_std = np.std(interdigitation)
