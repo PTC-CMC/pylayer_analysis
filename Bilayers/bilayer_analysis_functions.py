@@ -67,8 +67,8 @@ def calc_APL(traj, n_lipid,blocked=False, block_size=5*unit.nanosecond):
     Compute areas by looking at x and y unit cell lengths
     Return: array of area per lipids (n_frame x 1) [Angstrom]
     '''
-    area = (traj.unitcell_lengths[:, 0] * unit.nanometer 
-            * traj.unitcell_lengths[:, 1] * unit.nanometer) # This is n_frame x 1
+    area = unit.Quantity(traj.unitcell_lengths[:, 0] 
+            * traj.unitcell_lengths[:, 1], unit.nanometer**2) # This is n_frame x 1
     area = area.in_units_of(unit.angstrom**2)
     if blocked:
         #timestep = traj.time[1] * unit.picosecond - traj.time[0] * unit.picosecond
@@ -154,13 +154,17 @@ def calc_tilt_angle(traj, topol, lipid_tails, blocked=False,
 
     surface_normal = np.asarray([0, 0, 1.0])
     angle_list = []
-    angle_list = np.eye(traj.n_frames, len(lipid_tails.keys())) * unit.degree
+    angle_list = unit.Quantity(np.eye(traj.n_frames, len(lipid_tails.keys())),
+                                unit.degree)
     index = 0
     for key in lipid_tails.keys():
         lipid_i_atoms = lipid_tails[key]
         traj_lipid_i = traj.atom_slice(lipid_i_atoms)
         director = mdtraj.geometry.order._compute_director(traj_lipid_i)
-        lipid_angle = np.rad2deg(np.arccos(np.dot(director, surface_normal))) * unit.degree
+        #lipid_angle = np.rad2deg(np.arccos(np.dot(director, surface_normal))) * unit.degree
+        lipid_angle = unit.Quantity(np.rad2deg(np.arccos(np.dot(director, 
+                                                            surface_normal))) , 
+                                                            unit.degree)
         for i,angle in enumerate(lipid_angle):
             if angle >= 90*unit.degree:
                 angle = 180*unit.degree - angle
@@ -188,16 +192,20 @@ def calc_APT(traj, apl_list, angle_list, n_tails_per_lipid, blocked=False):
     # Each element in angle list correspond to a tail, and that element is a row of tilts per frame
     # Each element in apl list is the apl for a frame
     apt_list = angle_list
-    apt_list = np.cos(np.deg2rad(angle_list[:,:]))*apl_list[:]/n_tails_per_lipid
-    apt_frame_avg = np.mean(apt_list, axis = 1) # For each frame, averge all tail tilt angeles
+    apt_list = unit.Quantity([np.cos(angle_list[i,:].in_units_of(unit.radian)._value) 
+                * apl_list[i]._value/n_tails_per_lipid  for i, _ in enumerate(angle_list)],
+                apl_list.unit)
+
+    apt_frame_avg = unit.Quantity(np.mean(apt_list._value, axis = 1), 
+                                apt_list.unit) # For each frame, averge all tail tilt angeles
     if blocked:
-        apt_blocks = apt_frame_avg[:-1].reshape(int((traj.n_frames-1)/250),250)
-        apt_block_avgs = np.mean(apt_blocks, axis=1)
-        apt_avg = np.mean(apt_block_avgs)
-        apt_std = np.std(apt_block_avgs)#/(len(apt_block_avgs)**0.5)
+        blocks, stds = block_avg(traj, apt_frame_avg)
+        apt_avg = np.mean(blocks)
+        apt_std = np.std(blocks)#/(len(apt_block_avgs)**0.5)
     else: 
         apt_avg = np.mean(apt_list)
         apt_std = np.std(apt_list)
+    pdb.set_trace()
     return apt_avg, apt_std, apt_list
 
 def calc_mean(dataset):
