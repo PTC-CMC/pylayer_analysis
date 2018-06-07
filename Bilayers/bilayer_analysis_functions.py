@@ -419,23 +419,26 @@ def identify_leaflets(traj):
 def get_all_masses(traj, topol, atom_indices):
     """ Return array of masses corresponding to atom idnices"""
     masses = np.zeros_like(atom_indices, dtype=float)
+    masses = []
     for i, index in enumerate(atom_indices):
-        masses[i] = get_mass(topol, index)
+        masses.append(get_mass(topol,index))
+    masses = unit.Quantity(masses, unit=unit.gram)
     return masses
 
 
-def calc_density_profile(traj, topol, bin_width=0.2):
+def calc_density_profile(traj, topol, bin_width=0.2, blocked=False, 
+                        block_size=5*unit.nanosecond):
     """ Use numpy histogram, with weights, to get density profile"""
     bot_leaflet, top_leaflet = identify_leaflets(traj)
-    area = np.mean(traj.unitcell_lengths[:, 0] * traj.unitcell_lengths[:, 1])
-    v_slice = area * bin_width
+    area = unit.Quantity(np.mean(traj.unitcell_lengths[:, 0] 
+                        * traj.unitcell_lengths[:, 1]), unit.nanometer*unit.nanometer)
+    v_slice = area * unit.Quantity(bin_width*unit.nanometer)
 
     density_profile_bot = []
     density_profile_top = []
     density_profile_all = []
-    # Convert from g/nm3 to kg/m3, and nm to m
-    bot_masses = 1e24 * get_all_masses(traj, topol, bot_leaflet) / v_slice
-    top_masses =  1e24 * get_all_masses(traj, topol, top_leaflet) / v_slice
+    bot_masses = (get_all_masses(traj, topol, bot_leaflet) / v_slice).in_units_of(unit.kilogram * (unit.meter**-3))
+    top_masses = (get_all_masses(traj, topol, top_leaflet) / v_slice).in_units_of(unit.kilogram * (unit.meter**-3))
     bounds = (np.min(traj.xyz[:, bot_leaflet, 2]),
             np.max(traj.xyz[:, top_leaflet,2]))
     n_bins = int(round((bounds[1] - bounds[0]) / bin_width))
@@ -444,9 +447,9 @@ def calc_density_profile(traj, topol, bin_width=0.2):
     interdigitation = []
     for xyz in traj.xyz:
         bot_hist, bin_edges = np.histogram(xyz[bot_leaflet,2], bins=n_bins,
-                range=bounds, normed=False, weights=bot_masses)
+                range=bounds, normed=False, weights=bot_masses._value)
         top_hist, bin_edges = np.histogram(xyz[top_leaflet,2], bins=n_bins,
-                range=bounds, normed=False, weights=top_masses)
+                range=bounds, normed=False, weights=top_masses._value)
         all_hist = [x+y for x,y in zip(top_hist, bot_hist)]
         density_profile_bot.append(bot_hist)
         density_profile_top.append(top_hist)
@@ -462,8 +465,15 @@ def calc_density_profile(traj, topol, bin_width=0.2):
                 overlap = numerator / denominator
             integrand.append(overlap)
         interdigitation.append(integrate.simps(integrand, x = bin_centers))
-    idig_avg = np.mean(interdigitation)
-    idig_std = np.std(interdigitation)
+    if blocked:
+        blocks, stds = block_avg(traj, np.array(interdigitation), 
+                                block_size=block_size)
+        idig_avg = np.mean(blocks)
+        idig_std = np.std(blocks)
+        pdb.set_trace()
+    else:
+        idig_avg = np.mean(interdigitation)
+        idig_std = np.std(interdigitation)
     return np.asarray(density_profile_all), \
         np.asarray(density_profile_bot), np.asarray(density_profile_top), \
         bin_centers, interdigitation, idig_avg, idig_std
@@ -472,7 +482,7 @@ def calc_density_profile(traj, topol, bin_width=0.2):
 def get_mass(topol, atom_i):
     """
     Input: trajectory, atom index
-    Mass dictionary is in units of amu
+    Mass dictionary is in units of amu (g/mol)
     Return: mass of that atom (g)
     """
     try:
@@ -481,9 +491,9 @@ def get_mass(topol, atom_i):
             'CH0': 12.0110, 'CH1': 13.01900, 'CH2': 14.02700, 'CH3': 15.03500, 'CH4': 16.04300, 'CH2r': 14.02700,
             'CR1': 13.01900, 'HC': 1.00800, 'H':  1.00800, 'P': 30.97380, 'CL': 35.45300, 'F': 18.99840, 
             'CL-': 35.45300}
-        mass_i = 1.66054e-24 * mass_dict[topol.atom(atom_i).name]
+        mass_i = (unit.Quantity(mass_dict[topol.atom(atom_i).name], unit.amu).in_units_of(unit.gram / unit.item)*unit.item)._value
     except KeyError:
-        mass_i = 1.66054e-24 * topol.atom(atom_i).element.mass
+        mass_i = (unit.Quantity(topol.atom(atom_i).element.mass, unit.amu).in_units_of(unit.gram /unit.item) * unit.item)._value
     return mass_i
 
 def calc_interdigitation(traj, density_profile_top, density_profile_bot, bins, blocked=False):
