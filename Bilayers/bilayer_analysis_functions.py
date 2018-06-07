@@ -195,7 +195,6 @@ def calc_APT(traj, apl_list, angle_list, n_tails_per_lipid, blocked=False):
     apt_list = unit.Quantity([np.cos(angle_list[i,:].in_units_of(unit.radian)._value) 
                 * apl_list[i]._value/n_tails_per_lipid  for i, _ in enumerate(angle_list)],
                 apl_list.unit)
-
     apt_frame_avg = unit.Quantity(np.mean(apt_list._value, axis = 1), 
                                 apt_list.unit) # For each frame, averge all tail tilt angeles
     if blocked:
@@ -205,7 +204,6 @@ def calc_APT(traj, apl_list, angle_list, n_tails_per_lipid, blocked=False):
     else: 
         apt_avg = np.mean(apt_list)
         apt_std = np.std(apt_list)
-    pdb.set_trace()
     return apt_avg, apt_std, apt_list
 
 def calc_mean(dataset):
@@ -292,18 +290,11 @@ def calc_head_distance(traj, topol, head_indices, blocked=False):
             zcoord_bot += mass_i * traj.atom_slice([atom_j]).xyz[:,0,2]
             mass_bot += mass_i
         atom_counter +=1
-    zcoord_top = zcoord_top / mass_top
-    zcoord_bot = zcoord_bot / mass_bot
-    head_dist_list = 10 * abs(zcoord_top - zcoord_bot)
-    if blocked:
-        head_dist_blocks = head_dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-        head_dist_block_avgs = np.mean(head_dist_blocks, axis = 1)
-        head_dist_avg = np.mean(head_dist_block_avgs)
-        head_dist_std = np.std(head_dist_block_avgs)
-    else:
-        head_dist_avg = np.mean(head_dist_list)
-        head_dist_std = np.std(head_dist_list)
-    return head_dist_avg, head_dist_std, head_dist_list
+    zcoord_top = zcoord_top / mass_top * unit.nanometer
+    zcoord_bot = zcoord_bot / mass_bot * unit.nanometer
+    head_dist_list = abs(zcoord_top - zcoord_bot).in_units_of(unit.angstrom)
+    
+    return head_dist_list
 
 def compute_headgroup_distances(traj, topol, headgroup_dict, blocked=False):
     """
@@ -326,12 +317,13 @@ def calc_bilayer_height(traj, headgroup_distance_dict,blocked=False,anchor='DSPC
         Reference group to look at height
     Return: bilayer height average, bilayer height std, bilayer heigh per frame list
     """
-    dist_list = headgroup_distance_dict[anchor][2]
+    dist_list = headgroup_distance_dict[anchor]
     if blocked:
-        dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-        dist_block_avgs = np.mean(dist_blocks,axis=1)
-        dist_avg = np.mean(dist_block_avgs)
-        dist_std = np.std(dist_block_avgs)
+        #dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+        #dist_block_avgs = np.mean(dist_blocks,axis=1)
+        blocks, stds = block_avg(traj, dist_list)
+        dist_avg = np.mean(blocks)
+        dist_std = np.std(blocks)
     else:
         dist_avg = np.mean(dist_list)
         dist_std = np.std(dist_list)
@@ -352,12 +344,13 @@ def calc_offsets(traj, headgroup_distance_dict, blocked=False, anchor="DSPC"):
     offset_dict = OrderedDict()
     
     for key in headgroup_distance_dict.keys():
-        offset_list = (headgroup_distance_dict[anchor][2] - headgroup_distance_dict[key][2]) / 2
+        offset_list = (headgroup_distance_dict[anchor]- headgroup_distance_dict[key]) / 2
         if blocked:
-            offset_blocks = offset_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-            offset_block_avgs = np.mean(offset_blocks, axis=1)
-            offset_avg = np.mean(offset_block_avgs)
-            offset_std = np.std(offset_block_avgs)
+            #offset_blocks = offset_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+            #offset_block_avgs = np.mean(offset_blocks, axis=1)
+            blocks, stds = block_avg(traj, offset_list)
+            offset_avg = np.mean(blocks)
+            offset_std = np.std(blocks)
         else:
             offset_avg = np.mean(offset_list)
             offset_std = np.std(offset_list)
