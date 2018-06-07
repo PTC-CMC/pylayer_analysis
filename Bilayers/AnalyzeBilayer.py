@@ -16,7 +16,7 @@ parser.add_option('-f', action="store", type="string", default = 'nopbc.xtc', de
 parser.add_option('-c', action="store", type="string", default = 'Stage5_ZCon0.gro', dest = 'grofile')
 parser.add_option('-p', action="store", type="string", default = 'Stage5_ZCon0.gro', dest = 'pdbfile')
 parser.add_option('-o', action='store', type='string', default = 'BilayerAnalysis', dest = 'outfilename')
-parser.add_option('-nb', action='store_false', default=True, dest = 'blocked')
+parser.add_option('--nb', action='store_false', default=True, dest = 'blocked')
 
 (options, args) = parser.parse_args()
 trajfile = options.trajfile
@@ -51,7 +51,7 @@ np.savetxt('angle.dat', angle_list)
 print('Calculating area per tail...')
 apt_avg, apt_std, apt_list = bilayer_analysis_functions.calc_APT(traj, apl_list, angle_list, n_tails_per_lipid, 
         blocked=options.blocked)
-np.savetxt('apt.dat', apt_list._value)
+np.savetxt('apt.dat', apt_list)
 print('Calculating nematic order...')
 s2_ave, s2_std, s2_list = bilayer_analysis_functions.calc_nematic_order(traj, blocked=options.blocked)
 np.savetxt('s2.dat', s2_list)
@@ -59,10 +59,9 @@ print('Calculating headgroup distances...')
 headgroup_distance_dict = bilayer_analysis_functions.compute_headgroup_distances(traj, topol, headgroup_dict, blocked=options.blocked)
 print('Calculating bilayer height...')
 Hpp_ave, Hpp_std, Hpp_list = bilayer_analysis_functions.calc_bilayer_height(traj, headgroup_distance_dict, blocked=options.blocked, anchor='DSPC')
-pdb.set_trace()
 np.savetxt('height.dat', Hpp_list)
 print('Calculating component offsets...')
-offset_dict = bilayer_analysis_functions.calc_offsets(traj, headgroup_distance_dict, blocked=options.blocked, anchor='DPPC')
+offset_dict = bilayer_analysis_functions.calc_offsets(traj, headgroup_distance_dict, blocked=options.blocked, anchor='DSPC')
 print('Calculating density profile...')
 d_a, d_t, d_b, bins, interdig_list,interdig_avg, interdig_std = \
     bilayer_analysis_functions.calc_density_profile(traj, topol, 
@@ -153,10 +152,12 @@ plt.subplot(2,1,2)
 #plt.plot(bins,density_profile_bot_avg)
 #plt.plot(bins,density_profile_top_avg)
 
-plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis = 0), bins = 50,  
-        alpha = 0.5, facecolor = 'blue', normed = True)
-plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], axis = 0), bins = 50,  
-        alpha = 0.5, facecolor = 'red', normed = True)
+plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis=0)._value, 
+                bins=50,  
+                alpha=0.5, facecolor='blue', normed=True)
+plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], 
+                axis=0)._value, bins=50,  
+                alpha=0.5, facecolor='red', normed = True)
 plt.title('Angle Distribution by Leaflet')
 plt.xlabel('Angle ($^o$)')
 
