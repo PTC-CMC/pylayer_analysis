@@ -470,8 +470,8 @@ def calc_density_profile(traj, topol, bin_width=0.2, blocked=False,
     if blocked:
         blocks, stds = block_avg(traj, np.array(interdigitation), 
                                 block_size=block_size)
-        idig_avg = np.mean(blocks)
-        idig_std = np.std(blocks)
+        idig_avg = unit.Quantity(np.mean(blocks), unit.nanometer)
+        idig_std = unit.Quantity(np.std(blocks), unit.nanometer)
     else:
         idig_avg = np.mean(interdigitation)
         idig_std = np.std(interdigitation)
