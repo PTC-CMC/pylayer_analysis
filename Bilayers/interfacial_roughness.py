@@ -6,6 +6,7 @@ from multiprocessing import Pool
 
 import math
 import numpy as np
+import json
 import pandas as pd
 import itertools
 import matplotlib
@@ -13,6 +14,7 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 import mdtraj
+import simtk.unit as u
 import bilayer_analysis_functions
 import grid_analysis
 
@@ -20,53 +22,26 @@ import grid_analysis
 assessing interfacial variation using gridding """
 
 def main():
-    root_dir = os.getcwd()
-    to_pandas = []
+    index = json.load(open('index.txt' ,'r'))
+    curr_dir = os.getcwd()
+    with Pool(16) as p:
+            msr_pool = p.starmap(rough_routine, zip(itertools.repeat(curr_dir),index.keys()))
 
-    # Parallelization could occur here
-    data_folders = [folder for folder in os.listdir() if os.path.isdir(folder)]
-    for data_folder in data_folders:
-        os.chdir(os.path.join(root_dir, data_folder))
-        sim_folders = [folder for folder in os.listdir() if os.path.isdir(folder)]
-        with Pool() as p:
-            msr_avg_array = p.starmap(_parallel_routine, zip(itertools.repeat(root_dir), itertools.repeat(data_folder), sim_folders))
-            for msr_avg in msr_avg_array:
-                to_pandas.append([data_folder, msr_avg])
-    # Do the analysis with al the mean squared roughness
-    df = pd.DataFrame(data=to_pandas,index=None, columns=['Composition', 'Mean_Squared_Roughness'])
-    compositions = sorted(list(set(df.loc[:,'Composition'])))
-    for composition in compositions:
-        tally = 0
-        total_msr = 0
-        for series in df.loc[df['Composition']==composition].values:
-            if not math.isnan(series[1]):
-                tally +=1
-                total_msr += series[1]
-        if tally > 0:
-            avg_msr = total_msr / tally
-        print(composition, avg_msr)
+    df = pd.DataFrame(data=msr_pool, index=None, columns=['name', 'MSR_mean', 'MSR_std'])
+    os.chdir(curr_dir)
+    df.to_csv('roughness.csv')
 
-    pdb.set_trace() 
 
-    #pre_analysis()
-
-def _parallel_routine(root_dir, data_folder, sim_folder):
-    return pre_analysis(path=os.path.join(root_dir,data_folder,sim_folder))
-
-def pre_analysis(path=None):
+def rough_routine(root_dir, sim_folder):
     """ In a simulation folder, identify the mdtraj Trajectory """
-    if path is not None:
-        os.chdir(path)
+    os.chdir(os.path.join(root_dir, sim_folder))
 
     # Identify the proper files
-    pdbfile = glob.glob("md*.pdb")
-    xtcfile = glob.glob("last20.xtc")
-    if len(pdbfile)>0 and len(xtcfile)>0:
-        pdbfile = glob.glob("md*.pdb")[0]
-        xtcfile = glob.glob("last20.xtc")[0]
-        traj = mdtraj.load(xtcfile, top=pdbfile)
-        msr_avg = analyze_simulation_interface(traj)
-        return msr_avg
+    if os.path.isfile('npt.gro') and os.path.isfile('npt_80-100ns.xtc'):
+        traj = mdtraj.load('npt_80-100ns.xtc', top='npt.gro')
+        msr_results = analyze_simulation_interface(traj)
+        msr_results['name'] = sim_folder
+        return msr_results
 
     else:
         return None
@@ -78,8 +53,7 @@ def analyze_simulation_interface(traj):
     dspc_head_indices = [a for a in headgroup_indices
             if "DSPC" in traj.topology.atom(a).residue.name]
 
-    # Identify the leaflet interfaces
-    leaflet_interfaces = grid_analysis._find_interface_lipid(traj, headgroup_indices)
+    
 
     # Grid up leafleats based on grid size
     grid_size = 2.0
@@ -91,32 +65,40 @@ def analyze_simulation_interface(traj):
     xbin_width = xbin_centers[1] - xbin_centers[0]
     ybin_width = ybin_centers[1] - ybin_centers[0]
 
-    # Iterate through each grid point to find local interfaces
-    b_interface_surface = np.zeros((len(xbin_centers), len(ybin_centers)))
-    t_interface_surface = np.zeros((len(xbin_centers), len(ybin_centers)))
-    for x, y in itertools.product(xbin_centers, ybin_centers):
-        atoms_xy = grid_analysis. _find_atoms_within(traj, x=x, y=y, 
-                atom_indices=headgroup_indices, 
-                xbin_width=xbin_width, ybin_width=ybin_width)
+    # Iterate through each frame
+    # Identify the leaflet interfaces
+    msr_list = []
+    for i, frame in enumerate(traj):
+        leaflet_interfaces = grid_analysis._find_interface_lipid(frame, 
+                                                            headgroup_indices)
+        # Iterate through each grid point to find local interfaces
+        grid_msr = []
+        for x, y in itertools.product(xbin_centers, ybin_centers):
+            atoms_xy = grid_analysis. _find_atoms_within(frame, x=x, y=y, 
+                    atom_indices=headgroup_indices, 
+                    xbin_width=xbin_width, ybin_width=ybin_width)
 
-        if len(atoms_xy) > 0:
-            local_interfaces = grid_analysis._find_interface_lipid(traj, atoms_xy)
-            b_interface_surface[int(np.floor(x/xbin_width)), 
-                     int(np.floor(y/ybin_width))] = local_interfaces[0]
-            t_interface_surface[int(np.floor(x/xbin_width)), 
-                     int(np.floor(y/ybin_width))] = local_interfaces[1]
+            if len(atoms_xy) > 0:
+                local_interfaces = grid_analysis._find_interface_lipid(frame, 
+                                                                     atoms_xy)
 
-    # Normalize the surfaces based on the leaflet interface
-    b_roughness = grid_analysis._normalize(b_interface_surface, reverse=True,
-            mean=leaflet_interfaces[0])
-    t_roughness = grid_analysis._normalize(t_interface_surface,
-            mean=leaflet_interfaces[1])
+                # Normalize the surfaces based on the leaflet interface
+                b_roughness = -1*(local_interfaces[0] - leaflet_interfaces[0])
+                t_roughness = local_interfaces[1] - leaflet_interfaces[1]
+                msr = (b_roughness**2 + t_roughness**2) / 2
+                grid_msr.append(msr)
+        msr_list.append(np.mean(grid_msr))
+            #b_roughness = grid_analysis._normalize(local_interfaces[0], reverse=True,
+            #        mean=leaflet_interfaces[i][0])
+            #t_roughness = grid_analysis._normalize(local_interfaces[1],
+            #        mean=leaflet_interfaces[i][1])
 
     # Compute mean squared roughness (MSR)
-    msr_b = np.sum(b_roughness**2)/b_roughness.size
-    msr_t = np.sum(t_roughness**2)/t_roughness.size
-    msr_avg = (msr_b + msr_t) / 2
-    return msr_avg
+    blocks, stds = bilayer_analysis_functions.block_avg(traj, np.asarray(msr_list), block_size=5*u.nanosecond)
+    msr_avg = np.mean(blocks)
+    msr_std = np.std(blocks)
+    
+    return {'MSR_mean':msr_avg, 'MSR_std':msr_std}
 
     # Plotting
     #_surface_plot(b_roughness, xbin_centers, ybin_centers, num_ticks=5,
