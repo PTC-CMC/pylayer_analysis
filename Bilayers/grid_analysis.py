@@ -487,8 +487,8 @@ def _find_interface_lipid(traj, headgroup_indices):
     # Sort into top and bottom leaflet
     #midplane = np.mean(traj.xyz[:,headgroup_indices,2])
     midplane = np.mean(traj.unitcell_lengths[:,2])/2
-    bot_leaflet = [a for a in headgroup_indices if traj.xyz[0,a,2] < midplane]
-    top_leaflet = [a for a in headgroup_indices if traj.xyz[0,a,2] > midplane]
+    bot_leaflet = [a for a in headgroup_indices if traj.xyz[0,a,2] < midplane and abs(traj.xyz[0,a,2] - midplane) > 1]
+    top_leaflet = [a for a in headgroup_indices if traj.xyz[0,a,2] > midplane and abs(traj.xyz[0,a,2] - midplane) > 1]
 
     com_bot = mdtraj.compute_center_of_mass(traj.atom_slice(bot_leaflet))
     com_top = mdtraj.compute_center_of_mass(traj.atom_slice(top_leaflet))
