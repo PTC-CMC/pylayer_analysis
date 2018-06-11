@@ -1,4 +1,4 @@
-from __future__ import print_function
+#from __future__ import print_function
 import os
 import sys
 import time
@@ -19,26 +19,67 @@ import scipy.integrate as integrate
 from scipy.optimize import curve_fit
 import pandas as pd
 import mdtraj as mdtraj
+import simtk.unit as unit
 
 import group_templates
 
-def calc_APL(traj, n_lipid,blocked=False):
+def block_avg(traj, data, block_size=5*unit.nanosecond):
+    """
+    Break a 2d numpy array into blocks
+
+    This function is taken directly from Tim Moore's `block_avg` (see
+    https://github.com/tcmoore3/block_avg).
+
+    Parameters
+    ----------
+    traj : mdtraj.Trajectory
+        Used to determine timestep
+    data : np.ndarray, shape=(m, n)
+        The data to block; must be a 2-dimensional array
+    block_size : simtk.unit.unit.Unit
+        The size of each block, should have time dimension
+    Returns
+    -------
+    blocks : np.ndarray, shape=(m/block_size, n)
+        The block averaged data
+    stds : np.ndarray, shape=(m/block_size, n)
+        The standard deviation of each block
+    Notes
+    -----
+    `m` must not necessarily be divisible by `block_size` ; in the case
+    that it isn't, the data is trimmed *from the beginning* so that it is.
+    """
+
+    timestep = traj.time[1] * unit.picosecond - traj.time[0] * unit.picosecond
+    block_size = int(block_size/timestep)
+    remainder = data.shape[0] % block_size
+    if remainder != 0:
+        data = data[remainder:]
+    n_blocks = int(data.shape[0] / block_size)
+    data = data.reshape((n_blocks, block_size))
+    blocks = np.mean(data, axis=1)
+    stds = np.std(data, axis=1)
+    return blocks, stds
+
+def calc_APL(traj, n_lipid,blocked=False, block_size=5*unit.nanosecond):
     ''' 
     Input: Trajectory and number of lipids
     Compute areas by looking at x and y unit cell lengths
     Return: array of area per lipids (n_frame x 1) [Angstrom]
     '''
-    area = 100 * traj.unitcell_lengths[:, 0] * traj.unitcell_lengths[:, 1] # This is n_frame x 1
+    area = unit.Quantity(traj.unitcell_lengths[:, 0] 
+            * traj.unitcell_lengths[:, 1], unit.nanometer**2) # This is n_frame x 1
+    area = area.in_units_of(unit.angstrom**2)
     if blocked:
-        area_blocked = area[:-1].reshape(int((traj.n_frames-1)/250), 250) # Reshape so that each row is a block of 250 frames (5ns)
-        area_block_avg = np.mean(area_blocked, axis=1)
-        areaavg = np.mean(area_block_avg)
-        areastd = np.std(area_block_avg)#/(len(area_block_avg)**0.5)
+        #timestep = traj.time[1] * unit.picosecond - traj.time[0] * unit.picosecond
+        #block_size_frames = int(block_size/timestep)
+        blocks, stds = block_avg(traj, area, block_size=5*unit.nanosecond)
+        areastd = np.std(blocks)
+        areaavg = np.mean(blocks)
     else:
         areaavg = np.mean(area)
         areastd = np.std(area)
-    apl_list = np.eye(traj.n_frames, 1)
-    apl_list[:,0] = area[:]/(n_lipid/2)
+    apl_list = area/(n_lipid/2)
     apl_avg = areaavg/(n_lipid/2)
     apl_std = areastd/(n_lipid/2)
     return (apl_avg, apl_std, apl_list)
@@ -99,7 +140,8 @@ def identify_groups(traj, forcefield='gromos53a6'):
     return tail_groups, head_groups
 
 
-def calc_tilt_angle(traj, topol, lipid_tails, blocked=False):
+def calc_tilt_angle(traj, topol, lipid_tails, blocked=False, 
+        block_size=5*unit.nanosecond):
     ''' 
     Input: Trajectory, topology, dictionary of lipid tails with atom index values
     Compute characteristic vector using eigenvector associated with
@@ -111,28 +153,29 @@ def calc_tilt_angle(traj, topol, lipid_tails, blocked=False):
     '''
 
     surface_normal = np.asarray([0, 0, 1.0])
-    angle_list = []
     angle_list = np.eye(traj.n_frames, len(lipid_tails.keys()))
     index = 0
     for key in lipid_tails.keys():
         lipid_i_atoms = lipid_tails[key]
         traj_lipid_i = traj.atom_slice(lipid_i_atoms)
         director = mdtraj.geometry.order._compute_director(traj_lipid_i)
-        lipid_angle = np.rad2deg(np.arccos(np.dot(director, surface_normal)))
+        #lipid_angle = np.rad2deg(np.arccos(np.dot(director, surface_normal))) * unit.degree
+        lipid_angle = np.rad2deg(np.arccos(np.dot(director, 
+                                                surface_normal))) 
         for i,angle in enumerate(lipid_angle):
             if angle >= 90:
-                angle = 180- angle
+                angle = 180 - angle
                 lipid_angle[i] = angle
         #angle_list.append(lipid_angle)
         angle_list[:,index] = lipid_angle
         index += 1
-
+    angle_list = unit.Quantity(angle_list, unit.degree)
     angle_frame_avg = np.mean(angle_list, axis = 1) # For each frame, average all tail tilt angles
     if blocked:
-        angle_blocks = angle_frame_avg[:-1].reshape(int((traj.n_frames-1)/250),250) # Reshape into blocks of 5ns
-        angle_block_avgs = np.mean(angle_blocks, axis = 1)
-        angle_avg = np.mean(angle_block_avgs)
-        angle_std = np.std(angle_block_avgs)#/(len(angle_block_avgs)**0.5)
+        blocks, stds = block_avg(traj, angle_frame_avg, block_size=5*unit.nanosecond)
+        angle_std = np.std(blocks)
+        angle_avg = np.mean(blocks)
+        
     else:
         angle_avg = np.mean(angle_frame_avg)
         angle_std = np.std(angle_frame_avg)
@@ -147,13 +190,17 @@ def calc_APT(traj, apl_list, angle_list, n_tails_per_lipid, blocked=False):
     # Each element in angle list correspond to a tail, and that element is a row of tilts per frame
     # Each element in apl list is the apl for a frame
     apt_list = angle_list
-    apt_list = np.cos(np.deg2rad(angle_list[:,:]))*apl_list[:]/n_tails_per_lipid
-    apt_frame_avg = np.mean(apt_list, axis = 1) # For each frame, averge all tail tilt angeles
+    apt_list = unit.Quantity(np.array([np.cos(
+                            angle_list[i,:].in_units_of(unit.radian)._value) 
+                            * apl_list[i]._value/n_tails_per_lipid  
+                            for i, _ in enumerate(angle_list)]),
+                            apl_list.unit)
+    apt_frame_avg = unit.Quantity(np.mean(apt_list._value, axis = 1), 
+                                apt_list.unit) # For each frame, averge all tail tilt angeles
     if blocked:
-        apt_blocks = apt_frame_avg[:-1].reshape(int((traj.n_frames-1)/250),250)
-        apt_block_avgs = np.mean(apt_blocks, axis=1)
-        apt_avg = np.mean(apt_block_avgs)
-        apt_std = np.std(apt_block_avgs)#/(len(apt_block_avgs)**0.5)
+        blocks, stds = block_avg(traj, apt_frame_avg)
+        apt_avg = np.mean(blocks)
+        apt_std = np.std(blocks)#/(len(apt_block_avgs)**0.5)
     else: 
         apt_avg = np.mean(apt_list)
         apt_std = np.std(apt_list)
@@ -243,18 +290,11 @@ def calc_head_distance(traj, topol, head_indices, blocked=False):
             zcoord_bot += mass_i * traj.atom_slice([atom_j]).xyz[:,0,2]
             mass_bot += mass_i
         atom_counter +=1
-    zcoord_top = zcoord_top / mass_top
-    zcoord_bot = zcoord_bot / mass_bot
-    head_dist_list = 10 * abs(zcoord_top - zcoord_bot)
-    if blocked:
-        head_dist_blocks = head_dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-        head_dist_block_avgs = np.mean(head_dist_blocks, axis = 1)
-        head_dist_avg = np.mean(head_dist_block_avgs)
-        head_dist_std = np.std(head_dist_block_avgs)
-    else:
-        head_dist_avg = np.mean(head_dist_list)
-        head_dist_std = np.std(head_dist_list)
-    return head_dist_avg, head_dist_std, head_dist_list
+    zcoord_top = zcoord_top / mass_top * unit.nanometer
+    zcoord_bot = zcoord_bot / mass_bot * unit.nanometer
+    head_dist_list = abs(zcoord_top - zcoord_bot).in_units_of(unit.angstrom)
+    
+    return head_dist_list
 
 def compute_headgroup_distances(traj, topol, headgroup_dict, blocked=False):
     """
@@ -277,12 +317,13 @@ def calc_bilayer_height(traj, headgroup_distance_dict,blocked=False,anchor='DSPC
         Reference group to look at height
     Return: bilayer height average, bilayer height std, bilayer heigh per frame list
     """
-    dist_list = headgroup_distance_dict[anchor][2]
+    dist_list = headgroup_distance_dict[anchor]
     if blocked:
-        dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-        dist_block_avgs = np.mean(dist_blocks,axis=1)
-        dist_avg = np.mean(dist_block_avgs)
-        dist_std = np.std(dist_block_avgs)
+        #dist_blocks = dist_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+        #dist_block_avgs = np.mean(dist_blocks,axis=1)
+        blocks, stds = block_avg(traj, dist_list)
+        dist_avg = np.mean(blocks)
+        dist_std = np.std(blocks)
     else:
         dist_avg = np.mean(dist_list)
         dist_std = np.std(dist_list)
@@ -303,12 +344,13 @@ def calc_offsets(traj, headgroup_distance_dict, blocked=False, anchor="DSPC"):
     offset_dict = OrderedDict()
     
     for key in headgroup_distance_dict.keys():
-        offset_list = (headgroup_distance_dict[anchor][2] - headgroup_distance_dict[key][2]) / 2
+        offset_list = (headgroup_distance_dict[anchor]- headgroup_distance_dict[key]) / 2
         if blocked:
-            offset_blocks = offset_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-            offset_block_avgs = np.mean(offset_blocks, axis=1)
-            offset_avg = np.mean(offset_block_avgs)
-            offset_std = np.std(offset_block_avgs)
+            #offset_blocks = offset_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+            #offset_block_avgs = np.mean(offset_blocks, axis=1)
+            blocks, stds = block_avg(traj, offset_list)
+            offset_avg = np.mean(blocks)
+            offset_std = np.std(blocks)
         else:
             offset_avg = np.mean(offset_list)
             offset_std = np.std(offset_list)
@@ -316,16 +358,17 @@ def calc_offsets(traj, headgroup_distance_dict, blocked=False, anchor="DSPC"):
 
     return offset_dict
 
-def calc_nematic_order(traj, blocked=False):
+def calc_nematic_order(traj, blocked=False, block_size=5*unit.nanosecond):
     """ COmpute nematic order over each leaflet"""
 
+    bot_leaflet, top_leaflet = identify_leaflets(traj)
     top_chains = []
     bot_chains = []
 
     for i, residue in enumerate(traj.topology.residues):
         if not residue.is_water:
             indices = [a.index for a in residue.atoms]
-            if i<=63:
+            if set(indices).issubset(set(top_leaflet)):
                 top_chains.append(indices)
             else:
                 bot_chains.append(indices)
@@ -333,10 +376,11 @@ def calc_nematic_order(traj, blocked=False):
     s2_bot = mdtraj.compute_nematic_order(traj, indices=bot_chains)
     s2_list = (s2_top + s2_bot)/2
     if blocked:
-        s2_blocks = s2_list[:-1].reshape(int((traj.n_frames-1)/250),250)
-        s2_block_avgs = np.mean(s2_blocks, axis = 1)
-        s2_ave = np.mean(s2_block_avgs)
-        s2_std = np.std(s2_block_avgs)
+        #s2_blocks = s2_list[:-1].reshape(int((traj.n_frames-1)/250),250)
+        #s2_block_avgs = np.mean(s2_blocks, axis = 1)
+        blocks, stds = block_avg(traj, s2_list, block_size=block_size)
+        s2_ave = np.mean(blocks)
+        s2_std = np.std(blocks)
     else:
         s2_ave = np.mean(s2_list)
         s2_std = np.std(s2_list)
@@ -377,23 +421,26 @@ def identify_leaflets(traj):
 def get_all_masses(traj, topol, atom_indices):
     """ Return array of masses corresponding to atom idnices"""
     masses = np.zeros_like(atom_indices, dtype=float)
+    masses = []
     for i, index in enumerate(atom_indices):
-        masses[i] = get_mass(topol, index)
+        masses.append(get_mass(topol,index))
+    masses = unit.Quantity(masses, unit=unit.gram)
     return masses
 
 
-def calc_density_profile(traj, topol, bin_width=0.2):
+def calc_density_profile(traj, topol, bin_width=0.2, blocked=False, 
+                        block_size=5*unit.nanosecond):
     """ Use numpy histogram, with weights, to get density profile"""
     bot_leaflet, top_leaflet = identify_leaflets(traj)
-    area = np.mean(traj.unitcell_lengths[:, 0] * traj.unitcell_lengths[:, 1])
-    v_slice = area * bin_width
+    area = unit.Quantity(np.mean(traj.unitcell_lengths[:, 0] 
+                        * traj.unitcell_lengths[:, 1]), unit.nanometer*unit.nanometer)
+    v_slice = area * unit.Quantity(bin_width*unit.nanometer)
 
     density_profile_bot = []
     density_profile_top = []
     density_profile_all = []
-    # Convert from g/nm3 to kg/m3, and nm to m
-    bot_masses = 1e24 * get_all_masses(traj, topol, bot_leaflet) / v_slice
-    top_masses =  1e24 * get_all_masses(traj, topol, top_leaflet) / v_slice
+    bot_masses = (get_all_masses(traj, topol, bot_leaflet) / v_slice).in_units_of(unit.kilogram * (unit.meter**-3))
+    top_masses = (get_all_masses(traj, topol, top_leaflet) / v_slice).in_units_of(unit.kilogram * (unit.meter**-3))
     bounds = (np.min(traj.xyz[:, bot_leaflet, 2]),
             np.max(traj.xyz[:, top_leaflet,2]))
     n_bins = int(round((bounds[1] - bounds[0]) / bin_width))
@@ -402,9 +449,9 @@ def calc_density_profile(traj, topol, bin_width=0.2):
     interdigitation = []
     for xyz in traj.xyz:
         bot_hist, bin_edges = np.histogram(xyz[bot_leaflet,2], bins=n_bins,
-                range=bounds, normed=False, weights=bot_masses)
+                range=bounds, normed=False, weights=bot_masses._value)
         top_hist, bin_edges = np.histogram(xyz[top_leaflet,2], bins=n_bins,
-                range=bounds, normed=False, weights=top_masses)
+                range=bounds, normed=False, weights=top_masses._value)
         all_hist = [x+y for x,y in zip(top_hist, bot_hist)]
         density_profile_bot.append(bot_hist)
         density_profile_top.append(top_hist)
@@ -420,8 +467,14 @@ def calc_density_profile(traj, topol, bin_width=0.2):
                 overlap = numerator / denominator
             integrand.append(overlap)
         interdigitation.append(integrate.simps(integrand, x = bin_centers))
-    idig_avg = np.mean(interdigitation)
-    idig_std = np.std(interdigitation)
+    if blocked:
+        blocks, stds = block_avg(traj, np.array(interdigitation), 
+                                block_size=block_size)
+        idig_avg = unit.Quantity(np.mean(blocks), unit.nanometer)
+        idig_std = unit.Quantity(np.std(blocks), unit.nanometer)
+    else:
+        idig_avg = np.mean(interdigitation)
+        idig_std = np.std(interdigitation)
     return np.asarray(density_profile_all), \
         np.asarray(density_profile_bot), np.asarray(density_profile_top), \
         bin_centers, interdigitation, idig_avg, idig_std
@@ -430,7 +483,7 @@ def calc_density_profile(traj, topol, bin_width=0.2):
 def get_mass(topol, atom_i):
     """
     Input: trajectory, atom index
-    Mass dictionary is in units of amu
+    Mass dictionary is in units of amu (g/mol)
     Return: mass of that atom (g)
     """
     try:
@@ -439,9 +492,9 @@ def get_mass(topol, atom_i):
             'CH0': 12.0110, 'CH1': 13.01900, 'CH2': 14.02700, 'CH3': 15.03500, 'CH4': 16.04300, 'CH2r': 14.02700,
             'CR1': 13.01900, 'HC': 1.00800, 'H':  1.00800, 'P': 30.97380, 'CL': 35.45300, 'F': 18.99840, 
             'CL-': 35.45300}
-        mass_i = 1.66054e-24 * mass_dict[topol.atom(atom_i).name]
+        mass_i = (unit.Quantity(mass_dict[topol.atom(atom_i).name], unit.amu).in_units_of(unit.gram / unit.item)*unit.item)._value
     except KeyError:
-        mass_i = 1.66054e-24 * topol.atom(atom_i).element.mass
+        mass_i = (unit.Quantity(topol.atom(atom_i).element.mass, unit.amu).in_units_of(unit.gram /unit.item) * unit.item)._value
     return mass_i
 
 def calc_interdigitation(traj, density_profile_top, density_profile_bot, bins, blocked=False):

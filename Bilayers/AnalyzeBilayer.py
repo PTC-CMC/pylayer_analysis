@@ -16,7 +16,7 @@ parser.add_option('-f', action="store", type="string", default = 'nopbc.xtc', de
 parser.add_option('-c', action="store", type="string", default = 'Stage5_ZCon0.gro', dest = 'grofile')
 parser.add_option('-p', action="store", type="string", default = 'Stage5_ZCon0.gro', dest = 'pdbfile')
 parser.add_option('-o', action='store', type='string', default = 'BilayerAnalysis', dest = 'outfilename')
-parser.add_option('-b', action='store_true', default = False, dest = 'blocked')
+parser.add_option('--nb', action='store_false', default=True, dest = 'blocked')
 
 (options, args) = parser.parse_args()
 trajfile = options.trajfile
@@ -34,7 +34,7 @@ topol = traj.topology
 # Compute system information
 print('Gathering system information <{}>...'.format(grofile))
 lipid_tails, headgroup_dict = bilayer_analysis_functions.identify_groups(traj, 
-        forcefield='gromos53a6')
+        forcefield='charmm36')
 n_lipid = len([res for res in traj.topology.residues if not res.is_water])
 n_lipid_tails = len(lipid_tails.keys())
 n_tails_per_lipid = n_lipid_tails/n_lipid
@@ -58,16 +58,18 @@ np.savetxt('s2.dat', s2_list)
 print('Calculating headgroup distances...')
 headgroup_distance_dict = bilayer_analysis_functions.compute_headgroup_distances(traj, topol, headgroup_dict, blocked=options.blocked)
 print('Calculating bilayer height...')
-Hpp_ave, Hpp_std, Hpp_list = bilayer_analysis_functions.calc_bilayer_height(traj, headgroup_distance_dict, blocked=options.blocked, anchor='cer')
+Hpp_ave, Hpp_std, Hpp_list = bilayer_analysis_functions.calc_bilayer_height(traj, headgroup_distance_dict, blocked=options.blocked, anchor='DSPC')
 np.savetxt('height.dat', Hpp_list)
 print('Calculating component offsets...')
-offset_dict = bilayer_analysis_functions.calc_offsets(traj, headgroup_distance_dict, blocked=options.blocked, anchor='cer')
+offset_dict = bilayer_analysis_functions.calc_offsets(traj, headgroup_distance_dict, blocked=options.blocked, anchor='DSPC')
 print('Calculating density profile...')
 d_a, d_t, d_b, bins, interdig_list,interdig_avg, interdig_std = \
-    bilayer_analysis_functions.calc_density_profile(traj, topol)
-#print('Calculating hydrogen bonds...')
-#hbond_matrix_avg, hbond_matrix_std, hbond_matrix_list, labelmap = bilayer_analysis_functions.calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict)
-
+    bilayer_analysis_functions.calc_density_profile(traj, topol, 
+                                                    blocked=options.blocked)
+np.savetxt('idig.dat', interdig_list)
+##print('Calculating hydrogen bonds...')
+##hbond_matrix_avg, hbond_matrix_std, hbond_matrix_list, labelmap = bilayer_analysis_functions.calc_hbonds(traj, traj_pdb, topol, lipid_dict, headgroup_dict)
+#
 # Printing properties
 print('Outputting to <{}>...'.format(outfilename))
 outfile = open((outfilename + '.txt'),'w')
@@ -136,8 +138,8 @@ plt.close()
 density_profile_top_avg = np.mean(d_t, axis = 0)
 density_profile_bot_avg = np.mean(d_b, axis = 0)
 density_profile_avg  = np.mean(d_a, axis=0)
-
-
+#
+#
 fig2 = plt.figure(2)
 plt.subplot(2,1,1)
 plt.plot(bins,density_profile_avg)
@@ -150,10 +152,12 @@ plt.subplot(2,1,2)
 #plt.plot(bins,density_profile_bot_avg)
 #plt.plot(bins,density_profile_top_avg)
 
-plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis = 0), bins = 50,  
-        alpha = 0.5, facecolor = 'blue', normed = True)
-plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], axis = 0), bins = 50,  
-        alpha = 0.5, facecolor = 'red', normed = True)
+plt.hist(np.mean(angle_list[:, 0 : int(np.floor(n_lipid_tails/2))], axis=0)._value, 
+                bins=50,  
+                alpha=0.5, facecolor='blue', normed=True)
+plt.hist(np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)) : len(angle_list[0])], 
+                axis=0)._value, bins=50,  
+                alpha=0.5, facecolor='red', normed = True)
 plt.title('Angle Distribution by Leaflet')
 plt.xlabel('Angle ($^o$)')
 
