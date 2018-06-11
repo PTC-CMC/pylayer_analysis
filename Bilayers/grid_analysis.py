@@ -11,6 +11,7 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 from multiprocessing import Pool
 import mdtraj
+import simtk.unit as u
 import permeability as prm
 import bilayer_analysis_functions
 
@@ -347,34 +348,12 @@ def _wrap_trj(traj):
     return new_traj
 
 
-
-
-def get_mass(topol, atom_i):
-    """
-    Input: trajectory, atom index
-    Mass dictionary is in units of amu
-    Return: mass of that atom (g)
-    """
-    mass_dict = {'O': 15.99940, 'OM': 15.99940, 'OA': 15.99940, 'OE': 15.99940, 'OW': 15.99940,'N': 14.00670,
-            'NT': 14.00670, 'NL': 14.00670, 'NR': 14.00670, 'NZ': 14.00670, 'NE': 14.00670, 'C': 12.01100, 
-            'CH0': 12.0110, 'CH1': 13.01900, 'CH2': 14.02700, 'CH3': 15.03500, 'CH4': 16.04300, 'CH2r': 14.02700,
-            'CR1': 13.01900, 'HC': 1.00800, 'H':  1.00800, 'P': 30.97380, 'CL': 35.45300, 'F': 18.99840, 
-            'H2':  1.00800,'H1':  1.00800,
-            'CL-': 35.45300}
-    mass_i = 1.66054e-24 * mass_dict[topol.atom(atom_i).name]
-    return mass_i
-
-def get_all_masses(traj, topol, atom_indices):
-    """ Return array of masses corresponding to atom idnices"""
-    masses = np.zeros_like(atom_indices, dtype=float)
-    for i, index in enumerate(atom_indices):
-        masses[i] = get_mass(topol, index)
-    return masses
-
 def _get_headgroup_indices(traj):
     """ Return a giant list of all indices that correspond ot headgroups"""
 
-    lipid_dict, headgroup_dict = bilayer_analysis_functions.get_lipids(traj.topology)
+    #lipid_dict, headgroup_dict = bilayer_analysis_functions.get_lipids(traj.topology)
+    lipid_dict, headgroup_dict = bilayer_analysis_functions.identify_groups(traj, 
+                                                    forcefield='charmm36')
     headgroup_indices = []
     for key, val in headgroup_dict.items():
         for a in val:
@@ -396,12 +375,11 @@ def calc_density_profile(traj, topol, atom_indices, l_x=2, l_y=2,
     """
     atoms = [a for a in traj.topology.atoms]
     desired_atoms = [atoms[i] for i in atom_indices]
-    v_slice = l_x * l_y * bin_width
+    v_slice = l_x * l_y * bin_width * u.nanometer**3
     density_profile = []
     sub_xyz = traj.xyz[:,atom_indices,:] 
     # Convert from g/nm3 to kg/m3, and nm to m
-    #masses = 1e24 * get_all_masses(traj, topol, atom_indices) / v_slice
-    masses = 1e24 * get_all_masses(traj, topol, atom_indices)
+    bot_masses = (bilayer_analysis_functions.get_all_masses(traj, topol, atom_indices) / v_slice).in_units_of(u.kilogram * (u.meter**-3))
 
     # Find the absolute bounds over all frames
 
@@ -414,7 +392,7 @@ def calc_density_profile(traj, topol, atom_indices, l_x=2, l_y=2,
     for xyz in sub_xyz:
         hist, edges = np.histogram(xyz[:,2], bins=n_bins,
                 range=bounds, normed=False, weights=masses)
-        density_profile.append(hist/v_slice)
+        density_profile.append(hist/v_slice._value)
 
         bin_centers = edges[1:] - bin_width / 2
     return np.asarray(density_profile), bin_centers
@@ -439,16 +417,16 @@ def calc_density_surface(traj, atom_indices, thickness=1,
     ybin_width = (ybounds[1] - ybounds[0]) / n_ybins
 
     density_profile=[]
-    v_slice = xbin_width * ybin_width * thickness
-    #masses = 1e24 * get_all_masses(traj, traj.topology, atom_indices) / v_slice
-    masses = 1e24 * get_all_masses(traj, traj.topology, atom_indices)
+    v_slice = xbin_width * ybin_width * thickness * u.nanometer**3
+
+    masses = (bilayer_analysis_functions.get_all_masses(traj, traj.topology, atom_indices) / v_slice).in_units_of(u.kilogram * (u.meter**-3))._value
 
 
     for xyz in sub_xyz:
         hist, xedges, yedges = np.histogram2d(xyz[:,0], xyz[:,1],
                 bins=[n_xbins, n_ybins], range=[xbounds, ybounds], 
                 normed=False, weights=masses)
-        density_profile.append(hist/v_slice)
+        density_profile.append(hist/v_slice._value)
         xbin_centers = xedges[1:] - xbin_width / 2
         ybin_centers = yedges[1:] - ybin_width / 2
 
