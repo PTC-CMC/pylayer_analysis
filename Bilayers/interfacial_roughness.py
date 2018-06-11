@@ -83,17 +83,20 @@ def analyze_simulation_interface(traj):
                                                                      atoms_xy)
 
                 # Normalize the surfaces based on the leaflet interface
-                b_roughness = -1*(local_interfaces[0] - leaflet_interfaces[0])
-                t_roughness = local_interfaces[1] - leaflet_interfaces[1]
-                msr = (b_roughness**2 + t_roughness**2) / 2
-                grid_msr.append(msr)
-        msr_list.append(np.mean(grid_msr))
+                if all(local_interfaces) and all(leaflet_interfaces):
+                    b_roughness = -1*(local_interfaces[0] - leaflet_interfaces[0])
+                    t_roughness = local_interfaces[1] - leaflet_interfaces[1]
+                    msr = (b_roughness**2 + t_roughness**2) / 2
+                    grid_msr.append(msr)
+        if all(grid_msr):   
+            msr_list.append(np.mean(grid_msr))
             #b_roughness = grid_analysis._normalize(local_interfaces[0], reverse=True,
             #        mean=leaflet_interfaces[i][0])
             #t_roughness = grid_analysis._normalize(local_interfaces[1],
             #        mean=leaflet_interfaces[i][1])
 
     # Compute mean squared roughness (MSR)
+    np.savetxt('MSR.dat', np.asarray(msr_list))
     blocks, stds = bilayer_analysis_functions.block_avg(traj, np.asarray(msr_list), block_size=5*u.nanosecond)
     msr_avg = np.mean(blocks)
     msr_std = np.std(blocks)
