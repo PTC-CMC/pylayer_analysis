@@ -7,14 +7,13 @@ from optparse import OptionParser
 import numpy as np
 from multiprocessing import Pool
 
-def compute_occupied_profile_all(traj, topol, lipid_dict, bin_spacing=0.1, z_bins=None, centered=True):
+def compute_occupied_profile_all(traj lipid_dict, bin_spacing=0.1, z_bins=None, centered=True):
     """ Compute void fraction  according to bins
 
     Parameters
     -----------
     traj : mdtraj trajectory
         Single trajectory frame
-    topol : mdtraj topology
     lipid_dict : dict
         Mapping residue indices to associated atom indices
     bin_spacing : float
@@ -34,67 +33,71 @@ def compute_occupied_profile_all(traj, topol, lipid_dict, bin_spacing=0.1, z_bin
     if centered:
         com_z = _compute_com(traj)
         center = 5
-        traj.xyz[0,:,:] += center - com_z
+        traj.xyz[:,:,:] += center - com_z
 
 
+    lipid_atoms = [atom.index for residue in traj.topology.residues 
+                    if not residue.is_water for atom in residue.atoms]
     # Identify limits for bins, unless they've been provided
     if z_bins is None:
-        z_min = np.min( traj.atom_slice([atom for atom in itertools.chain.from_iterable(lipid_dict.values())]).xyz[:,:,2])
-        z_max = np.max( traj.atom_slice([atom for atom in itertools.chain.from_iterable(lipid_dict.values())]).xyz[:,:,2])
-        z_min -= 0.5
-        z_max += 0.5
-        z_bins = np.arange(z_min, z_max, bin_spacing)
+        bounds = (np.min(traj.xyz[:, lipid_atoms, 2]),
+                np.max(traj.xyz[:, lipid_atoms,2]))
+        n_bins = int(round((bounds[1] - bounds[0]) / bin_spacing))
+        bin_width = (bounds[1] - bounds[0]) / n_bins
+        z_bins = np.arange(bounds[0], bounds[1] + bin_spacing, bin_spacing)
 
-    z_profile = []
-    f_occ_profile = []
+
+        
     # Need to pass lists of parameters for the mapping function
     with Pool() as pool:
-        occupied_profile = np.asarray(pool.starmap(_compute_occupied_profile_slice, 
-                zip(itertools.repeat(traj), itertools.repeat(topol), itertools.repeat(lipid_dict), z_bins)))
+        occupied_profile = pool.starmap(_compute_occupied_profile_frame,
+                            zip(itertools.repeat(traj), itertools.repeat(lipid_atoms),
+                                itertools.repeat(z_bins), range(traj.n_frames)))
     return occupied_profile
 
-def _compute_occupied_profile_slice(traj, topol, lipid_dict, z_bin):
-    """ Compute bilayer occupied area for a particular lateral slice
+def _compute_occupied_profile_frame(traj, lipid_atoms, z_bins, frame_i):
+    """ Compute bilayer occupied area profile for a particular traj slice
 
     Parameters
     -----------
     traj : mdtraj trajectory
         Single trajectory frame
-    topol : mdtraj topology
-    lipid_dict : dict
-        Mapping residue indices to associated atom indices
-    z_bin : float
-        Z-coordinate for area calculation 
+    lipid_atoms : list
+        list of atom indices corresponding to lipids
+    z_bins : np.array
+        Z-coordinates for area calculation
+    frame_i : int
+        frame index to compute occupied area profile
 
     Returns
     -------
-    f_occ : float
-        occupied area at particular z-coordinate
+    f_occ : np.array
+        occupied area profile for this frame 
 
     Notes
     -----
     Atoms are assumed to be vdW spheres with vDW radii
 
     """
-    (x_length, y_length, z_length) = traj.unitcell_lengths[0]
-    atoms_effective = []
-    occupied_area = 0
+    (x_length, y_length, z_length) = traj.unitcell_lengths[frame_i]
+    occupied_area_profile = np.zeros_like(z_bins)
     total_area = x_length * y_length
-    for i in itertools.chain.from_iterable(lipid_dict.values()):
+    for i in lipid_atoms:
         atom_i = topol.atom(i)
-        if not atom_i.residue.is_water:
-            radius_i = atom_i.element.radius
-            atom_i_center = traj.atom_slice([i]).xyz[0, 0, :]
-            r_eff_sq = ((radius_i**2) - ((z_bin - atom_i_center[2]) ** 2))
-            if r_eff_sq >= 0.00:
-                occupied_area += np.pi * (r_eff_sq)
+        radius_i = atom_i.element.radius
+        atom_i_center = traj.xyz[frame_i, i, :]
 
-            # Assuming vdW spheres don't overlap, evaluate area of spheres 
-            # Compared to box's xy area
+        # r_eff_sq is a numpy array of the different effective, squared radii
+        # at the different z_bins
+        r_eff_sq = ((radius_i**2) - ((z_bins - atom_i_center[2]) ** 2))
 
-    f_occ = occupied_area/total_area
+        # There may be elements in r_eff_sq that are negative becuase they are so 
+        # far away from that z_bin, so add 0 instead
+        occupied_area_profile += max(np.pi * (r_eff_sq), 0)
 
-    return z_bin,f_occ
+    f_occ_profile = occupied_area/total_area
+
+    return frame_i, f_occ_profile
 
 
 def _compute_com( traj):
