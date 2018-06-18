@@ -10,6 +10,10 @@ import itertools
 import numpy as np
 from multiprocessing import Pool
 
+################
+### Functions to compute fractional occupied area profiles
+################
+
 def compute_occupied_profile_all(traj, bin_spacing=0.1, z_bins=None, centered=True,
                                 plot=True):
     """ Compute void fraction  according to bins
@@ -111,8 +115,9 @@ def _compute_occupied_profile_frame(traj, lipid_atoms, z_bins, frame_i):
     total_area = x_length * y_length
     for i in lipid_atoms:
         atom_i = traj.topology.atom(i)
-        if "H" not in atom_i.element.symbol:
-            radius_i = atom_i.element.radius
+        #if "H" not in atom_i.element.symbol
+        if True:
+            radius_i = atom_i.element.radius * 0.75
             atom_i_center = traj.xyz[frame_i, i, :]
 
             # r_eff_sq is a numpy array of the different effective, squared radii

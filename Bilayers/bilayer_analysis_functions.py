@@ -802,64 +802,6 @@ def line_func(x, slope, constant):
     """ Simple slope-intercept equation for line"""
     return (slope*x) + constant
 
-def analyze_simulation_interface(traj):
-    """ Given an mdtraj Trajectory, identify the interface """
-    # Identify all the headgroup indices 
-    headgroup_indices = grid_analysis._get_headgroup_indices(traj)
-    dspc_head_indices = [a for a in headgroup_indices
-            if "DSPC" in traj.topology.atom(a).residue.name]
-
-    
-
-    # Grid up leafleats based on grid size
-    grid_size = 2.0
-    thickness = 0.5
-
-    density_surface, xbin_centers, ybin_centers, xedges, yedges = \
-            grid_analysis.calc_density_surface(traj, headgroup_indices, 
-                    grid_size=grid_size, thickness=thickness)
-    xbin_width = xbin_centers[1] - xbin_centers[0]
-    ybin_width = ybin_centers[1] - ybin_centers[0]
-
-    # Iterate through each frame
-    # Identify the leaflet interfaces
-    msr_list = []
-    for i, frame in enumerate(traj):
-        leaflet_interfaces = grid_analysis._find_interface_lipid(frame, 
-                                                            headgroup_indices)
-        # Iterate through each grid point to find local interfaces
-        grid_msr = []
-        for x, y in itertools.product(xbin_centers, ybin_centers):
-            atoms_xy = grid_analysis. _find_atoms_within(frame, x=x, y=y, 
-                    atom_indices=headgroup_indices, 
-                    xbin_width=xbin_width, ybin_width=ybin_width)
-
-            if len(atoms_xy) > 0:
-                local_interfaces = grid_analysis._find_interface_lipid(frame, 
-                                                                     atoms_xy)
-
-                # Normalize the surfaces based on the leaflet interface
-                if all(local_interfaces) and all(leaflet_interfaces):
-                    b_roughness = -1*(local_interfaces[0] - leaflet_interfaces[0])
-                    t_roughness = local_interfaces[1] - leaflet_interfaces[1]
-                    msr = (b_roughness**2 + t_roughness**2) / 2
-                    grid_msr.append(msr)
-        if all(grid_msr):   
-            msr_list.append(np.mean(grid_msr))
-            #b_roughness = grid_analysis._normalize(local_interfaces[0], reverse=True,
-            #        mean=leaflet_interfaces[i][0])
-            #t_roughness = grid_analysis._normalize(local_interfaces[1],
-            #        mean=leaflet_interfaces[i][1])
-
-    # Compute mean squared roughness (MSR)
-    np.savetxt('MSR.dat', np.asarray(msr_list))
-    blocks, stds = bilayer_analysis_functions.block_avg(traj, np.asarray(msr_list), block_size=5*u.nanosecond)
-    msr_avg = np.mean(blocks)
-    msr_std = np.std(blocks)
-    
-    return {'MSR_mean':msr_avg, 'MSR_std':msr_std}
-
-
 def symmetrize(data, zero_boundary_condition=False):
     """Symmetrize a profile
     

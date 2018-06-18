@@ -18,8 +18,10 @@ import simtk.unit as u
 import bilayer_analysis_functions
 import grid_analysis
 
-""" Iterate through all Data and Sim directories, 
-assessing interfacial variation using gridding """
+############
+## Functions to analyze bilayer-water interface from a simulation
+########
+
 
 def main():
     index = json.load(open('index.txt' ,'r'))
