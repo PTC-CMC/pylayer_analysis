@@ -306,17 +306,20 @@ def calc_offsets(traj, headgroup_distance_dict, blocked=False, anchor="DSPC"):
 def calc_nematic_order(traj, blocked=False, block_size=5*unit.nanosecond):
     """ COmpute nematic order over each leaflet"""
 
-    bot_leaflet, top_leaflet = identify_leaflets(traj)
+    bot_leaflet, top_leaflet, mid_plane = identify_leaflets(traj, 
+                                                        return_mid_plane=True)
     top_chains = []
     bot_chains = []
 
     for i, residue in enumerate(traj.topology.residues):
         if not residue.is_water:
-            indices = [a.index for a in residue.atoms]
-            if set(indices).issubset(set(top_leaflet)):
-                top_chains.append(indices)
-            else:
-                bot_chains.append(indices)
+            atoms_i = [a.index for a in residue.atoms]
+            if abs(np.mean(traj.xyz[:, atoms_i, 2]) - mid_plane) > 0.5:
+                indices = [a.index for a in residue.atoms]
+                if set(indices).issubset(set(top_leaflet)):
+                    top_chains.append(indices)
+                else:
+                    bot_chains.append(indices)
     s2_top = mdtraj.compute_nematic_order(traj, indices=top_chains)
     s2_bot = mdtraj.compute_nematic_order(traj, indices=bot_chains)
     s2_list = (s2_top + s2_bot)/2
