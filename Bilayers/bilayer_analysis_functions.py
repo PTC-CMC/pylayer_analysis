@@ -219,30 +219,35 @@ def calc_head_distance(traj, topol, head_indices, blocked=False):
     zcoord_top = 0
     zcoord_bot = 0
     atom_counter = 0
+    bot_leaflet, top_leaflet = identify_leaflets(traj)
+    mid_plane = np.mean([np.mean(traj.xyz[:,bot_leaflet,2]), np.mean(traj.xyz[:,top_leaflet,2])])
     for atom_j in head_indices:
-        if 'CH0' in topol.atom(atom_j).name:
-            mass_i = 12.01
-        elif 'CH1' in topol.atom(atom_j).name:
-            mass_i = 13.02
-        elif 'CH2' in topol.atom(atom_j).name:
-            mass_i = 14.03
-        elif 'CH3' in topol.atom(atom_j).name:
-            mass_i = 15.04
-        elif 'C' in topol.atom(atom_j).name:
-            mass_i = 12.01
-        elif 'P' in topol.atom(atom_j).name:
-            mass_i = 30.97
-        elif 'O' in topol.atom(atom_j).name:
-            mass_i = 16.00
-        else:
-            mass_i = topol.atom(atom_j).element.mass
-        if atom_counter < len(head_indices)/2:
-            zcoord_top += mass_i * traj.atom_slice([atom_j]).xyz[:,0,2]
-            mass_top += mass_i
-        else:
-            zcoord_bot += mass_i * traj.atom_slice([atom_j]).xyz[:,0,2]
-            mass_bot += mass_i
-        atom_counter +=1
+        #if 'CH0' in topol.atom(atom_j).name:
+        #    mass_i = 12.01
+        #elif 'CH1' in topol.atom(atom_j).name:
+        #    mass_i = 13.02
+        #elif 'CH2' in topol.atom(atom_j).name:
+        #    mass_i = 14.03
+        #elif 'CH3' in topol.atom(atom_j).name:
+        #    mass_i = 15.04
+        #elif 'C' in topol.atom(atom_j).name:
+        #    mass_i = 12.01
+        #elif 'P' in topol.atom(atom_j).name:
+        #    mass_i = 30.97
+        #elif 'O' in topol.atom(atom_j).name:
+        #    mass_i = 16.00
+        #else:
+        #    mass_i = topol.atom(atom_j).element.mass
+        mass_i = get_mass(topol, atom_j)
+        #if atom_counter < len(head_indices)/2:
+        if abs(traj.xyz[0,atom_j,2] - mid_plane) > 1:
+            if atom_j in top_leaflet and :
+                zcoord_top += mass_i * traj.atom_slice([atom_j]).xyz[:,0,2]
+                mass_top += mass_i
+            else:
+                zcoord_bot += mass_i * traj.atom_slice([atom_j]).xyz[:,0,2]
+                mass_bot += mass_i
+        #atom_counter +=1
     zcoord_top = zcoord_top / mass_top * unit.nanometer
     zcoord_bot = zcoord_bot / mass_bot * unit.nanometer
     head_dist_list = abs(zcoord_top - zcoord_bot).in_units_of(unit.angstrom)
