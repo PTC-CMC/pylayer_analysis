@@ -4,6 +4,7 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 import mdtraj as mdtraj
+import simtk.unit as u
 import time
 import bilayer_analysis_functions 
 import itertools
@@ -15,7 +16,7 @@ from multiprocessing import Pool
 ################
 
 def compute_occupied_profile_all(traj, bin_spacing=0.1, z_bins=None, centered=True,
-                                plot=True):
+                                plot=True, blocked=True):
     """ Compute void fraction  according to bins
 
     Parameters
@@ -30,6 +31,8 @@ def compute_occupied_profile_all(traj, bin_spacing=0.1, z_bins=None, centered=Tr
         If True, re-center the bilayer
     plot : bool ,opt, default True
         If True, save the occupied area profile and plot
+    blocked : bool, opt, default True
+        If True, perform block averaging on the data
 
     Returns
     -------
@@ -66,13 +69,22 @@ def compute_occupied_profile_all(traj, bin_spacing=0.1, z_bins=None, centered=Tr
                             zip(itertools.repeat(traj), itertools.repeat(lipid_atoms),
                                 itertools.repeat(z_bins), range(traj.n_frames)))
     occupied_area_profile = np.array(occupied_area_profile)
+    if blocked:
+        blocked_profile = []
+        for bin_index in range(occupied_area_profile.shape[1]):
+            data = occupied_area_profile[:, bin_index]
+            blocks, stds = bilayer_analysis_functions.block_avg(traj, data, 
+                                                            block_size=5*u.nanosecond)
+            blocked_profile.append(blocks)
+        occupied_area_profile = np.asarray(blocked_profile).T
 
-    if plot:
-        mean_profile = np.mean(occupied_area_profile, axis=0)
-        std_profile = np.std(occupied_area_profile, axis=0)
-    
-        np.savetxt('occupied_area_profile.dat', np.column_stack((z_bins, 
+
+
+    mean_profile = np.mean(occupied_area_profile, axis=0)
+    std_profile = np.std(occupied_area_profile, axis=0)
+    np.savetxt('occupied_area_profile.dat', np.column_stack((z_bins, 
                                                 mean_profile, std_profile)))
+    if plot:
         fig, ax = plt.subplots(1,1)
         ax.plot(z_bins, mean_profile)
         ax.fill_between(z_bins, mean_profile - std_profile, 
