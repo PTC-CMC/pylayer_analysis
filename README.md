@@ -13,5 +13,5 @@ depending on the forcefield used
 Use matplotlib to animate the Z-coordinates of lipids over the course of a simulation
 ## `bootstrap_perm_pickle.py`
 Utilize a bootstrapping methodology for Z-constrained simulations to resample force timeseries and compute diffusion, free energy, and permeability
-## `naive_perm_pickle.py
+## `naive_perm_pickle.py`
 Utilize a naive statistical sampling for Z-constrained simulations to resample force timeseries and compute diffusion, free energy, and permeability
