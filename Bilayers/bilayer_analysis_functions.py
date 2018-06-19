@@ -240,8 +240,8 @@ def calc_head_distance(traj, topol, head_indices, blocked=False):
         #    mass_i = topol.atom(atom_j).element.mass
         mass_i = get_mass(topol, atom_j)
         #if atom_counter < len(head_indices)/2:
-        if abs(traj.xyz[0,atom_j,2] - mid_plane) > 1:
-            if atom_j in top_leaflet and :
+        if abs(traj.xyz[0,atom_j,2] - mid_plane) > 0.5:
+            if atom_j in top_leaflet:
                 zcoord_top += mass_i * traj.atom_slice([atom_j]).xyz[:,0,2]
                 mass_top += mass_i
             else:
