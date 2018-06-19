@@ -160,8 +160,8 @@ def calc_tilt_angle(traj, topol, lipid_tails, blocked=False,
     angle_list = np.eye(traj.n_frames, len(lipid_tails.keys()))
     index = 0
     for key in lipid_tails.keys():
+        lipid_i_atoms = lipid_tails[key]
         if abs(np.mean(traj.xyz[0, lipid_i_atoms,2]) - mid_plane) > 0.5:
-            lipid_i_atoms = lipid_tails[key]
             traj_lipid_i = traj.atom_slice(lipid_i_atoms)
             director = mdtraj.geometry.order._compute_director(traj_lipid_i)
             #lipid_angle = np.rad2deg(np.arccos(np.dot(director, surface_normal))) * unit.degree
