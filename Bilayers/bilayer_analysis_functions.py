@@ -153,22 +153,27 @@ def calc_tilt_angle(traj, topol, lipid_tails, blocked=False,
     '''
 
     surface_normal = np.asarray([0, 0, 1.0])
+    bot_leaflet, top_leaflet = identify_leaflets(traj) 
+
+    mid_plane = np.mean([np.mean(traj.xyz[:,bot_leaflet,2]), 
+                            np.mean(traj.xyz[:,top_leaflet,2])])
     angle_list = np.eye(traj.n_frames, len(lipid_tails.keys()))
     index = 0
     for key in lipid_tails.keys():
-        lipid_i_atoms = lipid_tails[key]
-        traj_lipid_i = traj.atom_slice(lipid_i_atoms)
-        director = mdtraj.geometry.order._compute_director(traj_lipid_i)
-        #lipid_angle = np.rad2deg(np.arccos(np.dot(director, surface_normal))) * unit.degree
-        lipid_angle = np.rad2deg(np.arccos(np.dot(director, 
-                                                surface_normal))) 
-        for i,angle in enumerate(lipid_angle):
-            if angle >= 90:
-                angle = 180 - angle
-                lipid_angle[i] = angle
-        #angle_list.append(lipid_angle)
-        angle_list[:,index] = lipid_angle
-        index += 1
+        if abs(np.mean(traj.xyz[0, lipid_i_atoms,2]) - mid_plane) > 0.5:
+            lipid_i_atoms = lipid_tails[key]
+            traj_lipid_i = traj.atom_slice(lipid_i_atoms)
+            director = mdtraj.geometry.order._compute_director(traj_lipid_i)
+            #lipid_angle = np.rad2deg(np.arccos(np.dot(director, surface_normal))) * unit.degree
+            lipid_angle = np.rad2deg(np.arccos(np.dot(director, 
+                                                    surface_normal))) 
+            for i,angle in enumerate(lipid_angle):
+                if angle >= 90:
+                    angle = 180 - angle
+                    lipid_angle[i] = angle
+            #angle_list.append(lipid_angle)
+            angle_list[:,index] = lipid_angle
+            index += 1
     angle_list = unit.Quantity(angle_list, unit.degree)
     angle_frame_avg = np.mean(angle_list, axis = 1) # For each frame, average all tail tilt angles
     if blocked:
@@ -326,9 +331,9 @@ def calc_nematic_order(traj, blocked=False, block_size=5*unit.nanosecond):
         s2_std = np.std(s2_list)
     return s2_ave, s2_std, s2_list
 
-def identify_leaflets(traj):
+def identify_leaflets(traj, return_mid_plane=False):
     """  Identify bilayer leaflets based on z coord
-    k"""
+    """
     top_leaflet = []
     bot_leaflet = []
     all_z = []
@@ -353,8 +358,10 @@ def identify_leaflets(traj):
 
     bot_leaflet = np.asarray(bot_leaflet).flatten()
     top_leaflet = np.asarray(top_leaflet).flatten()
-    if len(top_leaflet) != len(bot_leaflet):
-        print("Warning: Asymmetric leaflet identification!")
+    mid_plane = np.mean([np.mean(traj.xyz[:,bot_leaflet,2]), 
+                            np.mean(traj.xyz[:,top_leaflet,2])])
+    if return_mid_plane:
+        return bot_leaflet, top_leaflet, mid_plane
 
     return bot_leaflet, top_leaflet
 
