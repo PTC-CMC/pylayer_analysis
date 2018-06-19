@@ -3,7 +3,6 @@ import os
 import sys
 import time
 
-from optparse import OptionParser
 import pdb
 import collections
 from collections import OrderedDict
@@ -21,6 +20,7 @@ import pandas as pd
 import mdtraj as mdtraj
 import simtk.unit as unit
 
+import grid_analysis
 import group_templates
 
 def block_avg(traj, data, block_size=5*unit.nanosecond):
@@ -206,53 +206,6 @@ def calc_APT(traj, apl_list, angle_list, n_tails_per_lipid, blocked=False):
         apt_std = np.std(apt_list)
     return apt_avg, apt_std, apt_list
 
-def calc_mean(dataset):
-    ''' Generic mean calculation 
-    of a dataset. Assumes each elemtn in the dataset
-    is a simtk Quantity'''
-
-    avg = dataset[0]
-    for i in range(1, len(dataset) - 1):
-        avg = avg.__add__(dataset[i])
-    avg = avg.__truediv__(len(dataset))
-    return avg
-
-def calc_stdev(avg, dataset):
-    ''' Generic standard deviation calculation
-    of a dataset. Assumes each element in the dataset
-    is a simtk Quantity'''
-
-    variance = (avg.__sub__(avg)).__pow__(2)
-    for val in dataset:
-        deviation =  val.__sub__(avg)
-        variance = variance.__add__(deviation.__pow__(2))
-    return (variance.__div__(len(dataset))).sqrt()
-
-def read_xvg(filename):
-    '''Given an xvg file, read the file
-    Return the data as a list of lists
-    Return the legend as a list '''
-
-    xvgfile = open(filename, 'r')
-    xvglines = xvgfile.readlines()
-    data = list()
-    legend = []
-    for i, line in enumerate(xvglines):
-        if '@' in line and 'legend' in line and 's' in line:
-            first_apostrophe = line.find('\"')
-            second_apostrophe = line.rfind('\"')
-            legend_entry = line[first_apostrophe+1: second_apostrophe]
-            legend_entry = legend_entry.replace('\\S', '$^{')
-            legend_entry = legend_entry.replace('\\s', '$_{')
-            legend_entry  = legend_entry.replace('\\N', '}$')
-            legend.append(legend_entry)
-        if '#' not in line and '@' not in line:
-            items = line.split()
-            data.append((items))
-    
-        else:
-            pass
-    return data, legend
 
 def calc_head_distance(traj, topol, head_indices, blocked=False):
     """
