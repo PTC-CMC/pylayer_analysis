@@ -117,7 +117,7 @@ def _compute_occupied_profile_frame(traj, lipid_atoms, z_bins, frame_i):
         atom_i = traj.topology.atom(i)
         #if "H" not in atom_i.element.symbol
         if True:
-            radius_i = atom_i.element.radius * 0.75
+            radius_i = atom_i.element.radius * 0.85
             atom_i_center = traj.xyz[frame_i, i, :]
 
             # r_eff_sq is a numpy array of the different effective, squared radii
