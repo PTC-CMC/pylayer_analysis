@@ -361,10 +361,8 @@ def identify_leaflets(traj, return_mid_plane=False):
 
     bot_leaflet = np.asarray(bot_leaflet).flatten()
     top_leaflet = np.asarray(top_leaflet).flatten()
-    mid_plane = np.mean([np.mean(traj.xyz[:,bot_leaflet,2]), 
-                            np.mean(traj.xyz[:,top_leaflet,2])])
     if return_mid_plane:
-        return bot_leaflet, top_leaflet, mid_plane
+        return bot_leaflet, top_leaflet, z_cutoff
 
     return bot_leaflet, top_leaflet
 
