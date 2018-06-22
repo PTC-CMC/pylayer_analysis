@@ -157,7 +157,8 @@ def calc_tilt_angle(traj, topol, lipid_tails, blocked=False,
 
     mid_plane = np.mean([np.mean(traj.xyz[:,bot_leaflet,2]), 
                             np.mean(traj.xyz[:,top_leaflet,2])])
-    angle_list = np.eye(traj.n_frames, len(lipid_tails.keys()))
+    #angle_list = np.eye(traj.n_frames, len(lipid_tails.keys()))
+    angle_list = [[] for _ in range(traj.n_frames)] 
     index = 0
     for key in lipid_tails.keys():
         lipid_i_atoms = lipid_tails[key]
@@ -172,8 +173,11 @@ def calc_tilt_angle(traj, topol, lipid_tails, blocked=False,
                     angle = 180 - angle
                     lipid_angle[i] = angle
             #angle_list.append(lipid_angle)
-            angle_list[:,index] = lipid_angle
-            index += 1
+            for frame_i in range(traj.n_frames):
+                angle_list[frame_i].append(lipid_angle[frame_i])
+            #angle_list[:,index] = lipid_angle
+            #index += 1
+    angle_list = np.array(angle_list)
     angle_list = unit.Quantity(angle_list, unit.degree)
     angle_frame_avg = np.mean(angle_list, axis = 1) # For each frame, average all tail tilt angles
     if blocked:
