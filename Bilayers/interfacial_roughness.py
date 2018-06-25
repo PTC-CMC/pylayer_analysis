@@ -73,7 +73,8 @@ def analyze_simulation_interface(traj, return_variance=False):
     variance_list = []
     for i, frame in enumerate(traj):
         leaflet_interfaces = grid_analysis._find_interface_lipid(frame, 
-                                                            headgroup_indices)
+                                                            headgroup_indices,
+                                                            return_variance=False)
         # Iterate through each grid point to find local interfaces
         grid_msr = []
         grid_variance =[]
