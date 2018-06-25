@@ -88,7 +88,7 @@ def analyze_simulation_interface(traj):
                 if all(local_interfaces) and all(leaflet_interfaces):
                     b_roughness = -1*(local_interfaces[0] - leaflet_interfaces[0])
                     t_roughness = local_interfaces[1] - leaflet_interfaces[1]
-                    msr = (b_roughness**2 + t_roughness**2) / 2
+                    msr = (np.sqrt(b_roughness**2) + np.sqrt(t_roughness**2)) / 2
                     grid_msr.append(msr)
         if all(grid_msr):   
             msr_list.append(np.mean(grid_msr))
