@@ -48,7 +48,7 @@ def rough_routine(root_dir, sim_folder):
     else:
         return None
 
-def analyze_simulation_interface(traj):
+def analyze_simulation_interface(traj, return_variance=False):
     """ Given an mdtraj Trajectory, identify the interface """
     # Identify all the headgroup indices 
     headgroup_indices = grid_analysis._get_headgroup_indices(traj)
@@ -70,40 +70,62 @@ def analyze_simulation_interface(traj):
     # Iterate through each frame
     # Identify the leaflet interfaces
     msr_list = []
+    variance_list = []
     for i, frame in enumerate(traj):
         leaflet_interfaces = grid_analysis._find_interface_lipid(frame, 
-                                                            headgroup_indices)
+                                                            headgroup_indices,
+                                                            return_variance=False)
         # Iterate through each grid point to find local interfaces
         grid_msr = []
+        grid_variance =[]
         for x, y in itertools.product(xbin_centers, ybin_centers):
-            atoms_xy = grid_analysis. _find_atoms_within(frame, x=x, y=y, 
+            atoms_xy = grid_analysis._find_atoms_within(frame, x=x, y=y, 
                     atom_indices=headgroup_indices, 
                     xbin_width=xbin_width, ybin_width=ybin_width)
 
             if len(atoms_xy) > 0:
-                local_interfaces = grid_analysis._find_interface_lipid(frame, 
-                                                                     atoms_xy)
+                if return_variance:
+                    bot, top, variance  = grid_analysis._find_interface_lipid(
+                                                    frame, 
+                                                    atoms_xy,
+                                                    return_variance=return_variance)
+                else:
+                    bot, top  = grid_analysis._find_interface_lipid(
+                                                    frame, 
+                                                    atoms_xy,
+                                                    return_variance=return_variance)
+
 
                 # Normalize the surfaces based on the leaflet interface
-                if all(local_interfaces) and all(leaflet_interfaces):
-                    b_roughness = -1*(local_interfaces[0] - leaflet_interfaces[0])
-                    t_roughness = local_interfaces[1] - leaflet_interfaces[1]
+                if bot and top and all(leaflet_interfaces):
+                    b_roughness = -1*(bot - leaflet_interfaces[0])
+                    t_roughness = top - leaflet_interfaces[1]
                     msr = (np.sqrt(b_roughness**2) + np.sqrt(t_roughness**2)) / 2
                     grid_msr.append(msr)
+                    if return_variance:
+                        grid_variance.append(variance)
         if all(grid_msr):   
             msr_list.append(np.mean(grid_msr))
+            if return_variance:
+                variance_list.append(np.mean(grid_variance))
             #b_roughness = grid_analysis._normalize(local_interfaces[0], reverse=True,
             #        mean=leaflet_interfaces[i][0])
             #t_roughness = grid_analysis._normalize(local_interfaces[1],
             #        mean=leaflet_interfaces[i][1])
 
-    # Compute mean squared roughness (MSR)
+    # Compute mean squared roughness (root-MSR)
     np.savetxt('MSR.dat', np.asarray(msr_list))
     blocks, stds = bilayer_analysis_functions.block_avg(traj, np.asarray(msr_list), block_size=5*u.nanosecond)
     msr_avg = np.mean(blocks)
     msr_std = np.std(blocks)
-    
-    return {'MSR_mean':msr_avg, 'MSR_std':msr_std}
+
+    np.savetxt('z_variance.dat', np.asarray(variance_list))
+    blocks, stds = bilayer_analysis_functions.block_avg(traj, np.asarray(variance_list), block_size=5*u.nanosecond)
+    variance_avg = np.mean(blocks)
+    variance_std = np.std(blocks)
+
+    return {'MSR_mean':msr_avg, 'MSR_std':msr_std, 
+            'z_variance_mean': variance_avg, 'z_variance_std': variance_std}
 
     # Plotting
     #_surface_plot(b_roughness, xbin_centers, ybin_centers, num_ticks=5,

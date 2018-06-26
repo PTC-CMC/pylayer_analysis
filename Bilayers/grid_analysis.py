@@ -481,7 +481,7 @@ def _find_interface_water(water_p, bins, rho_interface=984,frame=0,reverse=False
 
     return z_interface_bot, z_interface_top
 
-def _find_interface_lipid(traj, headgroup_indices):
+def _find_interface_lipid(traj, headgroup_indices, return_variance=False):
     """ Find the interface based on lipid head groups"""
 
     # Sort into top and bottom leaflet
@@ -500,6 +500,12 @@ def _find_interface_lipid(traj, headgroup_indices):
         z_interface_bot = None
     if len(top_leaflet) == 0:
         z_interface_top = None
+
+    if return_variance:
+        bot_variance = np.std(traj.xyz[:, bot_leaflet, 2])
+        top_variance = np.std(traj.xyz[:, top_leaflet, 2])
+        z_variance = np.mean([bot_variance, top_variance])
+        return z_interface_bot, z_interface_top, z_variance
 
     return z_interface_bot, z_interface_top
 
