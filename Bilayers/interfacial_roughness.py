@@ -71,10 +71,13 @@ def analyze_simulation_interface(traj, return_variance=False):
     # Identify the leaflet interfaces
     msr_list = []
     variance_list = []
+    leaflet_variance_list = []
     for i, frame in enumerate(traj):
-        leaflet_interfaces = grid_analysis._find_interface_lipid(frame, 
+        bot, top, leaflet_variance = grid_analysis._find_interface_lipid(frame, 
                                                             headgroup_indices,
-                                                            return_variance=False)
+                                                            return_variance=True)
+        leaflet_interfaces = (bot,top)
+        leaflet_variance_list.append(leaflet_variance)
         # Iterate through each grid point to find local interfaces
         grid_msr = []
         grid_variance =[]
@@ -124,8 +127,18 @@ def analyze_simulation_interface(traj, return_variance=False):
     variance_avg = np.mean(blocks)
     variance_std = np.std(blocks)
 
+    leaflet_variance_list = np.array(leaflet_variance_list) 
+    np.savetxt('leaflet_variance.dat', leaflet_variance_list)
+    blocks, stds = bilayer_analysis_functions.block_avg(traj, 
+            np.asarray(leaflet_variance_list), block_size=5*u.nanosecond)
+    leaflet_variance_avg = np.mean(blocks)
+    leaflet_variance_std = np.std(blocks)
+
+
     return {'MSR_mean':msr_avg, 'MSR_std':msr_std, 
-            'z_variance_mean': variance_avg, 'z_variance_std': variance_std}
+            'z_variance_mean': variance_avg, 'z_variance_std': variance_std,
+            'leaflet_variance_mean': leaflet_variance_avg, 
+            'leaflet_variance_std': leaflet_variance_std}
 
     # Plotting
     #_surface_plot(b_roughness, xbin_centers, ybin_centers, num_ticks=5,
