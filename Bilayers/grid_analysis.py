@@ -354,6 +354,7 @@ def _get_headgroup_indices(traj):
     #lipid_dict, headgroup_dict = bilayer_analysis_functions.get_lipids(traj.topology)
     lipid_dict, headgroup_dict = bilayer_analysis_functions.identify_groups(traj, 
                                                     forcefield='charmm36')
+                                                    #forcefield='gromos53a6')
     headgroup_indices = []
     for key, val in headgroup_dict.items():
         for a in val:
