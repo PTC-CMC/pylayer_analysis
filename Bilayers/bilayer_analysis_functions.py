@@ -84,7 +84,7 @@ def calc_APL(traj, n_lipid,blocked=False, block_size=5*unit.nanosecond):
     apl_std = areastd/(n_lipid/2)
     return (apl_avg, apl_std, apl_list)
 
-def identify_groups(traj, forcefield='gromos53a6'):
+def identify_groups(traj, forcefield='gromos53a6', separate_molecules=False):
     """ Identify tails and heads for all lipids in system
 
     Parameters
@@ -92,6 +92,9 @@ def identify_groups(traj, forcefield='gromos53a6'):
     traj: MDTraj Trajectory
     forcefield: str, default 'gromos53a6'
         String describing the force field (see `group_templates.py`)
+    separate_molecules : bool, opt
+        If true, will return headgroups as a list of lists correspdong to each
+        residue and its headgroups
 
     Returns
     -------
@@ -127,7 +130,10 @@ def identify_groups(traj, forcefield='gromos53a6'):
         if not residue.is_water:
             template = groups[residue.name]
             headgroups_i = [val + residue.atom(0).index for val in template['head']]
-            head_groups[residue.name] += headgroups_i
+            if separate_molecules:
+                head_groups[residue.name].append(headgroups_i)
+            else:
+                head_groups[residue.name] += headgroups_i
             if "PC" in residue.name or "ISIS" in residue.name or 'cer' in residue.name:
                 tail_1 = [val + residue.atom(0).index for val in template['tail_1']]
                 tail_2 = [val + residue.atom(0).index for val in template['tail_2']]
@@ -244,6 +250,46 @@ def calc_head_distance(traj, topol, head_indices, blocked=False):
     head_dist_list = abs(zcoord_top - zcoord_bot).in_units_of(unit.angstrom)
     
     return head_dist_list
+
+def calc_headgroup_fluctuations(traj, headgroup_dict, blocked=False):
+    """ Look at headgropu fluctuations, average over time 
+    
+    
+    Returns
+    -------
+    fluctuations : dict
+        keys are residue names, vals are tupes of (ave, std, list)
+    
+    """
+    fluctuations = OrderedDict()
+    bot, top, midplane = identify_leaflets(traj, return_mid_plane=True)
+    for key in headgroup_dict.keys():
+        fluctuations[key] = []
+        coms_by_group_frame = np.zeros((len(headgroup_dict[key]), traj.n_frames))
+        for i, headgroup in enumerate(headgroup_dict[key]):
+            coms_by_group_frame[i,:] = mdtraj.compute_center_of_mass(traj.atom_slice(headgroup))[:,2]
+
+        bot_fluctuations = [np.std([v for v in coms_by_group_frame[:,frame_index] 
+                                if v <= midplane])
+                                for frame_index in range(traj.n_frames) ]
+        top_fluctuations = [np.std([v for v in coms_by_group_frame[:,frame_index] 
+                                if v > midplane])
+                                for frame_index in range(traj.n_frames) ]
+        fluctuations_by_frame = np.array([np.mean((b,t)) for b,t in zip(bot_fluctuations,
+                                                                top_fluctuations)])
+       
+        if blocked:
+            blocks, stds = block_avg(traj, fluctuations_by_frame, 
+                                block_size = 5 * unit.nanosecond)
+            mean = np.mean(blocks)
+            std = np.std(blocks)
+        else:
+            mean = np.mean(fluctuations_by_frame)
+            std = np.std(fluctuations_by_frame)
+        fluctuations[key] = (mean, std, fluctuations_by_frame)
+    return fluctuations
+
+
 
 def compute_headgroup_distances(traj, topol, headgroup_dict, blocked=False):
     """
