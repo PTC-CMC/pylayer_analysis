@@ -625,7 +625,8 @@ def _compute_rotational_autocorrelation(traj, atom_1, atom_2,
         # Compute the distance vector at time origin
         dist_vector_0 = [traj.xyz[time_origin, atom_1, 0] - traj.xyz[time_origin, atom_2, 0],
                         traj.xyz[time_origin, atom_1, 1] - traj.xyz[time_origin, atom_2, 1],
-                        traj.xyz[time_origin, atom_1, 2] - traj.xyz[time_origin, atom_2,2]]
+                        0]
+                        #traj.xyz[time_origin, atom_1, 2] - traj.xyz[time_origin, atom_2,2]]
         # Reference vector is the vector at the time origin
         reference_vector = [dist_vector_0[0], dist_vector_0[1], 0]
         # Compute the cos(angle) at time origin
@@ -636,10 +637,12 @@ def _compute_rotational_autocorrelation(traj, atom_1, atom_2,
             if i+time_origin < traj.n_frames:
                 dist_vector_i = [traj.xyz[time_origin+i, atom_1, 0]-traj.xyz[time_origin+i, atom_2, 0],
                             traj.xyz[time_origin+i, atom_1, 1] - traj.xyz[time_origin+i, atom_2, 1],
-                            traj.xyz[time_origin+i, atom_1, 2] - traj.xyz[time_origin+i, atom_2,2]]
+                            0]
+                            #traj.xyz[time_origin+i, atom_1, 2] - traj.xyz[time_origin+i, atom_2,2]]
                 cos_angle_i = np.dot(reference_vector, dist_vector_i)/(np.dot(dist_vector_i, dist_vector_i)**0.5)
                 # Calculate the autocorrelation and add to rot_acfs
-                auto_corr = cos_angle_i * cos_angle_0 / (cos_angle_0**2)
+                #auto_corr = cos_angle_i * cos_angle_0 / (cos_angle_0**2)
+                auto_corr = np.dot(reference_vector, dist_vector_i) / np.dot(reference_vector, reference_vector)
                 rot_acfs[i].append(auto_corr)
     
     # Average rot_acfs so each time interval has a single rot_acf
@@ -713,9 +716,10 @@ def compute_rotational_autocorrelation(traj,
             all_correlations.append(correlation)
 
     average_correlations = np.mean(all_correlations,axis=0)
+    errs = np.std(all_correlations,axis=0)/np.sqrt(n_time_origins)
 
     times = np.arange(0, (traj.n_frames)*dt, dt)
-    return times, average_correlations
+    return times, average_correlations, errs
 
 
 def compute_lateral_diffusion(traj, dt=20, n_time_origins=20):
