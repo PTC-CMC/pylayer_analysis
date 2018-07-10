@@ -115,6 +115,13 @@ c36_groups['DSPC']['tail_1'] = [39,41,93,96,99,102,105,108,111,114,117,120,123,1
 c36_groups['DSPC']['tail_2'] = [30,32,44,47,50,53,56,59,62,65,68,71,74,77,80,83,86,
         89]
 
+c36_groups['DOPC'] = OrderedDict()
+c36_groups['DOPC']['head'] = [19,20,21,22,23]
+c36_groups['DOPC']['tail_1'] = [39,41,91,94,97,100,103,106,109,111,113,116,119,
+        122,125,128,131,134]
+c36_groups['DOPC']['tail_2'] = [30,32,44,47,50,53,56,59,62,64,66,69,72,75,78,81,84,
+        87]
+
 # #################
 # ### Ceramides ###
 # #################
@@ -182,6 +189,18 @@ c36_groups['oh16']['tail'] = np.concatenate(( np.arange(0,47), [48,49] ))
 c36_groups['oh24'] = OrderedDict()
 c36_groups['oh24']['head'] = [71,74]
 c36_groups['oh24']['tail'] = np.concatenate(( np.arange(0,71), [72,73] ))
+
+###################
+### Cholesterol ###
+##################
+c36_groups['chol'] = OrderedDict()
+c36_groups['chol']['head'] = [0,1,2,3]
+c36_groups['chol']['tail'] = np.arange(49,74)
+
+c36_groups['CHL1'] = OrderedDict()
+c36_groups['CHL1']['head'] = [0,1,2,3]
+c36_groups['CHL1']['tail'] = np.arange(49,74)
+
 
 def gromos53a6_groups():
     return g53a6_groups
