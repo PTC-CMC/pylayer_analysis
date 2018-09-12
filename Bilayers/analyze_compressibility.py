@@ -10,6 +10,14 @@ import matplotlib.pyplot as plt
 import plot_ay
 plot_ay.setDefaults()
 
+def find_blocks(number):
+    max_power = int(np.log10(number))
+    all_blocks = [[int(10**num), int(2.5*10**num), int(5*10**num), int(7.5*10**num)]
+                        for num in np.arange(0, max_power+1, dtype=int)]
+    all_blocks = np.array(all_blocks).flatten()
+    all_blocks = np.array([val for val in all_blocks if val <= number])
+    return all_blocks
+
 kb = u.BOLTZMANN_CONSTANT_kB 
 #kb = u.BOLTZMANN_CONSTANT_kB * u.AVOGADRO_CONSTANT_NA
 T = 305 * u.kelvin
@@ -21,12 +29,9 @@ for chunk in mdtraj.iterload('trajectory.dcd', top='npt.gro'):
     areas = np.concatenate((areas, area_chunk))
     n_frames += chunk.n_frames
 areas *= u.nanometer**2
-#areas = traj.unitcell_lengths[:,0] * traj.unitcell_lengths[:,1] * u.nanometer**2
-#areas, _= bilayer_analysis_functions.block_avg(traj, areas._value)*areas.unit
 avg_area = np.mean(areas)
 mean_sq_fluc = np.sum((areas - avg_area)**2)/len(areas)
 ka = kb*T*avg_area/mean_sq_fluc
-print(avg_area/64)
 print(ka.in_units_of(u.dyne/u.centimeter))
 print(ka.in_units_of(u.newton/u.meter))
 
@@ -36,8 +41,9 @@ print(ka.in_units_of(u.newton/u.meter))
 # we have 10,000 frames for 100ns
 # we now have 50,000 frames for 500ns
 # Let's declare block size
-block_sizes = [100,200,300,400, 500,600,700,800,900, 1000, 2000, 5000,
-            10000, 20000, 25000, n_frames]
+block_sizes = find_blocks(n_frames)
+#block_sizes = [100,200,300,400, 500,600,700,800,900, 1000, 2000, 5000,
+            #10000, 20000, 25000, n_frames]
 fig, ax = plt.subplots(1,2)
 for block_size in block_sizes:
     n_blocks = int(n_frames / block_size)
@@ -53,7 +59,8 @@ for block_size in block_sizes:
     se = np.std(all_ka)
     ax[0].scatter([block_size], [se])
     ax[1].scatter([block_size], [mean])
-    print("{} blocksize, {} mean, {} se".format(block_size, mean, se))
+    print("{} blocksize, {} blocks, {} mean, {} se".format(block_size, n_blocks, 
+                                    mean, se))
 ax[0].set_xlabel("Block size (frames)")
 ax[0].set_ylabel("Standard error")
 ax[1].set_ylabel("Compressibilty Modulus (dyne/cm)")
