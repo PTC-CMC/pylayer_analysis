@@ -37,7 +37,7 @@ print(ka.in_units_of(u.newton/u.meter))
 # we now have 50,000 frames for 500ns
 # Let's declare block size
 block_sizes = [100,200,300,400, 500,600,700,800,900, 1000, 2000, 5000,
-            10000, 20000, 25000]
+            10000, 20000, 25000, n_frames]
 fig, ax = plt.subplots(1,2)
 for block_size in block_sizes:
     n_blocks = int(n_frames / block_size)
