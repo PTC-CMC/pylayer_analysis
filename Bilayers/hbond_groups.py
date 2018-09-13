@@ -69,16 +69,41 @@ def get_hbond_groups(uni, forcefield='Charmm36'):
         reference_donors = c36_donors
     else:
         sys.exit("forcefield not supported in hbond groups")
+    hbond_groups = {}
     res_names = list(set(res.resname for res in uni.residues ))
-    acceptors = []
-    donors = []
-    water_acceptors = []
-    water_donors = []
+    acceptor_names = []
+    donors_names = []
+    water_acceptor_names = []
+    water_donor_names = []
     for res_name in res_names:
         if 'HOH' in res_name or 'SOL' in res_name:
-            water_acceptors.extend(reference_acceptors[res_name])
-            water_donors.extend(reference_acceptors[res_name])
+            water_acceptor_names.extend(reference_acceptors[res_name])
+            water_donor_names.extend(reference_acceptors[res_name])
         else:
-            acceptors.extend(reference_acceptors[res_name])
-            donors.extend(reference_donors[res_name])
-    return donors, acceptors, water_donors, water_acceptors 
+            acceptor_names.extend(reference_acceptors[res_name])
+            donor_names.extend(reference_donors[res_name])
+    
+    acceptor_indices = []
+    donor_indices = []
+    water_acceptor_indices = []
+    water_donor_indices = []
+    for a in uni.atoms:
+        if a.name in donor_names:
+            donor_indices.append(a.index)
+        elif a.name in acceptor_names:
+            acceptor_indices.append(a.index)
+        elif a.name in water_donor_names:
+            water_donor_indices.append(a.index)
+        elif a.name in water_acceptor_names:
+            water_acceptor_indices.append(a.index)
+
+    hbond_groups = {'acceptor_names': acceptor_names,
+                'donor_names': donor_names,
+                'water_acceptor_names': water_acceptor_names,
+                'water_donor_names': water_donor_names,
+                'donor_indices': donor_indices,
+                'acceptor_indices': acceptor_indices,
+                'water_donor_indices': water_donor_indices:
+                'water_acceptor_indices': water_acceptor_indices}
+
+    return hbond_groups
