@@ -137,7 +137,6 @@ def get_hbond_donor_pairs(uni, forcefield='charmm36'):
                                             'N' in bond_pair.atoms[1].name or
                                             'F' in bond_pair.atoms[1].name):
             if 'HOH' in resname or 'SOL' in resname:
-                print("HIT")
                 water_hydrogens.append(bond_pair.atoms[0].index)
                 water_donors.append(bond_pair.atoms[1].index)
             else:
@@ -148,7 +147,6 @@ def get_hbond_donor_pairs(uni, forcefield='charmm36'):
                                             'N' in bond_pair.atoms[0].name or
                                             'F' in bond_pair.atoms[0].name):
             if 'HOH' in resname or 'SOL' in resname:
-                print("HIT")
                 water_hydrogens.append(bond_pair.atoms[0].index)
                 water_donors.append(bond_pair.atoms[1].index)
             else:
