@@ -4,6 +4,7 @@ import MDAnalysis as mda
 """ Hydrogen bond donor and acceptor defintiions for several lipid species
 depends on the forcefield and molecule parameterization """
 
+
 # //////////////////
 # Charmm36 Lipids
 # //////////////////
@@ -16,6 +17,16 @@ c36_acceptors = OrderedDict()
 c36_acceptors['DSPC'] = ['O11', 'O12', 'O13', 'O14',  'O31', 'O32', 'O21', 'O22',
                         'OSLP', 'O2L', 'OSL', 'OBL']
 c36_donors['DSPC'] = []
+
+#############
+### Water ###
+#############
+c36_acceptors['HOH'] = ['OT' , 'OW']
+c36_donors['HOH'] = ['OT' , 'OW']
+
+c36_acceptors['SOL'] = ['OT' , 'OW']
+c36_donors['SOL'] = ['OT' , 'OW']
+
 
 
 ##################
@@ -58,7 +69,7 @@ def get_hbond_groups(uni, forcefield='Charmm36'):
         reference_donors = c36_donors
     else:
         sys.exit("forcefield not supported in hbond groups")
-    res_names = list(set(res.resname for res in uni.residues))
+    res_names = list(set(res.resname for res in uni.residues ))
     acceptors = []
     donors = []
     for res_name in res_names:
