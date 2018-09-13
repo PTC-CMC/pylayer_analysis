@@ -107,3 +107,38 @@ def get_hbond_groups(uni, forcefield='Charmm36'):
                 'water_acceptor_indices': water_acceptor_indices}
 
     return hbond_groups
+
+def get_hbond_donor_pairs(uni, forcefield='charmm36'):
+    """ Return a list of hydrogen-donor pairs
+
+    Parameters
+    ---------
+    uni: MDAnalysis.Universe
+
+    Returns
+    -------
+    hydrogens: list of indices
+    donors: list of indices
+    """
+    if 'charmm36' in forcefield.lower():
+        reference_acceptors = c36_acceptors
+        reference_donors = c36_donors
+    else:
+        sys.exit("forcefield not supported in hbond groups")
+
+
+    hydrogens = []
+    donors = []
+    for bond_pair in uni.bonds:
+        if 'H' in bond_pair.atoms[0] and ('O' in bond_pair.atoms[1] or
+                                            'N' in bond_pair.atoms[1] or
+                                            'F' in bond_pair.atoms[1]):
+            hydrogens.append(bond_pair.atoms[0].index)
+            donors.append(bond_pair.atoms[1].index)
+        elif 'H' in bond_pair.atoms[1] and ('O' in bond_pair.atoms[0] or
+                                            'N' in bond_pair.atoms[0] or
+                                            'F' in bond_pair.atoms[0]):
+            hydrogens.append(bond_pair.atoms[1].index)
+            donors.append(bond_pair.atoms[0].index)
+    return hydrogens, donors
+
