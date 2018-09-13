@@ -75,4 +75,4 @@ def get_hbond_groups(uni, forcefield='Charmm36'):
     for res_name in res_names:
         acceptors.extend(reference_acceptors[res_name])
         donors.extend(reference_donors[res_name])
-    return acceptors, donors
+    return donors, acceptors
