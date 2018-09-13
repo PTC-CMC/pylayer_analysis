@@ -72,7 +72,13 @@ def get_hbond_groups(uni, forcefield='Charmm36'):
     res_names = list(set(res.resname for res in uni.residues ))
     acceptors = []
     donors = []
+    water_acceptors = []
+    water_donors = []
     for res_name in res_names:
-        acceptors.extend(reference_acceptors[res_name])
-        donors.extend(reference_donors[res_name])
-    return donors, acceptors
+        if 'HOH' in res_name or 'SOL' in res_name:
+            water_acceptors.extend(reference_acceptors[res_name])
+            water_donors.extend(reference_acceptors[res_name])
+        else:
+            acceptors.extend(reference_acceptors[res_name])
+            donors.extend(reference_donors[res_name])
+    return donors, acceptors, water_donors, water_acceptors 
