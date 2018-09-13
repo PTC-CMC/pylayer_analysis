@@ -72,7 +72,7 @@ def get_hbond_groups(uni, forcefield='Charmm36'):
     hbond_groups = {}
     res_names = list(set(res.resname for res in uni.residues ))
     acceptor_names = []
-    donors_names = []
+    donor_names = []
     water_acceptor_names = []
     water_donor_names = []
     for res_name in res_names:
@@ -103,7 +103,7 @@ def get_hbond_groups(uni, forcefield='Charmm36'):
                 'water_donor_names': water_donor_names,
                 'donor_indices': donor_indices,
                 'acceptor_indices': acceptor_indices,
-                'water_donor_indices': water_donor_indices:
+                'water_donor_indices': water_donor_indices,
                 'water_acceptor_indices': water_acceptor_indices}
 
     return hbond_groups
