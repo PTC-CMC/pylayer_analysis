@@ -10,11 +10,6 @@ import matplotlib.pyplot as plt
 import plot_ay
 #plot_ay.setDefaults()
 
-########################
-## Analyze channeling of a bilayer through grid-regions
-## Look at tracer visits  through these grid-regions
-########################
-
 def get_tracer_atoms(traj, tracers):
     tracer_residues = [r for r in traj.topology.residues if r.index in tracers]
     tracer_atoms = []
@@ -64,26 +59,45 @@ for i, x in enumerate(xbin_centers):
         atoms_xy = grid_analysis._find_atoms_within(traj, x=x, y=y, 
                 atom_indices=top_water_indices, 
                 xbin_width=xbin_width, ybin_width=ybin_width)
-        # First get the coordinates of the waters closest to the midplane 
-        # for each frame
-        mins = np.amin(abs(traj.xyz[:,atoms_xy,2] - midplane), axis=1)
-        a_mins = np.argmin(abs(traj.xyz[-1,atoms_xy,2] - midplane), axis=0)
+        # First compute distances from midplane
+        # This is n_frame x n_atoms
+        dist_from_midplane = abs(traj.xyz[:, atoms_xy, 2] -  midplane)
+        mins = []
+        # For each frame, find the 10 deepest atoms
+        # Store the average z coordinate of those 10 deepest atoms
+        # Mins is n_frame x 1
+        for row in dist_from_midplane:
+            min_indices = row.argsort()[:10]
+            mins.append(np.mean([row[arg] for arg in min_indices]))
+        # Compute the trajectory average of the 10-averaged atoms
+        # This is a single number
+        avg_mins = np.mean(np.array(mins))
 
-        # Second average those minimum coordinates over the trajectory
-        avg_mins = np.mean(mins)
         top_surface[i,j] = avg_mins
-        top_indices[i,j] = atoms_xy[a_mins]
+        top_indices[i,j] = min_indices[0]
 
 
         atoms_xy = grid_analysis._find_atoms_within(traj, x=x, y=y, 
                 atom_indices=bot_water_indices, 
                 xbin_width=xbin_width, ybin_width=ybin_width)
-        mins = np.amin(abs(traj.xyz[:,atoms_xy,2] - midplane), axis=1)
-        a_mins = np.argmin(abs(traj.xyz[-1,atoms_xy,2] - midplane), axis=0)
-        avg_mins = np.mean(mins)
+        # First compute distances from midplane
+        # This is n_frame x n_atoms
+        dist_from_midplane = abs(traj.xyz[:, atoms_xy, 2] -  midplane)
+        mins = []
+        # For each frame, find the 10 deepest atoms
+        # Store the average z coordinate of those 10 deepest atoms
+        # Mins is n_frame x 1
+        for row in dist_from_midplane:
+            min_indices = row.argsort()[:10]
+            mins.append(np.mean([row[arg] for arg in min_indices]))
+        # Compute the trajectory average of the 10-averaged atoms
+        # This is a single number
+        avg_mins = np.mean(np.array(mins))
 
         bot_surface[i,j] = avg_mins
-        bot_indices[i,j] = atoms_xy[a_mins]
+        bot_indices[i,j] = min_indices[0]
+
+
 
 #####################
 ## Counting tracer occupancy
@@ -95,6 +109,7 @@ for tracer_index in tracer_atoms[::3]:
             bins=[xedges, yedges])
     histo += foo[0]
 histo = histo/np.sum(histo)
+
 
 
 
