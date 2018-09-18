@@ -16,7 +16,8 @@ def get_index_selections():
     index_selections.update({'ffa12':'4'})
     index_selections.update({'ffa16':'5'})
     index_selections.update({'ffa24':'6'})
-    index_selections.update({'HOH':'7'})
+    index_selections.update({'non-water':'7'})
+    index_selections.update({'HOH':'8'})
 
     return index_selections
 
@@ -25,7 +26,10 @@ def write_ndx(grofile='npt.gro', ndxfile='hbond.ndx'):
     index_selections = get_index_selections()
     with open(ndxfile,'w') as f:
         for resname in index_selections.keys():
-            atom_indices = np.asarray(traj.topology.select('resname {}'.format(resname)))
+            if 'non-water' in resname:
+                atom_indices = np.asarray(traj.topology.select('not water'))
+            else:
+                atom_indices = np.asarray(traj.topology.select('resname {}'.format(resname)))
             n_rows = atom_indices.shape[0] // 15
             remainder = atom_indices.shape[0] % 15
             f.write('[ {} ]\n'.format(resname))
