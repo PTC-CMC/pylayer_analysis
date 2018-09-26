@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 ## and to remember bonds (gro bad)
 #####################
 
-def main():
-    uni = mda.Universe('extra.mol2', 'npt_80-100ns.xtc', in_memory=True)
+def main(mol2='extra.mol2', traj='npt_80-100ns.xtc'):
+    uni = mda.Universe(mol2, traj, in_memory=True)
     #uni = mda.Universe('extra.mol2', 'last5ns.xtc', in_memory=True)
     midplane = uni.dimensions[2]/2
     top_phosphates = [a for a in uni.atoms if 'P' in a.name[0] 
