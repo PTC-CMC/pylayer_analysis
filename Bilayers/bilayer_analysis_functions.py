@@ -887,3 +887,30 @@ def symmetrize(data, zero_boundary_condition=False):
         dataSym[-(i+1)], dataSym_err[-(i+1)] = val, err        
     return dataSym, dataSym_err
 
+def calc_compressibility(traj, times=None, blocked=False, block_size=5 * unit.nanosecond):
+    """ Compute compressibiltiy modulus from area fluctuations 
+
+    Parameters
+    ----------
+    traj : mdTraj.Trajectory
+    times : np.ndarray, opt
+        list of times, in picoseconds
+    blocked : bool, opt
+    block_size : simtk.Quantity, opt
+
+    Returns
+    ------
+    ka : simtk.Quantity
+        Compressibility modulus
+    
+    """
+    areas = traj.unitcell_lengths[:,0] * traj.unitcell_lengths[:,1] * u.nanometer**2
+    if times is not None:
+        traj.times = times
+    if blocked:
+        areas, _= bilayer_analysis_functions.block_avg(traj, areas._value)*areas.unit
+    avg_area = np.mean(areas)
+    mean_sq_fluc = np.sum((areas - avg_area)**2)/len(areas)
+    ka = kb*T*avg_area/mean_sq_fluc
+
+    return ka 
