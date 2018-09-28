@@ -21,7 +21,7 @@ def get_index_selections():
 
     return index_selections
 
-def write_ndx(grofile='npt.gro', ndxfile='hbond.ndx'):
+def write_ndx(grofile='npt.gro', ndxfile='hbond.ndx', remove_midplane_atoms=True):
     traj = mdtraj.load(grofile)
     index_selections = get_index_selections()
     with open(ndxfile,'w') as f:
@@ -30,6 +30,9 @@ def write_ndx(grofile='npt.gro', ndxfile='hbond.ndx'):
                 atom_indices = np.asarray(traj.topology.select('not water'))
             else:
                 atom_indices = np.asarray(traj.topology.select('resname {}'.format(resname)))
+            if remove_midplane_atoms:
+                midplane = np.mean(traj.unitcell_lengths[:,2])
+            atom_indices = np.asarray(atom_indices)
             n_rows = atom_indices.shape[0] // 15
             remainder = atom_indices.shape[0] % 15
             f.write('[ {} ]\n'.format(resname))
