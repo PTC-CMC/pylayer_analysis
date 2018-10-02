@@ -914,3 +914,51 @@ def calc_compressibility(traj, times=None, blocked=False, block_size=5 * unit.na
     ka = kb*T*avg_area/mean_sq_fluc
 
     return ka 
+
+def calc_interfacial_interdigitation(traj, bin_width=0.2, 
+        blocked=True, block_size=5*unit.nanosecond):
+
+    area = (np.mean(traj.unitcell_lengths[:,0] * traj.unitcell_lengths[:,1]) 
+            * (unit.nanometer**2))
+    bounds = (np.min(traj.xyz[:,:,2]), np.max(traj.xyz[:,:,2]))
+    n_bins = int(round((bounds[1] - bounds[0]) / bin_width))
+    bin_width = (bounds[1] - bounds[0]) / n_bins
+    v_slice = area * unit.Quantity(bin_width, unit.nanometer)
+
+    water_indices = traj.topology.select('water')
+    lipid_indices = traj.topology.select('not water')
+
+    water_masses = (get_all_masses(traj, 
+        traj.topology, water_indices) / v_slice).in_units_of(
+                unit.kilogram * (unit.meter**3))
+    lipid_masses = (get_all_masses(traj, 
+        traj.topology, lipid_indices) / v_slice).in_units_of(
+                unit.kilogram * (unit.meter**3))
+
+    interdigitation = []
+    for xyz in traj.xyz:
+        lipid_hist, lipid_edges = np.histogram(xyz[lipid_indices,2], bins=n_bins,
+                range=bounds, normed=False, weights=lipid_masses._value)
+        water_hist, water_edges = np.histogram(xyz[water_indices,2], bins=n_bins,
+                range=bounds, normed=False, weights=water_masses._value)
+        bin_centers = bin_edges[1:] - bin_width/2
+        integrand = []
+        for lipid_profile, water_profile in zip(lipid_hist, water_hist):
+            numerator = 4 * lipid_profile * water_profile
+            denominator = (lipid_profile + water_profile)**2
+            overlap = 0
+            if denominator != 0:
+                overlap = numerator / denominator
+            integrand.append(overlap)
+        interdigitation.append(integrate.simps(integrand, x=bin_centers))
+    if blocked:
+        blocks, stds = bilayer_analysis_functions.block_avg(traj, 
+                np.array(interdigitation), block_size=block_size)
+        idig_avg = unit.Quantity(np.mean(blocks), unit.nanometer)
+        idig_std = unit.Quantity(np.std(blocks), unit.nanometer)
+    else:
+        idig_avg = np.mean(interdigitation)
+        idig_std = np.std(interdigitation)
+    return interdigitation, idig_avg, idig_std
+
+
