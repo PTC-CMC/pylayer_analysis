@@ -908,7 +908,7 @@ def calc_compressibility(traj, times=None, blocked=False, block_size=5 * unit.na
     if times is not None:
         traj.times = times
     if blocked:
-        areas, _= bilayer_analysis_functions.block_avg(traj, areas._value)*areas.unit
+        areas, _= block_avg(traj, areas._value)*areas.unit
     avg_area = np.mean(areas)
     mean_sq_fluc = np.sum((areas - avg_area)**2)/len(areas)
     ka = kb*T*avg_area/mean_sq_fluc
@@ -930,10 +930,10 @@ def calc_interfacial_interdigitation(traj, bin_width=0.2,
 
     water_masses = (get_all_masses(traj, 
         traj.topology, water_indices) / v_slice).in_units_of(
-                unit.kilogram * (unit.meter**3))
+                unit.kilogram / (unit.meter**3))
     lipid_masses = (get_all_masses(traj, 
         traj.topology, lipid_indices) / v_slice).in_units_of(
-                unit.kilogram * (unit.meter**3))
+                unit.kilogram / (unit.meter**3))
 
     interdigitation = []
     for xyz in traj.xyz:
@@ -941,7 +941,7 @@ def calc_interfacial_interdigitation(traj, bin_width=0.2,
                 range=bounds, normed=False, weights=lipid_masses._value)
         water_hist, water_edges = np.histogram(xyz[water_indices,2], bins=n_bins,
                 range=bounds, normed=False, weights=water_masses._value)
-        bin_centers = bin_edges[1:] - bin_width/2
+        bin_centers = lipid_edges[1:] - bin_width/2
         integrand = []
         for lipid_profile, water_profile in zip(lipid_hist, water_hist):
             numerator = 4 * lipid_profile * water_profile
@@ -952,7 +952,7 @@ def calc_interfacial_interdigitation(traj, bin_width=0.2,
             integrand.append(overlap)
         interdigitation.append(integrate.simps(integrand, x=bin_centers))
     if blocked:
-        blocks, stds = bilayer_analysis_functions.block_avg(traj, 
+        blocks, stds = block_avg(traj, 
                 np.array(interdigitation), block_size=block_size)
         idig_avg = unit.Quantity(np.mean(blocks), unit.nanometer)
         idig_std = unit.Quantity(np.std(blocks), unit.nanometer)
