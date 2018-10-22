@@ -5,6 +5,7 @@ import MDAnalysis.analysis.waterdynamics
 import pandas as pd
 import time
 import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 ######################
