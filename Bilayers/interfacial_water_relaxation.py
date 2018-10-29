@@ -1,5 +1,6 @@
 import pdb
 import numpy as np
+from scipy.optimize import curve_fit
 import MDAnalysis as mda
 import MDAnalysis.analysis.waterdynamics
 import pandas as pd
@@ -14,6 +15,27 @@ import matplotlib.pyplot as plt
 ## Note the use of a mol2 to remember accurate resnames (pdb bad)
 ## and to remember bonds (gro bad)
 #####################
+
+def stretched_exponential(x_data, a, tau, beta):
+    """ Function used to get decay times for water relaxation
+
+    Parameters
+    ----------
+    x_data : times 
+    a : exponential prefactor 
+    tau : rotational relaxation time
+    beta : exponent in the exponential term
+
+
+    References
+    ----------
+    Sciortino, P., Gallo, P., Tartaglia, P., Chen, S-H. 1996. Supercooled water
+        and the kinetic glass transition
+    Castrillon, S., Giovambattista, N., Aksay, I.A., Debenedetti, P. 2009. Effect
+        of Surface Polarity on the Structure and Dynamics of WAter in Nanoscale
+        Confinement
+        """
+    return a * np.exp(-((x_data/tau)**beta))
 
 def main(mol2='extra.mol2', traj='npt_80-100ns.xtc'):
     uni = mda.Universe(mol2, traj, in_memory=True)
@@ -46,6 +68,10 @@ def main(mol2='extra.mol2', traj='npt_80-100ns.xtc'):
     oh_timeseries =[column[0] for column in wor_analysis.timeseries]
     hh_timeseries =[column[1] for column in wor_analysis.timeseries]
     dip_timeseries =[column[2] for column in wor_analysis.timeseries]
+
+    popt, pcov = curve_fit(stretched_exponential, times, dip_timeseries)
+    computed_corr = stretched_exponential(times, *popt)
+
     np.savetxt('oh_corr.dat',np.column_stack((frames, times, oh_timeseries)), 
             header="frames, times, oh_corr")
 
@@ -78,7 +104,9 @@ def main(mol2='extra.mol2', traj='npt_80-100ns.xtc'):
     plt.xlabel('time')
     plt.ylabel('WOR')
     plt.title('WOR dip')
-    plt.plot(times,[column[2] for column in wor_analysis.timeseries])
+    plt.plot(times,[column[2] for column in wor_analysis.timeseries], label='Computed')
+    plt.plot(times, computed_corr, linestyle ='--', color='red', label='fit')
+    plt.legend()
 
     plt.savefig('wor.png')
 
