@@ -1,5 +1,6 @@
 import pdb
 import numpy as np
+from collections import OrderedDict
 from scipy.optimize import curve_fit
 import MDAnalysis as mda
 import MDAnalysis.analysis.waterdynamics
@@ -70,6 +71,10 @@ def main(mol2='extra.mol2', traj='npt_80-100ns.xtc'):
     dip_timeseries =[column[2] for column in wor_analysis.timeseries]
 
     popt, pcov = curve_fit(stretched_exponential, times, dip_timeseries)
+    stretched_exp_params = OrderedDict()
+    stretched_exp_params['A'] = popt[0]
+    stretched_exp_params['tau'] = popt[1]
+    stretched_exp_params['beta'] = popt[2]
     computed_corr = stretched_exponential(times, *popt)
 
     np.savetxt('oh_corr.dat',np.column_stack((frames, times, oh_timeseries)), 
@@ -109,6 +114,8 @@ def main(mol2='extra.mol2', traj='npt_80-100ns.xtc'):
     plt.legend()
 
     plt.savefig('wor.png')
+    
+    return stretched_exp_params
 
 if __name__ == "__main__":
     main()
