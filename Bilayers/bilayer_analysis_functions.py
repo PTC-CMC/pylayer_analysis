@@ -962,3 +962,69 @@ def calc_interfacial_interdigitation(traj, bin_width=0.2,
     return interdigitation, idig_avg, idig_std
 
 
+
+def compute_rotations(traj, forcefield='charmm36', atom_1=62, atom_2=111):
+    """ Compute lipid rotations over the course of a trajectory
+    Angle is computed via two vectors
+    where the first vector is frame 0's vector bteween different tail atoms
+    and the second vector is the other frame's vector between the aforementioned
+    tail atoms
+
+    Parameters
+    ---------
+    atom_1 : int
+        molecule's atom index on one tail. If none, then randomly pick
+    atom_2 : int
+        molecule's atom index on the other tail. If none then randomly pick
+
+    Returns
+    -------
+    angles_trajectory : np.ndarray (n_frame x 1), rad
+        Average DSPC rotation between frames (averaged over all DSPC)
+    angles_err : np.ndarray (n_frame x 1), rad
+        stdeviation of DSPC rotation between frames
+
+    """
+
+    ff_templates = {'gromos53a6': group_templates.gromos53a6_groups,
+            'charmm36': group_templates.charmm36_groups}
+    try:
+        groups = ff_templates[forcefield]()
+    except KeyError:
+        sys.exit("Forcefield not supported")
+
+    all_angles = []
+    for resid, residue in enumerate(traj.topology.residues):
+        if 'DSPC' in residue.name:
+            local_atoms = [atom for atom in residue.atoms]
+            if atom_1 is None:
+                atom_1 = np.random.choice(groups[residue.name]['tail_1'])
+            if atom_2 is None:
+                atom_2 = np.random.choice(groups[residue.name]['tail_2'])
+
+            global_1 = local_atoms[atom_1].index
+            global_2 = local_atoms[atom_2].index
+            angles = _calc_angle_over_time(traj, global_1, global_2)
+            all_angles.append(angles)
+    all_angles = np.asarray(all_angles)
+    angles_trajectory = np.mean(all_angles, axis=0)
+    angles_err = np.std(all_angles,axis=0)
+    return angles_trajectory, angles_err
+
+def _calc_angle_over_time(traj, global_1, global_2):
+    """ Given two atom indices, compute the rotation of that vector over time """
+    vectors = traj.xyz[:, global_1, :] - traj.xyz[:,global_2,:]
+    vectors[:,2] = 0
+    norms = np.linalg.norm(vectors, axis=1)
+    unit_vectors = np.asarray([[v[0]/norm, v[1]/norm, v[2]/norm] 
+        for (v, norm) in zip(vectors,norms)])
+    avg_unit_vector = [np.mean(unit_vectors[:,0]), np.mean(unit_vectors[:,1]),
+            np.mean(unit_vectors[:,2])]
+    cosines = np.asarray(
+            [np.dot(unit_vectors[i], unit_vectors[i+1]) 
+                for i, v in enumerate(unit_vectors[:-1])]
+            )
+    cosines = [val if val < 1 else 1 for val in cosines]
+    angles = np.arccos(cosines) # radians
+    return angles
+
