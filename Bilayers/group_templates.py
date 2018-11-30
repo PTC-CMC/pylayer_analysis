@@ -164,15 +164,15 @@ c36_groups['ucer6']['tail_2'] = np.arange(4,75)
 
 c36_groups['ffa12'] = OrderedDict()
 c36_groups['ffa12']['head'] = np.arange(0,4)
-c36_groups['ffa12']['tail'] = np.arange(4,38)
+c36_groups['ffa12']['tail'] = np.arange(3,39)
 
 c36_groups['ffa16'] = OrderedDict()
 c36_groups['ffa16']['head'] = np.arange(15,19)
-c36_groups['ffa16']['tail'] = np.concatenate(( np.arange(0,15), np.arange(19,50) ))
+c36_groups['ffa16']['tail'] = np.concatenate(( np.arange(0,16), np.arange(19,51) ))
 
 c36_groups['ffa24'] = OrderedDict()
 c36_groups['ffa24']['head'] = np.arange(23,27)
-c36_groups['ffa24']['tail'] = np.concatenate(( np.arange(0,23), np.arange(27,74) )) 
+c36_groups['ffa24']['tail'] = np.concatenate(( np.arange(0,24), np.arange(27,75) )) 
 
 ###################
 # ### OH Groups ###
@@ -180,15 +180,18 @@ c36_groups['ffa24']['tail'] = np.concatenate(( np.arange(0,23), np.arange(27,74)
 
 c36_groups['oh12'] = OrderedDict()
 c36_groups['oh12']['head'] = [35,38]
-c36_groups['oh12']['tail'] = np.concatenate(( np.arange(0,35), [36,37] ))
+c36_groups['oh12']['tail'] = [34, 33, 32, 31, 30, 29, 38, 27, 26, 25, 24, 23, 22,
+        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]
 
 c36_groups['oh16'] = OrderedDict()
 c36_groups['oh16']['head'] = [47,50]
-c36_groups['oh16']['tail'] = np.concatenate(( np.arange(0,47), [48,49] ))
+c36_groups['oh16']['tail'] = np.concatenate(( np.arange(46, 27, step=-1), 
+    np.arange(0, 28)))
 
 c36_groups['oh24'] = OrderedDict()
 c36_groups['oh24']['head'] = [71,74]
-c36_groups['oh24']['tail'] = np.concatenate(( np.arange(0,71), [72,73] ))
+c36_groups['oh24']['tail'] = np.concatenate(( np.arange(70, 39, step=-1),
+    np.arange(0, 40)))
 
 ###################
 ### Cholesterol ###
