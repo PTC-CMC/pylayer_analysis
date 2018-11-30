@@ -180,8 +180,8 @@ c36_groups['ffa24']['tail'] = np.concatenate(( np.arange(0,24), np.arange(27,74)
 
 c36_groups['oh12'] = OrderedDict()
 c36_groups['oh12']['head'] = [35,38]
-c36_groups['oh12']['tail'] = [34, 33, 32, 31, 30, 29, 38, 27, 26, 25, 24, 23, 22,
-        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]
+c36_groups['oh12']['tail'] = np.concatenate(( np.arange(34,21, step=-1),
+    np.arange(0,21)))
 
 c36_groups['oh16'] = OrderedDict()
 c36_groups['oh16']['head'] = [47,50]
