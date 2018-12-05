@@ -83,10 +83,12 @@ def calc_moving_s2(traj, tail_groups, selected_keys, window_size=3):
         Each column is the nematic order for that selection of chains.
             i.e. column 0 looks at the S2 for carbon[0,window_size)
     """
-    n_carbons = len(tail_groups[selected_keys[0]])
+    n_carbons = len([a for a in tail_groups[selected_keys[0]] if 'H' != traj.topology.atom(a).name[0]])
     all_s2 = np.zeros((traj.n_frames, n_carbons-3))
     for i, carbon_start in enumerate(range(n_carbons-3)):
-        sub_tails = [tail_groups[key][carbon_start:carbon_start+3] 
+        tail_no_h = {key: [int(a) for a in tail_groups[key] 
+            if 'H' != traj.topology.atom(a).name[0]] for key in tail_groups.keys()}
+        sub_tails = [tail_no_h[key][carbon_start:carbon_start+3] 
                 for key in selected_keys]
         all_s2[:, i] = mdtraj.compute_nematic_order(traj, indices=sub_tails)
     return all_s2
