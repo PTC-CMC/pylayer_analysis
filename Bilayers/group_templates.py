@@ -122,6 +122,13 @@ c36_groups['DOPC']['tail_1'] = [39,41,91,94,97,100,103,106,109,111,113,116,119,
 c36_groups['DOPC']['tail_2'] = [30,32,44,47,50,53,56,59,62,64,66,69,72,75,78,81,84,
         87]
 
+c36_groups['ISIS'] = OrderedDict()
+c36_groups['ISIS']['head'] = [0,1,2]
+c36_groups['ISIS']['tail_1'] = np.arange(109, 54, step=-1)
+c36_groups['ISIS']['tail_2'] = np.concatenate(([1], 
+    np.arange(3,55,step=1)))
+
+
 # #################
 # ### Ceramides ###
 # #################
