@@ -416,6 +416,7 @@ def identify_leaflets(traj, return_mid_plane=False):
 
     return bot_leaflet, top_leaflet
 
+
 def get_all_masses(traj, topol, atom_indices):
     """ Return array of masses corresponding to atom idnices"""
     masses = np.zeros_like(atom_indices, dtype=float)
@@ -1028,3 +1029,44 @@ def _calc_angle_over_time(traj, global_1, global_2):
     angles = np.arccos(cosines) # radians
     return angles
 
+def calc_ester_offset(traj, ester_atoms=['O21', 'O22', 'O31', 'O32'],
+        phosphate_atom='P', blocked=False):
+    """ Calculate z-distances between ester atoms and phosphate atoms
+    
+    Notes
+    -----
+    THis only looks at coordinates, not considering masses
+    """
+    bot_leaflet, top_leaflet, midplane = identify_leaflets(traj, 
+            return_mid_plane=True)
+
+    top_phosphates = [a for a in top_leaflet 
+            if traj.topology.atom(a).name == phosphate_atom]
+    bot_phosphates = [a for a in bot_leaflet 
+            if traj.topology.atom(a).name == phosphate_atom]
+
+    top_esters = [a for a in top_leaflet 
+            if traj.topology.atom(a).name in ester_atoms]
+    bot_esters = [a for a in bot_leaflet 
+            if traj.topology.atom(a).name in ester_atoms]
+
+    # frame by frame, average z-coordinate
+    top_phosphate_z = np.mean(traj.xyz[:, top_phosphates,2], axis=1)
+    bot_phosphate_z = np.mean(traj.xyz[:, bot_phosphates,2], axis=1)
+    top_ester_z = np.mean(traj.xyz[:, top_esters,2], axis=1)
+    bot_ester_z = np.mean(traj.xyz[:, bot_esters,2], axis=1)
+
+    top_offsets = np.abs(top_phosphate_z - top_ester_z)
+    bot_offsets = np.abs(bot_phosphate_z - bot_ester_z)
+
+    all_offsets = np.mean([top_offsets, bot_offsets], axis=0)
+    if blocked:
+        blocks, stds = block_avg(traj, all_offsets, block_size=5*unit.nanosecond)
+        offstd = np.std(blocks)
+        offaavg = np.mean(blocks)
+    else:
+        offavg = np.mean(area)
+        offstd = np.std(area)
+    offavg = offavg*unit.nanometer
+    offstd = offstd*unit.nanometer
+    return (offavg, offstd, all_offsets)
