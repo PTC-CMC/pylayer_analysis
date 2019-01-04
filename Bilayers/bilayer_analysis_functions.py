@@ -1063,7 +1063,7 @@ def calc_ester_offset(traj, ester_atoms=['O21', 'O22', 'O31', 'O32'],
     if blocked:
         blocks, stds = block_avg(traj, all_offsets, block_size=5*unit.nanosecond)
         offstd = np.std(blocks)
-        offaavg = np.mean(blocks)
+        offavg = np.mean(blocks)
     else:
         offavg = np.mean(all_offsets)
         offstd = np.std(all_offsets)
