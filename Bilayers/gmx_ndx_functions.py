@@ -18,6 +18,11 @@ def get_index_selections():
     index_selections.update({'ffa24':'6'})
     index_selections.update({'non-water':'7'})
     index_selections.update({'HOH':'8'})
+    index_selections.update({'oh18':'9'})
+    index_selections.update({'oh20':'10'})
+    index_selections.update({'oh22':'11'})
+    index_selections.update({'ISIS':'12'})
+
 
     return index_selections
 
