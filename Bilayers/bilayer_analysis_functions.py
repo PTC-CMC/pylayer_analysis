@@ -438,8 +438,11 @@ def calc_density_profile(traj, topol, bin_width=0.2, blocked=False,
     density_profile_bot = []
     density_profile_top = []
     density_profile_all = []
-    bot_masses = (get_all_masses(traj, topol, bot_leaflet) / v_slice).in_units_of(unit.kilogram * (unit.meter**-3))
-    top_masses = (get_all_masses(traj, topol, top_leaflet) / v_slice).in_units_of(unit.kilogram * (unit.meter**-3))
+    bot_masses = get_all_masses(traj, topol, bot_leaflet)
+    bot_masses = ((bot_masses._value / v_slice._value) * bot_masses.unit/v_slice.unit).in_units_of(unit.kilogram * (unit.meter**-3))
+    top_masses = get_all_masses(traj, topol, top_leaflet)
+    top_masses = ((top_masses._value / v_slice._value) * top_masses.unit/v_slice.unit).in_units_of(unit.kilogram * (unit.meter**-3))
+
     bounds = (np.min(traj.xyz[:, bot_leaflet, 2]),
             np.max(traj.xyz[:, top_leaflet,2]))
     n_bins = int(round((bounds[1] - bounds[0]) / bin_width))
