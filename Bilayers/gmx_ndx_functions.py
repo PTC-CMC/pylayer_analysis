@@ -22,6 +22,7 @@ def get_index_selections():
     index_selections.update({'oh20':'10'})
     index_selections.update({'oh22':'11'})
     index_selections.update({'ISIS':'12'})
+    index_selections.update({'non-DSPC':'13'})
 
 
     return index_selections
@@ -33,6 +34,8 @@ def write_ndx(grofile='npt.gro', ndxfile='hbond.ndx', remove_midplane_atoms=True
         for resname in index_selections.keys():
             if 'non-water' in resname:
                 atom_indices = np.asarray(traj.topology.select('not water'))
+            elif 'non-DSPC' in resname:
+                atom_indices = np.asarray(traj.topology.select('not water and not resname DSPC'))
             else:
                 atom_indices = np.asarray(traj.topology.select('resname {}'.format(resname)))
             if remove_midplane_atoms:
