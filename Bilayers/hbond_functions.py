@@ -159,3 +159,15 @@ def get_hbond_donor_pairs(uni, forcefield='charmm36'):
 
     return donor_pairs
 
+def get_hbond_sites():
+    acceptors_dict = {'DSPC': 8,
+        'ffa12':2, 'ffa16':2, 'ffa24':2,
+        'oh12':1, 'oh16':1, 'oh18':1, 'oh20':1, 'oh22':1, 'oh24':1,
+        'HOH':2}
+    donors_dict = {'DSPC': 0,
+        'ffa12':1, 'ffa16':1, 'ffa24':1,
+        'oh12':1, 'oh16':1, 'oh18':1, 'oh20':1, 'oh22':1, 'oh24':1,
+        'HOH':2}
+
+    return donors_dict, acceptors_dict
+
