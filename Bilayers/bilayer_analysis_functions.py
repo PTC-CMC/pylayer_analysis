@@ -20,7 +20,6 @@ import pandas as pd
 import mdtraj as mdtraj
 import simtk.unit as unit
 
-import grid_analysis
 import group_templates
 
 def block_avg(traj, data, block_size=5*unit.nanosecond):
