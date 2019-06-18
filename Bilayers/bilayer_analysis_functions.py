@@ -1103,6 +1103,7 @@ def calc_tail_dihedrals(traj):
             density=True)
     ax.set_xlabel("Dihedral angle (rad)")
     ax.set_ylabel("Density")
+    ax.set_ylim([0, 1.7])
     plot_ay.tidyUp(fig, ax, gridArgs={}, legendArgs={}, tightLayoutArgs={})
     fig.savefig("tail_dihedrals.png")
     plt.close(fig)
@@ -1140,6 +1141,7 @@ def calc_head_tail_vectors(traj):
     ax.set_xlabel("Angle (rad)")
     ax.set_ylabel("Density")
     ax.set_xlim([0, np.pi])
+    ax.set_ylim([0, 3.7])
     plot_ay.tidyUp(fig, ax, gridArgs={}, tightLayoutArgs={}, legendArgs={})
 
     fig.savefig('head_tail_vectors.png')
