@@ -1,4 +1,5 @@
 from __future__ import print_function
+import json
 import sys
 from optparse import OptionParser
 import mdtraj
@@ -72,37 +73,62 @@ np.savetxt('idig.dat', interdig_list)
 #
 # Printing properties
 print('Outputting to <{}>...'.format(outfilename))
-outfile = open((outfilename + '.txt'),'w')
-outpdf = PdfPages((outfilename+'.pdf'))
-outfile.write('{:<20s}: {}\n'.format('Trajectory',trajfile))
-outfile.write('{:<20s}: {}\n'.format('Structure',grofile))
-outfile.write('{:<20s}: {}\n'.format('# Frames',traj.n_frames))
-outfile.write('{:<20s}: {}\n'.format('Lipids',n_lipid))
-outfile.write('{:<20s}: {}\n'.format('Tails',n_lipid_tails))
-outfile.write('{:<20s}: {} ({})\n'.format('APL (A^2)',apl_avg, apl_std))
-outfile.write('{:<20s}: {} ({})\n'.format('APT (A^2)',apt_avg, apt_std))
-outfile.write('{:<20s}: {} ({})\n'.format('Bilayer Height (A)',Hpp_ave, Hpp_std))
-outfile.write('{:<20s}: {} ({})\n'.format('Tilt Angle', angle_avg, angle_std))
-outfile.write('{:<20s}: {} ({})\n'.format('S2', s2_ave, s2_std))
-outfile.write('{:<20s}: {} ({})\n'.format('Interdigitation (A)', interdig_avg, interdig_std))
-for key in offset_dict.keys():
-    outfile.write('{:<20s}: {} ({})\n'.format
-            ((key + ' offset (A)'), offset_dict[key][0], offset_dict[key][1]))
-outfile.write('{:<20s}: {} ({})\n'.format(
-    'Leaflet 1 Tilt Angle', np.mean(angle_list[:, 0 :int(np.floor(n_lipid_tails/2))]),
-    np.std(angle_list[:, 0 :int(np.floor(n_lipid_tails/2))])))
-outfile.write('{:<20s}: {} ({})\n'.format(
-    'Leaflet 2 Tilt Angle', np.mean(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])]), 
-    np.std(angle_list[:, int(np.floor(n_lipid_tails/2)):len(angle_list[0])])))
-outfile.write('{:<20s}:\n'.format("Hbonding (D-A)"))
-#for row_label in labelmap.keys():
-#    for col_label in labelmap.keys():
-#        row_index = labelmap[row_label]
-#        col_index = labelmap[col_label]
-#        hbond_avg = hbond_matrix_avg[row_index, col_index]
-#        hbond_std = hbond_matrix_std[row_index, col_index]
-#        outfile.write('{:<20s}: {} ({})\n'.format(str(row_label+"-"+ col_label), hbond_avg, hbond_std))
+datafile = OrderedDict()
+datafile = OrderedDict()
+datafile['trajectory'] = trajfile
+datafile['structure'] = grofile
+datafile['n_frames'] = traj.n_frames
+datafile['lipids'] = n_lipid
+datafile['tails'] = n_lipid_tails
+datafile['APL'] = OrderedDict()
+datafile['APL']['unit'] = str(apl_avg.unit)
+datafile['APL']['mean'] = float(apl_avg._value)
+datafile['APL']['std'] = float(apl_std._value)
+datafile['APT'] = OrderedDict()
+datafile['APT']['unit'] = str(apt_avg.unit)
+datafile['APT']['mean'] = float(apt_avg._value)
+datafile['APT']['std'] = float(apt_std._value)
+datafile['Bilayer Height'] = OrderedDict()
+datafile['Bilayer Height']['unit'] = str(Hpp_ave.unit)
+datafile['Bilayer Height']['mean'] = float(Hpp_ave._value)
+datafile['Bilayer Height']['std'] = float(Hpp_std._value)
+datafile['Tilt Angle'] = OrderedDict()
+datafile['Tilt Angle']['unit'] = str(angle_avg.unit)
+datafile['Tilt Angle']['Bilayer'] = OrderedDict()
+datafile['Tilt Angle']['Bilayer']['mean'] = float(angle_avg._value)
+datafile['Tilt Angle']['Bilayer']['std'] = float(angle_std._value)
+datafile['S2'] = OrderedDict()
+datafile['S2']['mean'] = s2_ave
+datafile['S2']['std'] = s2_std
+datafile['Interdigitation'] = OrderedDict()
+datafile['Interdigitation']['unit'] = str(interdig_avg.unit)
+datafile['Interdigitation']['mean'] = float(interdig_avg._value)
+datafile['Interdigitation']['std'] = float(interdig_std._value)
 
+datafile['Offset'] = OrderedDict()
+for key in offset_dict.keys():
+    datafile['Offset']['unit'] = str(offset_dict[key][0].unit)
+    datafile['Offset'][key] = OrderedDict()
+    datafile['Offset'][key]['mean'] = float(offset_dict[key][0]._value )
+    datafile['Offset'][key]['std'] = float(offset_dict[key][1]._value )
+    #datafile['Offset (A)'][key] = [str(offset_dict[key][0]), str(offset_dict[key][1])]
+
+datafile['Tilt Angle']['Leaflet 1'] = OrderedDict()
+datafile['Tilt Angle']['Leaflet 1']['mean'] = float(np.mean(angle_list[:, 
+                                        0 :int(np.floor(n_lipid_tails/2))])._value)
+datafile['Tilt Angle']['Leaflet 1']['std'] = float(np.std(angle_list[:, 
+                                            0 :int(np.floor(n_lipid_tails/2))])._value)
+
+datafile['Tilt Angle']['Leaflet 2'] = OrderedDict()
+datafile['Tilt Angle']['Leaflet 2']['mean'] = float(np.mean(angle_list[:, 
+                                                int(np.floor(n_lipid_tails/2)):])._value)
+datafile['Tilt Angle']['Leaflet 2']['std'] = float(np.std(angle_list[:, 
+                                            int(np.floor(n_lipid_tails/2)):])._value)
+#
+with open(outfilename+'.txt', 'w') as f:
+    json.dump(datafile, f, indent=2)
+
+outpdf = PdfPages((outfilename+'.pdf'))
 
 # Plotting
 
@@ -165,6 +191,7 @@ plt.tight_layout()
 outpdf.savefig(fig2)
 plt.close()
 outpdf.close()
+
 
 print('**********')
 print('{:^10s}'.format('Done'))

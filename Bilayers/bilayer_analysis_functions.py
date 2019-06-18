@@ -415,6 +415,7 @@ def identify_leaflets(traj, return_mid_plane=False):
 
     return bot_leaflet, top_leaflet
 
+
 def get_all_masses(traj, topol, atom_indices):
     """ Return array of masses corresponding to atom idnices"""
     masses = np.zeros_like(atom_indices, dtype=float)
@@ -436,8 +437,11 @@ def calc_density_profile(traj, topol, bin_width=0.2, blocked=False,
     density_profile_bot = []
     density_profile_top = []
     density_profile_all = []
-    bot_masses = (get_all_masses(traj, topol, bot_leaflet) / v_slice).in_units_of(unit.kilogram * (unit.meter**-3))
-    top_masses = (get_all_masses(traj, topol, top_leaflet) / v_slice).in_units_of(unit.kilogram * (unit.meter**-3))
+    bot_masses = get_all_masses(traj, topol, bot_leaflet)
+    bot_masses = ((bot_masses._value / v_slice._value) * bot_masses.unit/v_slice.unit).in_units_of(unit.kilogram * (unit.meter**-3))
+    top_masses = get_all_masses(traj, topol, top_leaflet)
+    top_masses = ((top_masses._value / v_slice._value) * top_masses.unit/v_slice.unit).in_units_of(unit.kilogram * (unit.meter**-3))
+
     bounds = (np.min(traj.xyz[:, bot_leaflet, 2]),
             np.max(traj.xyz[:, top_leaflet,2]))
     n_bins = int(round((bounds[1] - bounds[0]) / bin_width))
@@ -886,3 +890,185 @@ def symmetrize(data, zero_boundary_condition=False):
         dataSym[-(i+1)], dataSym_err[-(i+1)] = val, err        
     return dataSym, dataSym_err
 
+def calc_compressibility(traj, times=None, blocked=False, block_size=5 * unit.nanosecond):
+    """ Compute compressibiltiy modulus from area fluctuations 
+
+    Parameters
+    ----------
+    traj : mdTraj.Trajectory
+    times : np.ndarray, opt
+        list of times, in picoseconds
+    blocked : bool, opt
+    block_size : simtk.Quantity, opt
+
+    Returns
+    ------
+    ka : simtk.Quantity
+        Compressibility modulus
+    
+    """
+    areas = traj.unitcell_lengths[:,0] * traj.unitcell_lengths[:,1] * u.nanometer**2
+    if times is not None:
+        traj.times = times
+    if blocked:
+        areas, _= block_avg(traj, areas._value)*areas.unit
+    avg_area = np.mean(areas)
+    mean_sq_fluc = np.sum((areas - avg_area)**2)/len(areas)
+    ka = kb*T*avg_area/mean_sq_fluc
+
+    return ka 
+
+def calc_interfacial_interdigitation(traj, bin_width=0.2, 
+        blocked=True, block_size=5*unit.nanosecond):
+
+    area = (np.mean(traj.unitcell_lengths[:,0] * traj.unitcell_lengths[:,1]) 
+            * (unit.nanometer**2))
+    bounds = (np.min(traj.xyz[:,:,2]), np.max(traj.xyz[:,:,2]))
+    n_bins = int(round((bounds[1] - bounds[0]) / bin_width))
+    bin_width = (bounds[1] - bounds[0]) / n_bins
+    v_slice = area * unit.Quantity(bin_width, unit.nanometer)
+
+    water_indices = traj.topology.select('water')
+    lipid_indices = traj.topology.select('not water')
+
+    water_masses = (get_all_masses(traj, 
+        traj.topology, water_indices) / v_slice).in_units_of(
+                unit.kilogram / (unit.meter**3))
+    lipid_masses = (get_all_masses(traj, 
+        traj.topology, lipid_indices) / v_slice).in_units_of(
+                unit.kilogram / (unit.meter**3))
+
+    interdigitation = []
+    for xyz in traj.xyz:
+        lipid_hist, lipid_edges = np.histogram(xyz[lipid_indices,2], bins=n_bins,
+                range=bounds, normed=False, weights=lipid_masses._value)
+        water_hist, water_edges = np.histogram(xyz[water_indices,2], bins=n_bins,
+                range=bounds, normed=False, weights=water_masses._value)
+        bin_centers = lipid_edges[1:] - bin_width/2
+        integrand = []
+        for lipid_profile, water_profile in zip(lipid_hist, water_hist):
+            numerator = 4 * lipid_profile * water_profile
+            denominator = (lipid_profile + water_profile)**2
+            overlap = 0
+            if denominator != 0:
+                overlap = numerator / denominator
+            integrand.append(overlap)
+        interdigitation.append(integrate.simps(integrand, x=bin_centers))
+    if blocked:
+        blocks, stds = block_avg(traj, 
+                np.array(interdigitation), block_size=block_size)
+        idig_avg = unit.Quantity(np.mean(blocks), unit.nanometer)
+        idig_std = unit.Quantity(np.std(blocks), unit.nanometer)
+    else:
+        idig_avg = np.mean(interdigitation)
+        idig_std = np.std(interdigitation)
+    return interdigitation, idig_avg, idig_std
+
+
+
+def compute_rotations(traj, forcefield='charmm36', atom_1=62, atom_2=111):
+    """ Compute lipid rotations over the course of a trajectory
+    Angle is computed via two vectors
+    where the first vector is frame 0's vector bteween different tail atoms
+    and the second vector is the other frame's vector between the aforementioned
+    tail atoms
+
+    Parameters
+    ---------
+    atom_1 : int
+        molecule's atom index on one tail. If none, then randomly pick
+    atom_2 : int
+        molecule's atom index on the other tail. If none then randomly pick
+
+    Returns
+    -------
+    angles_trajectory : np.ndarray (n_frame x 1), rad
+        Average DSPC rotation between frames (averaged over all DSPC)
+    angles_err : np.ndarray (n_frame x 1), rad
+        stdeviation of DSPC rotation between frames
+
+    """
+
+    ff_templates = {'gromos53a6': group_templates.gromos53a6_groups,
+            'charmm36': group_templates.charmm36_groups}
+    try:
+        groups = ff_templates[forcefield]()
+    except KeyError:
+        sys.exit("Forcefield not supported")
+
+    all_angles = []
+    for resid, residue in enumerate(traj.topology.residues):
+        if 'DSPC' in residue.name:
+            local_atoms = [atom for atom in residue.atoms]
+            if atom_1 is None:
+                atom_1 = np.random.choice(groups[residue.name]['tail_1'])
+            if atom_2 is None:
+                atom_2 = np.random.choice(groups[residue.name]['tail_2'])
+
+            global_1 = local_atoms[atom_1].index
+            global_2 = local_atoms[atom_2].index
+            angles = _calc_angle_over_time(traj, global_1, global_2)
+            all_angles.append(angles)
+    all_angles = np.asarray(all_angles)
+    angles_trajectory = np.mean(all_angles, axis=0)
+    angles_err = np.std(all_angles,axis=0)
+    return angles_trajectory, angles_err
+
+def _calc_angle_over_time(traj, global_1, global_2):
+    """ Given two atom indices, compute the rotation of that vector over time """
+    vectors = traj.xyz[:, global_1, :] - traj.xyz[:,global_2,:]
+    vectors[:,2] = 0
+    norms = np.linalg.norm(vectors, axis=1)
+    unit_vectors = np.asarray([[v[0]/norm, v[1]/norm, v[2]/norm] 
+        for (v, norm) in zip(vectors,norms)])
+    avg_unit_vector = [np.mean(unit_vectors[:,0]), np.mean(unit_vectors[:,1]),
+            np.mean(unit_vectors[:,2])]
+    cosines = np.asarray(
+            [np.dot(unit_vectors[i], unit_vectors[i+1]) 
+                for i, v in enumerate(unit_vectors[:-1])]
+            )
+    cosines = [val if val < 1 else 1 for val in cosines]
+    angles = np.arccos(cosines) # radians
+    return angles
+
+def calc_ester_offset(traj, ester_atoms=['O21', 'O22', 'O31', 'O32'],
+        phosphate_atom='P', blocked=False):
+    """ Calculate z-distances between ester atoms and phosphate atoms
+    
+    Notes
+    -----
+    THis only looks at coordinates, not considering masses
+    """
+    bot_leaflet, top_leaflet, midplane = identify_leaflets(traj, 
+            return_mid_plane=True)
+
+    top_phosphates = [a for a in top_leaflet 
+            if traj.topology.atom(a).name == phosphate_atom]
+    bot_phosphates = [a for a in bot_leaflet 
+            if traj.topology.atom(a).name == phosphate_atom]
+
+    top_esters = [a for a in top_leaflet 
+            if traj.topology.atom(a).name in ester_atoms]
+    bot_esters = [a for a in bot_leaflet 
+            if traj.topology.atom(a).name in ester_atoms]
+
+    # frame by frame, average z-coordinate
+    top_phosphate_z = np.mean(traj.xyz[:, top_phosphates,2], axis=1)
+    bot_phosphate_z = np.mean(traj.xyz[:, bot_phosphates,2], axis=1)
+    top_ester_z = np.mean(traj.xyz[:, top_esters,2], axis=1)
+    bot_ester_z = np.mean(traj.xyz[:, bot_esters,2], axis=1)
+
+    top_offsets = np.abs(top_phosphate_z - top_ester_z)
+    bot_offsets = np.abs(bot_phosphate_z - bot_ester_z)
+
+    all_offsets = np.mean([top_offsets, bot_offsets], axis=0)
+    if blocked:
+        blocks, stds = block_avg(traj, all_offsets, block_size=5*unit.nanosecond)
+        offstd = np.std(blocks)
+        offavg = np.mean(blocks)
+    else:
+        offavg = np.mean(all_offsets)
+        offstd = np.std(all_offsets)
+    offavg = offavg*unit.nanometer
+    offstd = offstd*unit.nanometer
+    return (offavg, offstd, all_offsets)

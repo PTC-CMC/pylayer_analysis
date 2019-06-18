@@ -127,18 +127,47 @@ def get_hbond_donor_pairs(uni, forcefield='charmm36'):
         sys.exit("forcefield not supported in hbond groups")
 
 
+    water_hydrogens = []
+    water_donors = []
     hydrogens = []
     donors = []
     for bond_pair in uni.bonds:
-        if 'H' in bond_pair.atoms[0] and ('O' in bond_pair.atoms[1] or
-                                            'N' in bond_pair.atoms[1] or
-                                            'F' in bond_pair.atoms[1]):
-            hydrogens.append(bond_pair.atoms[0].index)
-            donors.append(bond_pair.atoms[1].index)
-        elif 'H' in bond_pair.atoms[1] and ('O' in bond_pair.atoms[0] or
-                                            'N' in bond_pair.atoms[0] or
-                                            'F' in bond_pair.atoms[0]):
-            hydrogens.append(bond_pair.atoms[1].index)
-            donors.append(bond_pair.atoms[0].index)
-    return hydrogens, donors
+        resname = bond_pair.atoms[0].resname
+        if 'H' in bond_pair.atoms[0].name and ('O' in bond_pair.atoms[1].name or
+                                            'N' in bond_pair.atoms[1].name or
+                                            'F' in bond_pair.atoms[1].name):
+            if 'HOH' in resname or 'SOL' in resname:
+                water_hydrogens.append(bond_pair.atoms[0].index)
+                water_donors.append(bond_pair.atoms[1].index)
+            else:
+                hydrogens.append(bond_pair.atoms[0].index)
+                donors.append(bond_pair.atoms[1].index)
+
+        elif 'H' in bond_pair.atoms[1].name and ('O' in bond_pair.atoms[0].name or
+                                            'N' in bond_pair.atoms[0].name or
+                                            'F' in bond_pair.atoms[0].name):
+            if 'HOH' in resname or 'SOL' in resname:
+                water_hydrogens.append(bond_pair.atoms[0].index)
+                water_donors.append(bond_pair.atoms[1].index)
+            else:
+                hydrogens.append(bond_pair.atoms[0].index)
+                donors.append(bond_pair.atoms[1].index)
+    donor_pairs = {'water_hydrogens': water_hydrogens,
+            'water_donors': water_donors,
+            'hydrogens': hydrogens,
+            'donors':donors}
+
+    return donor_pairs
+
+def get_hbond_sites():
+    acceptors_dict = {'DSPC': 8,
+        'ffa12':2, 'ffa16':2, 'ffa24':2,
+        'oh12':1, 'oh16':1, 'oh18':1, 'oh20':1, 'oh22':1, 'oh24':1,
+        'HOH':2}
+    donors_dict = {'DSPC': 0,
+        'ffa12':1, 'ffa16':1, 'ffa24':1,
+        'oh12':1, 'oh16':1, 'oh18':1, 'oh20':1, 'oh22':1, 'oh24':1,
+        'HOH':2}
+
+    return donors_dict, acceptors_dict
 

@@ -380,7 +380,7 @@ def calc_density_profile(traj, topol, atom_indices, l_x=2, l_y=2,
     density_profile = []
     sub_xyz = traj.xyz[:,atom_indices,:] 
     # Convert from g/nm3 to kg/m3, and nm to m
-    bot_masses = (bilayer_analysis_functions.get_all_masses(traj, topol, atom_indices) / v_slice).in_units_of(u.kilogram * (u.meter**-3))
+    masses = (bilayer_analysis_functions.get_all_masses(traj, topol, atom_indices) / v_slice).in_units_of(u.kilogram * (u.meter**-3))
 
     # Find the absolute bounds over all frames
 
@@ -392,7 +392,7 @@ def calc_density_profile(traj, topol, atom_indices, l_x=2, l_y=2,
 
     for xyz in sub_xyz:
         hist, edges = np.histogram(xyz[:,2], bins=n_bins,
-                range=bounds, normed=False, weights=masses)
+                range=bounds, normed=False, weights=masses._value)
         density_profile.append(hist/v_slice._value)
 
         bin_centers = edges[1:] - bin_width / 2
