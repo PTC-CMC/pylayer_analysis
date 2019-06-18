@@ -1072,3 +1072,75 @@ def calc_ester_offset(traj, ester_atoms=['O21', 'O22', 'O31', 'O32'],
     offavg = offavg*unit.nanometer
     offstd = offstd*unit.nanometer
     return (offavg, offstd, all_offsets)
+
+def calc_tail_dihedrals(traj):
+    """ Calculate dihedrals for different tails
+
+    input: traj
+    output: none, just make a plot"""
+
+    tail_groups, head_groups = identify_groups(traj, forcefield='charmm36', 
+        separate_molecules=True)
+    sn1_tail = []
+    sn2_tail = []
+    for res_index, tail_atoms in tail_groups.items():
+        if 'a' in res_index:
+            sn1_tail.append(tail_atoms[:4])
+        elif 'b' in res_index:
+            sn2_tail.append(tail_atoms[:4])
+    sn1_tail = np.asarray(sn1_tail)
+    sn2_tail = np.asarray(sn2_tail)
+    sn1_dihedrals = mdtraj.compute_dihedrals(traj, sn1_tail)
+    sn2_dihedrals = mdtraj.compute_dihedrals(traj, sn2_tail)
+
+    import plot_ay
+    plot_ay.setDefaults()
+    fig, ax = plt.subplots(1,1)
+    bins = np.linspace(-np.pi, np.pi, num=51, endpoint=True)
+    ax.hist(sn1_dihedrals.flatten(), range=[-np.pi, np.pi], label='Sn1', alpha=0.7, bins=bins,
+            density=True)
+    ax.hist(sn2_dihedrals.flatten(), range=[-np.pi, np.pi], label='Sn2', alpha=0.7, bins=bins,
+            density=True)
+    ax.set_xlabel("Dihedral angle (rad)")
+    ax.set_ylabel("Density")
+    plot_ay.tidyUp(fig, ax, gridArgs={}, legendArgs={}, tightLayoutArgs={})
+    fig.savefig("tail_dihedrals.png")
+    plt.close(fig)
+
+def calc_head_tail_vectors(traj):
+    """ Calculate vectors from headgroup ternary carbon to tail carbon
+    """
+    all_vecs = []
+    sn1_angles = []
+    sn2_angles = []
+    norm = [1, 0, 0]
+    for res in traj.topology.residues:
+        if 'DSPC' in res.name:
+            all_vecs.append([res.atom(27), res.atom(30), res.atom(39)])
+
+    for triplet in all_vecs:
+        vec_sn1 = traj.xyz[:, triplet[1].index, :] - traj.xyz[:, triplet[0].index,:]
+        vec_sn2 = traj.xyz[:, triplet[2].index, :] - traj.xyz[:, triplet[0].index,:]
+        ang_sn1 = np.arccos(np.dot(vec_sn1, norm))
+        ang_sn2 = np.arccos(np.dot(vec_sn2, norm))
+        sn1_angles.append(ang_sn1)
+        sn2_angles.append(ang_sn2)
+
+    sn1_angles = np.array(sn1_angles)
+    sn2_angles = np.array(sn2_angles)
+    import plot_ay
+    plot_ay.setDefaults()
+    fig, ax = plt.subplots(1,1)
+
+    bins = np.linspace(0, np.pi, endpoint=True, num=51)
+    ax.hist(sn1_angles.flatten(), density=True, bins=bins, 
+            alpha=0.7, label='Sn1')
+    ax.hist(sn2_angles.flatten(), density=True, bins=bins, 
+            alpha=0.7, label='Sn2')
+    ax.set_xlabel("Angle (rad)")
+    ax.set_ylabel("Density")
+    ax.set_xlim([0, np.pi])
+    plot_ay.tidyUp(fig, ax, gridArgs={}, tightLayoutArgs={}, legendArgs={})
+
+    fig.savefig('head_tail_vectors.png')
+    plt.close(fig)
