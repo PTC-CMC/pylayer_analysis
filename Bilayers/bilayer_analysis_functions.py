@@ -1083,15 +1083,21 @@ def calc_tail_dihedrals(traj):
         separate_molecules=True)
     sn1_tail = []
     sn2_tail = []
+    other_tails = []
     for res_index, tail_atoms in tail_groups.items():
-        if 'a' in res_index:
-            sn1_tail.append(tail_atoms[:4])
-        elif 'b' in res_index:
-            sn2_tail.append(tail_atoms[:4])
+        for i in range(len(tail_atoms)-3):
+            if 'a' in res_index:
+                sn1_tail.append(tail_atoms[i:i+4])
+            elif 'b' in res_index:
+                sn2_tail.append(tail_atoms[i:i+4])
+            else:
+                other_tails.append(tail_atoms[i:i+4])
     sn1_tail = np.asarray(sn1_tail)
     sn2_tail = np.asarray(sn2_tail)
+    other_tails = np.asarray(other_tails)
     sn1_dihedrals = mdtraj.compute_dihedrals(traj, sn1_tail)
     sn2_dihedrals = mdtraj.compute_dihedrals(traj, sn2_tail)
+    other_dihedrals = mdtraj.compute_dihedrals(traj, other_tails)
 
     import plot_ay
     plot_ay.setDefaults()
@@ -1101,6 +1107,9 @@ def calc_tail_dihedrals(traj):
             density=True)
     ax.hist(sn2_dihedrals.flatten(), range=[-np.pi, np.pi], label='Sn2', alpha=0.7, bins=bins,
             density=True)
+    ax.hist(other_dihedrals.flatten(), range=[-np.pi, np.pi], label='Other', alpha=0.7, bins=bins,
+            density=True)
+
     ax.set_xlabel("Dihedral angle (rad)")
     ax.set_ylabel("Density")
     ax.set_ylim([0, 1.7])
