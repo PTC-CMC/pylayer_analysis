@@ -171,11 +171,23 @@ c36_groups['ucer6']['tail_2'] = np.arange(4,75)
 
 c36_groups['ffa12'] = OrderedDict()
 c36_groups['ffa12']['head'] = np.arange(0,4)
-c36_groups['ffa12']['tail'] = np.arange(3,38)
+c36_groups['ffa12']['tail'] = np.arange(4,38)
 
 c36_groups['ffa16'] = OrderedDict()
 c36_groups['ffa16']['head'] = np.arange(15,19)
 c36_groups['ffa16']['tail'] = np.concatenate(( np.arange(0,16), np.arange(19,50) ))
+
+c36_groups['ffa18'] = OrderedDict()
+c36_groups['ffa18']['head'] = np.arange(0,4)
+c36_groups['ffa18']['tail'] = np.arange(4,53, step=3)
+
+c36_groups['ffa20'] = OrderedDict()
+c36_groups['ffa20']['head'] = np.arange(0,4)
+c36_groups['ffa20']['tail'] = np.arange(4,59, step=3)
+
+c36_groups['ffa22'] = OrderedDict()
+c36_groups['ffa22']['head'] = np.arange(0,4)
+c36_groups['ffa22']['tail'] = np.arange(4,65, step=3)
 
 c36_groups['ffa24'] = OrderedDict()
 c36_groups['ffa24']['head'] = np.arange(23,27)
