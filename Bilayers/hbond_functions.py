@@ -38,6 +38,15 @@ c36_donors['ffa12'] = ['O1', 'OHL']
 c36_acceptors['ffa16'] = ['O17', 'O19', 'OCL', 'OBL']
 c36_donors['ffa16'] = ['O17', 'OCL']
 
+c36_acceptors['ffa18'] = ['O1', 'O2', 'OHL', 'OBL']
+c36_donors['ffa18'] = ['O1', 'OHL']
+
+c36_acceptors['ffa20'] = ['O1', 'O2', 'OHL', 'OBL']
+c36_donors['ffa20'] = ['O1', 'OHL']
+
+c36_acceptors['ffa22'] = ['O1', 'O2', 'OHL', 'OBL']
+c36_donors['ffa22'] = ['O1', 'OHL']
+
 c36_acceptors['ffa24'] = ['O25', 'O27', 'OCL', 'OBL']
 c36_donors['ffa24'] = ['O25', 'OCL']
 
@@ -161,13 +170,13 @@ def get_hbond_donor_pairs(uni, forcefield='charmm36'):
 
 def get_hbond_sites():
     acceptors_dict = {'DSPC': 8,
-        'ffa12':2, 'ffa16':2, 'ffa24':2,
+        'ffa12':2, 'ffa16':2, 'ffa18':2, 'ffa20':2, 'ffa22':2, 'ffa24':2,
         'oh12':1, 'oh16':1, 'oh18':1, 'oh20':1, 'oh22':1, 'oh24':1,
         'HOH':2}
     donors_dict = {'DSPC': 0,
-        'ffa12':1, 'ffa16':1, 'ffa24':1,
-        'oh12':1, 'oh16':1, 'oh18':1, 'oh20':1, 'oh22':1, 'oh24':1,
-        'HOH':2}
+            'ffa12':1, 'ffa16':1, 'ffa18':1, 'ffa20':1, 'ffa22':1, 'ffa24':1,
+            'oh12':1, 'oh16':1, 'oh18':1, 'oh20':1, 'oh22':1, 'oh24':1,
+            'HOH':2}
 
     return donors_dict, acceptors_dict
 
