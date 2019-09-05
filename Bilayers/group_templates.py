@@ -266,7 +266,7 @@ def gromos53a6_groups():
 def charmm36_groups():
     return c36_groups
 
-def msibi_groups():
+def cg_groups():
     return msibi_groups
 
 

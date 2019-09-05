@@ -106,7 +106,7 @@ def identify_groups(traj, forcefield='gromos53a6', separate_molecules=False):
         """
     ff_templates = {'gromos53a6': group_templates.gromos53a6_groups,
             'charmm36': group_templates.charmm36_groups,
-            'msibi': group_templates.msibi_groups}
+            'cg': group_templates.cg_groups}
     #if forcefield == 'gromos53a6':
     #    groups = group_templates.gromos53a6_groups()
 
@@ -489,11 +489,16 @@ def get_mass(topol, atom_i):
     Return: mass of that atom (g)
     """
     try:
-        mass_dict = {'O': 15.99940, 'OM': 15.99940, 'OA': 15.99940, 'OE': 15.99940, 'OW': 15.99940,'N': 14.00670,
-            'NT': 14.00670, 'NL': 14.00670, 'NR': 14.00670, 'NZ': 14.00670, 'NE': 14.00670, 'C': 12.01100, 
-            'CH0': 12.0110, 'CH1': 13.01900, 'CH2': 14.02700, 'CH3': 15.03500, 'CH4': 16.04300, 'CH2r': 14.02700,
-            'CR1': 13.01900, 'HC': 1.00800, 'H':  1.00800, 'P': 30.97380, 'CL': 35.45300, 'F': 18.99840, 
-            'CL-': 35.45300}
+        mass_dict = {'O': 15.99940, 'OM': 15.99940, 'OA': 15.99940, 
+                'OE': 15.99940, 'OW': 15.99940,'N': 14.00670,
+                'NT': 14.00670, 'NL': 14.00670, 'NR': 14.00670, 'NZ': 14.00670, 
+                'NE': 14.00670, 'C': 12.01100, 'CH0': 12.0110, 'CH1': 13.01900, 
+                'CH2': 14.02700, 'CH3': 15.03500, 'CH4': 16.04300, 
+                'CH2r': 14.02700, 'CR1': 13.01900, 'HC': 1.00800, 
+                'H':  1.00800, 'P': 30.97380, 'CL': 35.45300, 'F': 18.99840, 
+                'CL-': 35.45300, 
+                '_W': 72.0, '_PCN': 73.14, '_PCP': 123.03, '_E1': 58.04,
+                '_C2': 29.06, '_C3': 42.08, '_head': 44.00}
         mass_i = (unit.Quantity(mass_dict[topol.atom(atom_i).name], unit.amu).in_units_of(unit.gram / unit.item)*unit.item)._value
     except KeyError:
         mass_i = (unit.Quantity(topol.atom(atom_i).element.mass, unit.amu).in_units_of(unit.gram /unit.item) * unit.item)._value
