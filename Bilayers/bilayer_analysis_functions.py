@@ -105,7 +105,8 @@ def identify_groups(traj, forcefield='gromos53a6', separate_molecules=False):
         values : headgroup atom indices 
         """
     ff_templates = {'gromos53a6': group_templates.gromos53a6_groups,
-            'charmm36': group_templates.charmm36_groups}
+            'charmm36': group_templates.charmm36_groups,
+            'cg': group_templates.cg_groups}
     #if forcefield == 'gromos53a6':
     #    groups = group_templates.gromos53a6_groups()
 
@@ -488,11 +489,16 @@ def get_mass(topol, atom_i):
     Return: mass of that atom (g)
     """
     try:
-        mass_dict = {'O': 15.99940, 'OM': 15.99940, 'OA': 15.99940, 'OE': 15.99940, 'OW': 15.99940,'N': 14.00670,
-            'NT': 14.00670, 'NL': 14.00670, 'NR': 14.00670, 'NZ': 14.00670, 'NE': 14.00670, 'C': 12.01100, 
-            'CH0': 12.0110, 'CH1': 13.01900, 'CH2': 14.02700, 'CH3': 15.03500, 'CH4': 16.04300, 'CH2r': 14.02700,
-            'CR1': 13.01900, 'HC': 1.00800, 'H':  1.00800, 'P': 30.97380, 'CL': 35.45300, 'F': 18.99840, 
-            'CL-': 35.45300}
+        mass_dict = {'O': 15.99940, 'OM': 15.99940, 'OA': 15.99940, 
+                'OE': 15.99940, 'OW': 15.99940,'N': 14.00670,
+                'NT': 14.00670, 'NL': 14.00670, 'NR': 14.00670, 'NZ': 14.00670, 
+                'NE': 14.00670, 'C': 12.01100, 'CH0': 12.0110, 'CH1': 13.01900, 
+                'CH2': 14.02700, 'CH3': 15.03500, 'CH4': 16.04300, 
+                'CH2r': 14.02700, 'CR1': 13.01900, 'HC': 1.00800, 
+                'H':  1.00800, 'P': 30.97380, 'CL': 35.45300, 'F': 18.99840, 
+                'CL-': 35.45300, 
+                '_W': 72.0, '_PCN': 73.14, '_PCP': 123.03, '_E1': 58.04,
+                '_C2': 29.06, '_C3': 42.08, '_head': 44.00}
         mass_i = (unit.Quantity(mass_dict[topol.atom(atom_i).name], unit.amu).in_units_of(unit.gram / unit.item)*unit.item)._value
     except KeyError:
         mass_i = (unit.Quantity(topol.atom(atom_i).element.mass, unit.amu).in_units_of(unit.gram /unit.item) * unit.item)._value
@@ -1072,3 +1078,86 @@ def calc_ester_offset(traj, ester_atoms=['O21', 'O22', 'O31', 'O32'],
     offavg = offavg*unit.nanometer
     offstd = offstd*unit.nanometer
     return (offavg, offstd, all_offsets)
+
+def calc_tail_dihedrals(traj):
+    """ Calculate dihedrals for different tails
+
+    input: traj
+    output: none, just make a plot"""
+
+    tail_groups, head_groups = identify_groups(traj, forcefield='charmm36', 
+        separate_molecules=True)
+    sn1_tail = []
+    sn2_tail = []
+    other_tails = []
+    for res_index, tail_atoms in tail_groups.items():
+        for i in range(len(tail_atoms)-3):
+            if 'a' in res_index:
+                sn1_tail.append(tail_atoms[i:i+4])
+            elif 'b' in res_index:
+                sn2_tail.append(tail_atoms[i:i+4])
+            else:
+                other_tails.append(tail_atoms[i:i+4])
+    sn1_tail = np.asarray(sn1_tail)
+    sn2_tail = np.asarray(sn2_tail)
+    other_tails = np.asarray(other_tails)
+    sn1_dihedrals = mdtraj.compute_dihedrals(traj, sn1_tail)
+    sn2_dihedrals = mdtraj.compute_dihedrals(traj, sn2_tail)
+    other_dihedrals = mdtraj.compute_dihedrals(traj, other_tails)
+
+    import plot_ay
+    plot_ay.setDefaults()
+    fig, ax = plt.subplots(1,1)
+    bins = np.linspace(-np.pi, np.pi, num=51, endpoint=True)
+    ax.hist(sn1_dihedrals.flatten(), range=[-np.pi, np.pi], label='Sn1', alpha=0.7, bins=bins,
+            density=True)
+    ax.hist(sn2_dihedrals.flatten(), range=[-np.pi, np.pi], label='Sn2', alpha=0.7, bins=bins,
+            density=True)
+    ax.hist(other_dihedrals.flatten(), range=[-np.pi, np.pi], label='Other', alpha=0.7, bins=bins,
+            density=True)
+
+    ax.set_xlabel("Dihedral angle (rad)")
+    ax.set_ylabel("Density")
+    ax.set_ylim([0, 1.7])
+    plot_ay.tidyUp(fig, ax, gridArgs={}, legendArgs={}, tightLayoutArgs={})
+    fig.savefig("tail_dihedrals.png")
+    plt.close(fig)
+
+def calc_head_tail_vectors(traj):
+    """ Calculate vectors from headgroup ternary carbon to tail carbon
+    """
+    all_vecs = []
+    sn1_angles = []
+    sn2_angles = []
+    norm = [1, 0, 0]
+    for res in traj.topology.residues:
+        if 'DSPC' in res.name:
+            all_vecs.append([res.atom(27), res.atom(30), res.atom(39)])
+
+    for triplet in all_vecs:
+        vec_sn1 = traj.xyz[:, triplet[1].index, :] - traj.xyz[:, triplet[0].index,:]
+        vec_sn2 = traj.xyz[:, triplet[2].index, :] - traj.xyz[:, triplet[0].index,:]
+        ang_sn1 = np.arccos(np.dot(vec_sn1, norm))
+        ang_sn2 = np.arccos(np.dot(vec_sn2, norm))
+        sn1_angles.append(ang_sn1)
+        sn2_angles.append(ang_sn2)
+
+    sn1_angles = np.array(sn1_angles)
+    sn2_angles = np.array(sn2_angles)
+    import plot_ay
+    plot_ay.setDefaults()
+    fig, ax = plt.subplots(1,1)
+
+    bins = np.linspace(0, np.pi, endpoint=True, num=51)
+    ax.hist(sn1_angles.flatten(), density=True, bins=bins, 
+            alpha=0.7, label='Sn1')
+    ax.hist(sn2_angles.flatten(), density=True, bins=bins, 
+            alpha=0.7, label='Sn2')
+    ax.set_xlabel("Angle (rad)")
+    ax.set_ylabel("Density")
+    ax.set_xlim([0, np.pi])
+    ax.set_ylim([0, 3.7])
+    plot_ay.tidyUp(fig, ax, gridArgs={}, tightLayoutArgs={}, legendArgs={})
+
+    fig.savefig('head_tail_vectors.png')
+    plt.close(fig)

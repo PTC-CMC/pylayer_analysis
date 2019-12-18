@@ -171,11 +171,23 @@ c36_groups['ucer6']['tail_2'] = np.arange(4,75)
 
 c36_groups['ffa12'] = OrderedDict()
 c36_groups['ffa12']['head'] = np.arange(0,4)
-c36_groups['ffa12']['tail'] = np.arange(3,38)
+c36_groups['ffa12']['tail'] = np.arange(4,38)
 
 c36_groups['ffa16'] = OrderedDict()
 c36_groups['ffa16']['head'] = np.arange(15,19)
 c36_groups['ffa16']['tail'] = np.concatenate(( np.arange(0,16), np.arange(19,50) ))
+
+c36_groups['ffa18'] = OrderedDict()
+c36_groups['ffa18']['head'] = np.arange(0,4)
+c36_groups['ffa18']['tail'] = np.arange(4,53, step=3)
+
+c36_groups['ffa20'] = OrderedDict()
+c36_groups['ffa20']['head'] = np.arange(0,4)
+c36_groups['ffa20']['tail'] = np.arange(4,59, step=3)
+
+c36_groups['ffa22'] = OrderedDict()
+c36_groups['ffa22']['head'] = np.arange(0,4)
+c36_groups['ffa22']['tail'] = np.arange(4,65, step=3)
 
 c36_groups['ffa24'] = OrderedDict()
 c36_groups['ffa24']['head'] = np.arange(23,27)
@@ -227,12 +239,35 @@ c36_groups['CHL1'] = OrderedDict()
 c36_groups['CHL1']['head'] = [0,1,2,3]
 c36_groups['CHL1']['tail'] = np.arange(49,74)
 
+# ///////////////
+# MSIBI Lipids
+# ///////////////
+msibi_groups = OrderedDict()
+
+# #######################
+# ### PC Phosphoipids ###
+# #######################
+msibi_groups['DSPC'] = OrderedDict()
+msibi_groups['DSPC']['head'] = [1]
+msibi_groups['DSPC']['tail_1'] = [3, 10, 11, 12, 13, 14, 15]
+msibi_groups['DSPC']['tail_2'] = [2, 4, 5, 6, 7, 8, 9]
+
+####################
+# ### FFA Groups ###
+####################
+msibi_groups['ffa16'] = OrderedDict()
+msibi_groups['ffa16']['head'] = [0]
+msibi_groups['ffa16']['tail'] = [1,2,3,4,5]
+
 
 def gromos53a6_groups():
     return g53a6_groups
 
 def charmm36_groups():
     return c36_groups
+
+def cg_groups():
+    return msibi_groups
 
 
 
