@@ -1,1 +1,0 @@
-gmx grompp -f Stage5_ZCon2.mdp -n FullIndex.ndx -c Stage4_Eq2.tpr -t Stage4_Eq2.cpt -o Stage5_ZCon2.tpr -maxwarn 2 > grompp_Stage5_ZCon2.log 2>&1
